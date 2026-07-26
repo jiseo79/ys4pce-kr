@@ -1220,13 +1220,31 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
         if (window.__initVideo) window.__initVideo();   // 초기화는 이미 끝났으니 다시 건다
       }
 
-      /* 익명 방문 집계. stats_api 가 비어 있으면 호출하지 않는다.
-         보내는 것은 "방문했다" 뿐 — 어떤 페이지를 봤는지도, 식별자도 보내지 않는다. */
+      /* 익명 집계. stats_api 가 비어 있으면 호출하지 않는다.
+         보내는 것은 "방문했다 / 어떤 버튼을 눌렀다" 뿐 — 식별자는 보내지 않는다. */
       if (cfg.stats_api){
-        try {
-          navigator.sendBeacon(cfg.stats_api,
-            new Blob(["type=visit&ver=v0.9"], {type:"application/x-www-form-urlencoded"}));
-        } catch (e) { /* 집계 실패는 무시한다 */ }
+        var API = cfg.stats_api;
+        var beacon = function(params){
+          try {
+            navigator.sendBeacon(API, new Blob(
+              [new URLSearchParams(Object.assign({ver:"v0.9"}, params)).toString()],
+              {type:"application/x-www-form-urlencoded"}));
+          } catch (e) { /* 집계 실패가 페이지를 방해해서는 안 된다 */ }
+        };
+        beacon({type:"visit"});
+
+        // 다운로드 버튼: 어떤 파일을 눌렀는지. 파일은 외부(Releases)로 가므로
+        // 이 클릭을 잡지 않으면 몇 명이 받았는지 알 방법이 아예 없다.
+        document.querySelectorAll("[data-dl]").forEach(function(a){
+          a.addEventListener("click", function(){
+            if (a.getAttribute("aria-disabled") === "true") return;
+            beacon({type:"download", mode:a.dataset.dl});
+          });
+        });
+        // 웹 패처로 넘어간 횟수
+        document.querySelectorAll('a[href="patcher.html"]').forEach(function(a){
+          a.addEventListener("click", function(){ beacon({type:"open", mode:"webpatcher"}); });
+        });
       }
 
       if (cfg.board && cfg.board.url){

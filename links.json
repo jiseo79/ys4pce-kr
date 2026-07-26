@@ -42,5 +42,5 @@
   "board": {
     "url": ""
   },
-  "stats_api": ""
+  "stats_api": "https://topperji.com/ys4/api.php"
 }

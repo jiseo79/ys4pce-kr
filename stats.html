@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>이스 IV 한국어 패치 — 집계</title>
+<style>
+:root{
+  --void:#0a0a0c; --panel:#15161c; --edge:#24262f; --phos:#f1eee4;
+  --mute:#8b8f9c; --faint:#585c68; --amber:#ffb200; --rust:#c8410f; --ok:#5ec27a;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--void);color:var(--phos);font:16px/1.7 var(--sans)}
+.wrap{max-width:900px;margin:0 auto;padding:3rem 22px 5rem}
+a{color:var(--amber)}
+.lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+h1{font-size:1.7rem;letter-spacing:-.02em;margin:.5rem 0 .2rem}
+h2{font-size:1.05rem;margin:2.6rem 0 .8rem;padding-top:1.2rem;border-top:1px solid var(--edge)}
+.sub{color:var(--mute);margin:0}
+
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:1.6rem 0}
+.kpi{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:1.1rem 1.2rem}
+.kpi b{display:block;font:800 2rem/1 var(--mono);letter-spacing:-.02em;color:var(--amber)}
+.kpi span{display:block;color:var(--mute);font-size:.82rem;margin-top:.4rem}
+.kpi.q b{color:var(--phos)}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:1rem 0}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--edge)}
+th{font-family:var(--mono);font-weight:400;font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.bar{width:52%;padding-right:0}
+td.bar i{display:block;height:9px;background:var(--amber);border-radius:2px;min-width:2px}
+td.bar.alt i{background:var(--rust)}
+
+.chart{display:flex;align-items:flex-end;gap:2px;height:130px;margin:1rem 0;
+  border-bottom:1px solid var(--edge);padding-bottom:2px}
+.chart div{flex:1;background:var(--amber);min-height:2px;border-radius:2px 2px 0 0;position:relative}
+.chart div:hover{background:var(--phos)}
+.chart div span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  font:600 .62rem/1 var(--mono);color:var(--mute);white-space:nowrap;opacity:0;padding-bottom:3px}
+.chart div:hover span{opacity:1}
+.xlab{display:flex;justify-content:space-between;font:.65rem var(--mono);color:var(--faint);margin-top:.3rem}
+
+.msg{background:var(--panel);border:1px solid var(--edge);border-left:2px solid var(--amber);
+  border-radius:0 8px 8px 0;padding:1rem 1.2rem;color:var(--mute);margin:1.5rem 0}
+.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--edge);
+  color:var(--faint);font-size:.82rem;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="lab">Ys IV KO Patch · Stats</p>
+  <h1>집계</h1>
+  <p class="sub">방문·다운로드·패치 횟수입니다. <a href="index.html">← 배포 페이지</a></p>
+
+  <div id="out"><p class="msg" id="msg">불러오는 중 …</p></div>
+
+  <p class="foot">
+    개인을 식별하는 값은 저장하지 않습니다. IP 는 하루 단위 중복 제거에만 쓰고
+    24비트로 잘라 보관해 원래 주소를 되돌릴 수 없습니다.<br>
+    공개 API 라 누구나 요청을 보낼 수 있고, 광고 차단기가 집계를 막는 경우도 있어
+    <b>실제 사용자 수와는 차이가 있습니다.</b> 참고용 수치로만 보세요.
+  </p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var out = document.getElementById("out");
+  var el = function(t, cls, txt){
+    var e = document.createElement(t);
+    if (cls) e.className = cls;
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  };
+  function fail(m){ out.textContent = ""; out.appendChild(el("p", "msg", m)); }
+
+  fetch("links.json", {cache:"no-cache"})
+    .then(function(r){ return r.json(); })
+    .then(function(cfg){
+      if (!cfg.stats_api) { fail("집계가 꺼져 있습니다. links.json 의 stats_api 를 채우면 여기에 표시됩니다."); return; }
+      return fetch(cfg.stats_api + "?action=stats").then(function(r){ return r.json(); });
+    })
+    .then(function(d){
+      if (!d) return;
+      if (!d.ok) throw new Error(d.error || "집계를 불러오지 못했습니다.");
+      render(d);
+    })
+    .catch(function(e){ fail("집계 서버에 연결하지 못했습니다. (" + (e.message || e) + ")"); });
+
+  var LABEL = {
+    dl_text:"텍스트 패치", dl_voice:"음성 패치", dl_both:"텍스트+음성",
+    dl_syscard:"시스템 카드", dl_checksums:"체크섬",
+    patch_text_ok:"텍스트만", patch_voice_ok:"음성만", patch_both_ok:"텍스트+음성",
+    patch_text_fail:"텍스트만 (실패)", patch_voice_fail:"음성만 (실패)",
+    patch_both_fail:"텍스트+음성 (실패)"
+  };
+
+  function table(title, rows, alt){
+    if (!rows.length) return null;
+    var box = document.createDocumentFragment();
+    box.appendChild(el("h2", null, title));
+    var max = Math.max.apply(null, rows.map(function(r){ return r[1]; })) || 1;
+    var t = el("table");
+    var tb = el("tbody");
+    rows.forEach(function(r){
+      var tr = el("tr");
+      tr.appendChild(el("td", null, r[0]));
+      tr.appendChild(el("td", "n", r[1].toLocaleString()));
+      var b = el("td", "bar" + (alt ? " alt" : ""));
+      var i = el("i"); i.style.width = (100 * r[1] / max) + "%";
+      b.appendChild(i); tr.appendChild(b);
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); box.appendChild(t);
+    return box;
+  }
+
+  function render(d){
+    out.textContent = "";
+    var T = d.totals || {};
+    var g = function(k){ return T[k] || 0; };
+
+    // ── KPI ──
+    var cards = el("div", "cards");
+    [["순 방문자", d.unique_visitors || 0, false],
+     ["전체 방문", g("visit"), true],
+     ["패처 열기", g("open_patcher"), true],
+     ["다운로드", g("dl_total"), true],
+     ["패치 완료", g("patch_total"), false],
+     ["카드 생성", g("card_ok"), true]
+    ].forEach(function(c){
+      var k = el("div", "kpi" + (c[2] ? " q" : ""));
+      k.appendChild(el("b", null, c[1].toLocaleString()));
+      k.appendChild(el("span", null, c[0]));
+      cards.appendChild(k);
+    });
+    out.appendChild(cards);
+
+    // ── 다운로드 / 패치 ──
+    var dl = Object.keys(T).filter(function(k){ return k.indexOf("dl_") === 0 && k !== "dl_total"; })
+                    .map(function(k){ return [LABEL[k] || k, T[k]]; })
+                    .sort(function(a,b){ return b[1]-a[1]; });
+    var pt = Object.keys(T).filter(function(k){ return k.indexOf("patch_") === 0 && k !== "patch_total"; })
+                    .map(function(k){ return [LABEL[k] || k, T[k]]; })
+                    .sort(function(a,b){ return b[1]-a[1]; });
+    var a = table("다운로드 버튼별", dl, false); if (a) out.appendChild(a);
+    var b = table("패치 완료 (모드별)", pt, true); if (b) out.appendChild(b);
+
+    // ── 날짜별 ──
+    var byDay = {};
+    (d.daily || []).forEach(function(r){
+      if (r.metric !== "visit") return;
+      byDay[r.day] = (byDay[r.day] || 0) + r.n;
+    });
+    var days = Object.keys(byDay).sort();
+    if (days.length){
+      out.appendChild(el("h2", null, "날짜별 방문 (최근 30일)"));
+      var ch = el("div", "chart");
+      var mx = Math.max.apply(null, days.map(function(k){ return byDay[k]; })) || 1;
+      days.forEach(function(k){
+        var bar = el("div");
+        bar.style.height = Math.max(2, 100 * byDay[k] / mx) + "%";
+        bar.appendChild(el("span", null, k.slice(5) + " · " + byDay[k]));
+        ch.appendChild(bar);
+      });
+      out.appendChild(ch);
+      var x = el("div", "xlab");
+      x.appendChild(el("span", null, days[0]));
+      x.appendChild(el("span", null, days[days.length-1]));
+      out.appendChild(x);
+    }
+
+    // ── 시간대 ──
+    var hours = [];
+    for (var h = 0; h < 24; h++){
+      var key = "hour_" + String(h).padStart(2, "0");
+      hours.push(T[key] || 0);
+    }
+    if (hours.some(function(v){ return v > 0; })){
+      out.appendChild(el("h2", null, "시간대별 (UTC)"));
+      var ch2 = el("div", "chart");
+      var mx2 = Math.max.apply(null, hours) || 1;
+      hours.forEach(function(v, i){
+        var bar = el("div");
+        bar.style.height = Math.max(2, 100 * v / mx2) + "%";
+        bar.appendChild(el("span", null, i + "시 · " + v));
+        ch2.appendChild(bar);
+      });
+      out.appendChild(ch2);
+      var x2 = el("div", "xlab");
+      x2.appendChild(el("span", null, "00"));
+      x2.appendChild(el("span", null, "23"));
+      out.appendChild(x2);
+    }
+
+    if (!Object.keys(T).length) fail("아직 기록된 데이터가 없습니다.");
+  }
+})();
+</script>
+</body>
+</html>
