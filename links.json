@@ -28,6 +28,10 @@
     "syscard": {
       "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-syscard.xdelta",
       "size": "18 KB"
+    },
+    "text_jpvoice": {
+      "url": "",
+      "size": "186 KB"
     }
   },
   "checksums": {

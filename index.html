@@ -688,12 +688,15 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
     <li>그 이미지를 <b>웹 패처</b>에 넣고 <b>텍스트만</b> 모드로 패치합니다</li>
   </ul>
   <div class="callout">
-    <span class="lab">이 경로는 웹 패처로만 됩니다</span>
-    <p>내려받는 <code>text.xdelta</code> 는 <b>영문 더빙까지 적용된 이미지</b> 하나만 원본으로 받습니다.
-      더빙 없는 이미지에 대면 xdelta3 가 거부합니다 — 패치가 잘못된 것이 아니라
-      형식이 원본을 딱 하나로 못박기 때문입니다.</p>
-    <p style="margin-top:.6rem">웹 패처는 이 베이스를 <b>알아보고 허용</b>합니다.
-      파일을 고르면 “한글 자막 + 일본어 음성이 됩니다” 라고 표시됩니다.</p>
+    <span class="lab">전용 패치 파일이 따로 있습니다</span>
+    <p>이 베이스는 더빙까지 적용된 이미지와 <b>다른 파일</b>이라, 일반 <code>text.xdelta</code> 를
+      대면 xdelta3 가 거부합니다. 패치가 잘못된 것이 아니라 형식이 원본을 딱 하나로 못박기 때문입니다.</p>
+    <p style="margin-top:.6rem">그래서 이 베이스 전용으로 <code>text-jpvoice.xdelta</code> 를 따로 만들어 두었습니다.
+      <b>웹 패처</b>도 이 베이스를 알아보고 받아 줍니다 — 파일을 고르면
+      “한글 자막 + 일본어 음성이 됩니다” 라고 표시됩니다.</p>
+    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+      단, <code>text-jpvoice.xdelta</code> 의 원본 해시는 <b>제작자의 일본판 립</b> 기준입니다.
+      다른 립으로 덤프하셨다면 음악 트랙이 달라 거부되니, 그때는 웹 패처를 쓰세요.</p>
   </div>
   <p class="hint"><b>음성만</b> 모드나 <b>텍스트+음성</b> 모드를 고르면 한국어 더빙이 올라가므로
     일본어 음성은 남지 않습니다. 원음을 원하시면 반드시 <b>텍스트만</b> 을 고르세요.</p>
@@ -740,9 +743,12 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
     </table>
   </div>
   <p class="hint">참고 — 아래는 <b>제작자의 립으로 만든 전체 <code>.img</code></b> 해시입니다.
-    같으면 완전히 동일한 결과지만, <b>다르다고 실패가 아닙니다.</b>
+    같으면 완전히 동일한 결과지만, 웹 패처를 쓰셨다면 <b>다르다고 실패가 아닙니다.</b>
     텍스트만 <code class="h">84d7fede…</code> · 음성만 <code class="h">943891fc…</code> ·
-    텍스트+음성 <code class="h">c783b027…</code></p>
+    텍스트+음성 <code class="h">c783b027…</code> ·
+    텍스트만(일본어 음성) <code class="h">9b502143…</code><br>
+    xdelta 로 적용에 성공하셨다면 원본이 이미 정확히 일치한다는 뜻이므로,
+    <b>이 전체 해시가 그대로 나와야 정상</b>입니다.</p>
 </section>
 
 <!-- ─────────── 03 패치하기 ─────────── -->
@@ -817,17 +823,22 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
       <thead><tr><th>파일</th><th>원본</th><th>결과</th><th>크기</th></tr></thead>
       <tbody>
         <tr><td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a></td>
-            <td>영문 패치본 <code>.img</code></td><td><b>한국어 텍스트</b></td><td>163 KB</td></tr>
+            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>한국어 텍스트</b></td><td>163 KB</td></tr>
         <tr><td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a></td>
-            <td>영문 패치본 <code>.img</code></td><td><b>한국어 음성</b></td><td>116.6 MB</td></tr>
+            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>한국어 음성</b></td><td>116.6 MB</td></tr>
         <tr><td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a></td>
-            <td>영문 패치본 <code>.img</code></td><td><b>텍스트 + 음성</b></td><td>116.7 MB</td></tr>
+            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>텍스트 + 음성</b></td><td>116.7 MB</td></tr>
+        <tr><td class="mono"><a data-dl="text_jpvoice" href="#" aria-disabled="true">text-jpvoice</a></td>
+            <td><b>B</b> 텍스트만 <code>.img</code></td><td><b>한국어 텍스트 + 일본어 음성</b></td><td>186 KB</td></tr>
         <tr><td class="mono"><a data-dl="syscard" href="#" aria-disabled="true">syscard</a></td>
             <td>순정 <code>syscard3.pce</code></td><td><b>한글 시스템 카드</b></td><td>18 KB</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="hint">앞의 세 파일은 모두 <b>같은 하나의 원본</b>(영문 더빙 + 텍스트가 다 적용된 <code>.img</code>)에 적용합니다.
+  <p class="hint"><b>A</b> 는 ysutopia 의 <b>두 패치를 모두</b> 적용한 이미지
+    (<code class="h">5cfc2982…</code>), <b>B</b> 는 <b>텍스트 패치만</b> 적용해 일본어 음성이 남은 이미지
+    (<code class="h">8eb90e52…</code>) 입니다. <b>A 용 패치는 B 에 적용되지 않고, 그 반대도 마찬가지입니다</b> —
+    xdelta3 가 원본 불일치로 거부합니다. B 에는 음성 패치가 없습니다.
     <code>syscard</code> 만 원본이 다릅니다 — 순정 <code>syscard3.pce</code> 에 적용하시고,
     <b>이 단계를 빠뜨리지 마세요.</b></p>
   <p>
