@@ -166,6 +166,10 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
         <button class="mode sel" data-mode="both">텍스트 + 음성</button>
       </div>
       <p class="mono" id="mode-size" style="font-size:.82rem"></p>
+      <p style="color:var(--faint);font-size:.86rem;margin:.5rem 0 0">
+        <b>일본어 음성으로 즐기시려면</b> — 영문 <b>텍스트 패치만</b> 적용한 이미지(더빙 패치 생략)를
+        1단계에 넣고 여기서 <b>텍스트만</b> 을 고르세요. 나머지 두 모드는 한국어 더빙을 올리므로
+        일본어 음성이 남지 않습니다.</p>
     </div>
 
     <h2>3 — 패치 실행</h2>
@@ -184,10 +188,17 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
       <div id="log" hidden></div>
     </div>
 
-    <h2>0 — 한글 시스템 카드 생성 (선택)</h2>
+    <h2>4 — 한글 시스템 카드 생성 <span style="color:var(--amber)">(필수)</span></h2>
     <div class="card">
+      <p style="color:var(--amber);font-weight:600;margin:0 0 .5rem">
+        ⚠ 이 단계를 건너뛰면 게임에서 한글이 보이지 않습니다.</p>
+      <p>한글 글꼴은 CD 가 아니라 <b>시스템 카드 쪽</b>에 들어갑니다. 이미지만 패치하고
+        순정 카드로 실행하면 글자가 깨지거나 빈 칸으로 나옵니다.</p>
       <p>순정 <code>syscard3.pce</code>(256KB)를 선택하면 한글 글리프가 내장된 카드를 만들어 드립니다.
         이 파일 자체는 배포하지 않으며, 여러분이 고른 파일로부터만 생성합니다.</p>
+      <p style="color:var(--faint);font-size:.86rem">만든 뒤 <b>에뮬레이터 설정에서 시스템 카드를
+        이 파일로 바꾸는 것</b>까지 하셔야 합니다. 다른 곳에서 구한 한글 카드로 대체하지 마세요 —
+        세이브를 직접 불러올 때 대화창이 멈춥니다.</p>
       <div class="row">
         <input type="file" id="syscard-input" accept=".pce">
         <button id="btn-syscard" disabled>한글 카드 생성 · 저장</button>
@@ -448,6 +459,12 @@ async function identifyImage(reader, size, manifest, Sha256Ctor, progress) {
   }
   if (cookedSha === manifest.image.cooked_iso_sha256) {
     return ["en", "영문패치본 — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름).", fullSha];
+  }
+  if (cookedSha === manifest.image.en_textonly_cooked_iso_sha256) {
+    // 영문 텍스트 패치만 적용하고 더빙은 안 한 이미지. 우리 text.patch 는 음성
+    // 영역을 건드리지 않으므로 "한글 자막 + 일본어 음성" 이 된다.
+    return ["en_jpvoice",
+      "영문 텍스트 패치본 (음성 더빙 없음) — 한글 자막 + 일본어 음성이 됩니다.", fullSha];
   }
   if (cookedSha === manifest.image.jp_cooked_iso_sha256) {
     return ["jp", "순정 일본판 — 먼저 영문패치를 적용한 이미지가 필요합니다.", fullSha];
@@ -994,14 +1011,31 @@ class Sha256 {
         setProgress(els.runProgressBar, els.runProgressWrap, 90 + (10 * done) / total);
         updateEta(t0, done, total, 90, 100);
       });
+      // ⚠ 전체 .img 해시로 성공/실패를 판정하면 안 된다.
+      //   우리는 CD 오디오 트랙을 건드리지 않으므로, 립(rip)이 다른 사람은 음악
+      //   1바이트 차이만으로도 '실패'가 뜬다 — 한글이 완벽히 들어갔는데도.
+      //   실제로 그 신고가 들어왔다. identify 는 "CD 오디오 트랙만 다름"을
+      //   허용해 놓고 검증만 엄격했던, 우리 쪽 모순이었다.
+      //
+      //   판정은 우리가 실제로 쓴 것으로 한다: 데이터트랙 해시 (+ 위에서 이미
+      //   끝낸 기록분·트랙 읽기검증). 전체 해시는 참고로만 남긴다.
+      const cookedSha = await extractCookedIsoSha256(outReader, Sha256);
+      // 베이스가 '더빙 없는 영문 텍스트 패치본'이면 음성이 일본어로 남으므로
+      // 결과 데이터트랙도 달라진다. 베이스에 맞는 기대값을 골라야 한다.
+      const jpv = identifyResult && identifyResult[0] === "en_jpvoice";
+      const expectCooked = manifest.expected_output[
+        mode + (jpv ? "_jpvoice_cooked_sha256" : "_cooked_sha256")];
       const expectedKey = mode === "both" ? "both_sha256" : `${mode}_only_sha256`;
       const expectedSha = manifest.expected_output[expectedKey];
-      logLine(`  실제: ${outSha}`);
-      logLine(`  기대: ${expectedSha}`);
+      logLine("  데이터트랙 실제: " + cookedSha);
+      logLine("  데이터트랙 기대: " + expectCooked + (jpv ? "  (일본어 음성 베이스)" : ""));
+      logLine(outSha === expectedSha
+        ? "  전체 이미지도 기준 빌드와 완전히 동일합니다."
+        : "  전체 이미지 해시는 다릅니다 — CD 오디오가 다른 립이면 정상입니다.");
 
       setProgress(els.runProgressBar, els.runProgressWrap, 100);
       els.runEta.textContent = "";
-      if (outSha === expectedSha) {
+      if (cookedSha === expectCooked) {
         // .img 만 주면 쓸 수 없다 — 원본 .cue 의 FILE 줄은 아직 '원래' 파일명을
         // 가리키고 있어서, 그대로 두면 에뮬레이터가 패치된 이미지를 못 찾는다.
         // 그래서 FILE 줄만 새 파일명으로 바꾼 .cue 를 같이 내려준다
@@ -1009,10 +1043,12 @@ class Sha256 {
         track("patch", { mode: mode, ok: "1" });
         offerCue(outFile.name);
         setStatus(els.runStatus,
-          `패치 완료 — 해시 일치. 아래 .cue 도 꼭 받아서 ${outFile.name} 와 같은 폴더에 두세요.`, "ok");
+          `패치 완료 — 검증 통과${jpv ? " (한글 자막 + 일본어 음성)" : ""}. ` +
+          `아래 .cue 도 꼭 받아서 ${outFile.name} 와 같은 폴더에 두세요.`, "ok");
       } else {
         track("patch", { mode: mode, ok: "0" });
-        setStatus(els.runStatus, "해시 불일치 — 자산/원본 이미지를 다시 확인해 주세요.", "err");
+        setStatus(els.runStatus,
+          "데이터트랙 해시가 맞지 않습니다 — 원본 이미지나 자산을 다시 확인해 주세요.", "err");
       }
     } catch (e) {
       logLine(`오류: ${e.message || e}`);

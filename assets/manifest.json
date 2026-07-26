@@ -8,7 +8,9 @@
     "sha256": "5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7",
     "cooked_iso_size": 67420160,
     "cooked_iso_sha256": "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c",
-    "jp_cooked_iso_sha256": "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d"
+    "jp_cooked_iso_sha256": "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d",
+    "en_textonly_cooked_iso_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
+    "_note_textonly": "영문 '텍스트 패치'만 적용하고 음성 더빙은 적용하지 않은 이미지. 음성이 일본어로 남는다. 우리 text.patch 는 음성 영역을 건드리지 않으므로 '한글 자막 + 일본어 음성' 조합이 된다."
   },
   "text_patch": {
     "asset": "text.patch.gz",
@@ -82,6 +84,13 @@
   "expected_output": {
     "text_only_sha256": "84d7fedea64e6313959c067d41a49a3dcdf8556e2fa4cdae291dacd237ace7eb",
     "voice_only_sha256": "943891fce46f9673a6327e3d70ba1b080190fb98526153714c71286b49e5c912",
-    "both_sha256": "c783b02795a819a45de5a3f606733ec69c272c08063512882cdb0d37649f63fb"
+    "both_sha256": "c783b02795a819a45de5a3f606733ec69c272c08063512882cdb0d37649f63fb",
+    "_note": "*_sha256 는 .img 전체 해시라 CD 오디오 트랙까지 포함한다. 우리는 오디오를 건드리지 않으므로 립(rip)이 다르면 이 값이 달라진다 — 판정 기준으로 쓰면 안 된다. 실제 검증은 *_cooked_sha256(데이터트랙)과 기록된 트랙 해시로 한다.",
+    "text_cooked_sha256": "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165",
+    "voice_cooked_sha256": "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
+    "both_cooked_sha256": "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3",
+    "text_jpvoice_cooked_sha256": "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9",
+    "voice_jpvoice_cooked_sha256": "125745a8d4f0a5d72e2eeb000477f6f37fd6be10e9474c60f80cb21c22924053",
+    "both_jpvoice_cooked_sha256": "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56"
   }
 }
