@@ -892,22 +892,14 @@ class Sha256 {
     els.btnRun.disabled = true;
     setStatus(els.runStatus, "결과를 저장할 폴더를 선택하세요 …", "warn");
 
-    // 파일 하나가 아니라 '폴더'를 받는다.
-    // .img 만 저장하면 사용자에게 남는 .cue 는 여전히 패치 전 파일명을 가리켜서
-    // 에뮬레이터가 이미지를 못 찾는다. 폴더 핸들이 있어야 .img 와 .cue 를 같은
-    // 자리에 나란히 쓸 수 있다 (파이썬 패처도 출력 폴더를 받는다).
-    // 다운로드로 .cue 를 주는 방법도 있지만, 패치가 몇 분 걸려 사용자 제스처가
-    // 만료된 뒤라 브라우저가 막을 수 있고, 받아도 사용자가 .img 옆으로 옮겨야 한다.
-    let outDir, outHandle;
+    // 폴더를 받으면 .img 와 .cue 를 같은 자리에 나란히 쓸 수 있다. 다만 크롬은
+    // 홈 폴더 루트나 시스템 폴더를 showDirectoryPicker 로 못 열게 막는다
+    // ("이 폴더에는 시스템 파일이 포함되어 있으므로 ...에서 열 수 없습니다").
+    // 그래서 폴더가 안 되면 파일 저장으로 내려간다 — 사용자가 막히면 안 된다.
+    let outDir = null, outHandle = null;
     const outName = `YsIV_KO_${mode.toUpperCase()}${imgFileNameExt(imgFile.name)}`;
     try {
       outDir = await window.showDirectoryPicker({ id: "ys4ko-out-dir", mode: "readwrite" });
-    } catch (e) {
-      setStatus(els.runStatus, "저장 폴더 선택이 취소되었습니다.", "warn");
-      updateRunButton();
-      return;
-    }
-    try {
       let exists = false;
       try { await outDir.getFileHandle(outName); exists = true; } catch (e) { /* 없으면 정상 */ }
       if (exists && !confirm(outName + " 이(가) 이미 있습니다. 덮어쓸까요?")) {
@@ -917,9 +909,22 @@ class Sha256 {
       }
       outHandle = await outDir.getFileHandle(outName, { create: true });
     } catch (e) {
-      setStatus(els.runStatus, `폴더에 쓸 수 없습니다: ${e.message || e}`, "err");
-      updateRunButton();
-      return;
+      outDir = null;
+      logLine("폴더 저장을 쓸 수 없어 파일 저장으로 진행합니다 (" + (e.name || e) + ").");
+      setStatus(els.runStatus,
+        "그 폴더는 브라우저가 열 수 없습니다. 저장할 파일 위치를 골라 주세요 — " +
+        ".cue 는 패치가 끝난 뒤 따로 받으시면 됩니다.", "warn");
+      try {
+        outHandle = await window.showSaveFilePicker({
+          suggestedName: outName,
+          types: [{ description: "CD image",
+                    accept: { "application/octet-stream": [imgFileNameExt(imgFile.name)] } }],
+        });
+      } catch (e2) {
+        setStatus(els.runStatus, "저장 위치 선택이 취소되었습니다.", "warn");
+        updateRunButton();
+        return;
+      }
     }
 
     // 가장 오래 걸리는 구간. 진행바만 있으면 "전송 중"으로 읽히기 쉽다.
@@ -975,9 +980,15 @@ class Sha256 {
         // 가리키고 있어서, 그대로 두면 에뮬레이터가 패치된 이미지를 못 찾는다.
         // 그래서 FILE 줄만 새 파일명으로 바꾼 .cue 를 같이 내려준다
         // (파이썬 패처가 하는 일과 동일하다).
-        var cueName = await writeCue(outDir, outFile.name);
-        setStatus(els.runStatus,
-          `패치 완료 — 해시 일치. ${outFile.name} 와 ${cueName} 를 같은 폴더에 저장했습니다.`, "ok");
+        if (outDir) {
+          var cueName = await writeCue(outDir, outFile.name);
+          setStatus(els.runStatus,
+            `패치 완료 — 해시 일치. ${outFile.name} 와 ${cueName} 를 같은 폴더에 저장했습니다.`, "ok");
+        } else {
+          offerCue(outFile.name);
+          setStatus(els.runStatus,
+            "패치 완료 — 해시 일치. 아래 .cue 를 받아 " + outFile.name + " 와 같은 폴더에 두세요.", "ok");
+        }
       } else {
         setStatus(els.runStatus, "해시 불일치 — 자산/원본 이미지를 다시 확인해 주세요.", "err");
       }
@@ -1000,12 +1011,10 @@ class Sha256 {
     els.runEta.textContent = `${(rate / 1e6).toFixed(1)} MB/s · 남은 시간 약 ${Math.ceil(remain)}초`;
   }
 
-  /** 패치된 .img 옆에 .cue 를 같이 쓴다.
-   *  FILE 줄만 새 파일명으로 바꾸고 TRACK/INDEX 는 건드리지 않는다 — 패치는
-   *  트랙 레이아웃을 바꾸지 않으므로, 손대면 멀쩡한 TOC 를 깨뜨릴 위험만 있다.
-   *  CRLF 도 분리자째 보존한다(개행이 뒤섞인 .cue 를 싫어하는 에뮬레이터가 있다). */
-  async function writeCue(dir, imgName){
-    var cueName = imgName.replace(/\.[^.]+$/, "") + ".cue";
+  /** 원본 .cue 의 FILE 줄만 새 파일명으로 바꾼 텍스트. 못 만들면 null.
+   *  TRACK/INDEX 는 건드리지 않는다 — 패치는 트랙 레이아웃을 바꾸지 않으므로
+   *  손대면 멀쩡한 TOC 를 깨뜨릴 위험만 있다. CRLF 도 분리자째 보존한다. */
+  function buildCueText(imgName){
     var lines = cueText.split(/(\r?\n)/);
     var done = false;
     for (var i = 0; i < lines.length; i++){
@@ -1015,14 +1024,41 @@ class Sha256 {
       }
     }
     if (!done){
-      logLine("  주의: 원본 .cue 에서 FILE 줄을 찾지 못해 .cue 를 만들지 못했습니다.");
-      return "(.cue 생성 실패)";
+      logLine("  주의: 원본 .cue 에서 FILE 줄을 찾지 못했습니다.");
+      return null;
     }
+    return lines.join("");
+  }
+
+  /** 폴더 저장이 막혔을 때: .cue 를 내려받게 한다. 버튼이므로 사용자 제스처가
+   *  있어 브라우저가 차단하지 않는다 (패치 직후 자동 다운로드는 막힐 수 있다). */
+  function offerCue(imgName){
+    var text = buildCueText(imgName);
+    if (text === null) return;
+    var cueName = imgName.replace(/\.[^.]+$/, "") + ".cue";
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], {type: "application/octet-stream"}));
+    a.download = cueName;
+    a.className = "cta";
+    a.textContent = cueName + " 내려받기";
+    a.style.marginTop = ".8rem";
+    els.runStatus.after(a);
+    logLine('  .cue 준비: FILE -> "' + imgName + '"');
+  }
+
+  /** 패치된 .img 옆에 .cue 를 같이 쓴다.
+   *  FILE 줄만 새 파일명으로 바꾸고 TRACK/INDEX 는 건드리지 않는다 — 패치는
+   *  트랙 레이아웃을 바꾸지 않으므로, 손대면 멀쩡한 TOC 를 깨뜨릴 위험만 있다.
+   *  CRLF 도 분리자째 보존한다(개행이 뒤섞인 .cue 를 싫어하는 에뮬레이터가 있다). */
+  async function writeCue(dir, imgName){
+    var text = buildCueText(imgName);
+    if (text === null) return "(.cue 생성 실패)";
+    var cueName = imgName.replace(/\.[^.]+$/, "") + ".cue";
     var h = await dir.getFileHandle(cueName, { create: true });
     var w = await h.createWritable();
-    await w.write(lines.join(""));
+    await w.write(text);
     await w.close();
-    logLine("  .cue 저장: " + cueName + '  (FILE -> "' + imgName + '")');
+    logLine('  .cue 저장: ' + cueName + '  (FILE -> "' + imgName + '")');
     return cueName;
   }
 
