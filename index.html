@@ -489,6 +489,68 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 .pager button[aria-current=true]{border-color:var(--amber);color:var(--amber)}
 
 /* 외부 링크가 아직 안 채워진 항목 — links.json 을 채우면 자동으로 풀린다 */
+.modal{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.2rem}
+.modal[hidden]{display:none}
+.modal-back{position:absolute;inset:0;background:rgba(0,0,0,.72)}
+.modal-box{position:relative;width:min(760px,100%);max-height:86vh;display:flex;flex-direction:column;
+  background:var(--bg);border:1px solid var(--edge);border-radius:14px;overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.6);animation:csIn .16s ease-out}
+@keyframes csIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.modal-box{animation:none}}
+.modal-box>header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+  padding:1.1rem 1.3rem .9rem;border-bottom:1px solid var(--edge)}
+.modal-box>header h3{margin:0;font-size:1.15rem}
+.modal-box>header p{margin:.15rem 0 0;font-size:.82rem;color:var(--faint)}
+.modal-box .x{background:none;border:1px solid var(--edge);color:var(--mute);border-radius:8px;
+  width:32px;height:32px;flex:none;cursor:pointer;font-size:.9rem;line-height:1}
+.modal-box .x:hover{border-color:var(--amber);color:var(--amber)}
+#cs-body{overflow:auto;padding:.4rem 1.3rem 1.1rem}
+#cs-body h4{margin:1.1rem 0 .1rem;font-size:.92rem;color:var(--amber)}
+#cs-body .gnote{margin:.1rem 0 .5rem;font-size:.8rem;color:var(--faint)}
+.csrow{display:flex;align-items:center;gap:.8rem;padding:.5rem .6rem;border-radius:8px;cursor:pointer;
+  border:1px solid transparent;text-align:left;width:100%;background:none;color:inherit;font:inherit}
+.csrow:hover{background:rgba(255,255,255,.04);border-color:var(--edge)}
+.csrow .lab{flex:none;width:min(42%,15rem);font-size:.86rem}
+.csrow .val{flex:1;font-family:var(--mono);font-size:.72rem;color:var(--faint);overflow-wrap:anywhere}
+.csrow .cp{flex:none;font-size:.72rem;color:var(--faint);opacity:0;transition:opacity .12s}
+.csrow:hover .cp{opacity:1}
+.csrow.copied{border-color:#5ad18a}
+.csrow.copied .cp{opacity:1;color:#5ad18a}
+.modal-box>footer{padding:.7rem 1.3rem;border-top:1px solid var(--edge);font-size:.78rem;color:var(--faint)}
+.modal-box>footer kbd{border:1px solid var(--edge);border-radius:4px;padding:0 .3rem;font-size:.72rem}
+.kpis{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin:1.2rem 0}
+.kpi{border:1px solid var(--edge);border-radius:10px;padding:1rem;background:rgba(255,255,255,.02)}
+.kpi b{display:block;font-size:1.7rem;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi span{display:block;margin-top:.25rem;font-size:.82rem;color:var(--faint)}
+.kpi.q b{color:var(--amber)}
+#stats-body table{width:100%;border-collapse:collapse;margin:.4rem 0 1.4rem}
+#stats-body td{padding:.4rem .5rem;border-bottom:1px solid var(--edge);font-size:.9rem}
+#stats-body td.n{text-align:right;font-variant-numeric:tabular-nums;width:5.5rem;color:var(--faint)}
+#stats-body td.bar{width:45%}
+#stats-body td.bar i{display:block;height:8px;border-radius:99px;background:var(--amber);opacity:.75}
+#stats-body h3{margin:1.2rem 0 .3rem;font-size:.95rem}
+.msg{color:var(--faint);font-size:.9rem}
+figure.shot{margin:1rem 0;border:1px solid var(--edge);border-radius:10px;overflow:hidden;
+  background:rgba(255,255,255,.02)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{padding:.6rem .9rem;font-size:.86rem;color:var(--faint);
+  border-top:1px solid var(--edge)}
+.dlshot{border:1px solid var(--edge);border-radius:10px;overflow:hidden;margin:1rem 0;
+  background:rgba(255,255,255,.02)}
+.dlbar{display:flex;align-items:center;gap:.4rem;padding:.55rem .8rem;border-bottom:1px solid var(--edge);
+  background:rgba(255,255,255,.03)}
+.dlbar .dot{width:9px;height:9px;border-radius:50%;background:var(--edge);flex:none}
+.dlbar code{margin-left:.6rem;font-size:.82rem;color:var(--faint)}
+.dlbody{padding:.9rem 1rem 1.1rem}
+.dlhead{font-weight:700;font-size:1.02rem;margin:0 0 .6rem;padding-bottom:.35rem;
+  border-bottom:1px solid var(--edge)}
+.dlrow{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;padding:.3rem 0;font-size:.92rem}
+.dlrow.off code{color:var(--faint);text-decoration:line-through;opacity:.6}
+.dlrow.on{background:rgba(255,190,60,.10);margin:.2rem -.5rem;padding:.45rem .5rem;border-radius:6px}
+.dlrow.on code{color:var(--amber);font-weight:700}
+.mark{font-size:.8rem}
+.mark.yes{color:var(--amber);font-weight:700}
+.mark.no{color:var(--faint)}
 .recipes{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin:1.2rem 0}
 .recipe{border:1px solid var(--edge);border-radius:10px;padding:1.1rem 1.2rem;background:rgba(255,255,255,.02)}
 .recipe h4{margin:.15rem 0 .7rem;font-size:1.05rem;line-height:1.35}
@@ -575,6 +637,7 @@ ol.chain li{margin:.15rem 0}
     <button class="tab" role="tab" id="t-notes"  aria-controls="p-notes"  aria-selected="false"><span class="n">04</span>릴리스</button>
     <button class="tab" role="tab" id="t-credit" aria-controls="p-credit" aria-selected="false"><span class="n">05</span>계보</button>
     <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">06</span>버그 신고</button>
+    <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">07</span>집계</button>
   </div>
 </nav>
 
@@ -638,134 +701,158 @@ ol.chain li{margin:.15rem 0}
 
 <!-- ─────────── 02 준비물 ─────────── -->
 <section class="panel" id="p-need" role="tabpanel" aria-labelledby="t-need" tabindex="0" hidden data-chapter="02">
-  <h2>두 가지가 필요합니다</h2>
-  <p class="sub">둘 다 저작물이라 이 패치에 담을 수 없습니다. 직접 준비하셔야 합니다.</p>
+  <h2>세 가지를 준비하시면 됩니다</h2>
+  <p class="sub">모두 저작물이라 이 패치에 담을 수 없습니다. 직접 준비하셔야 합니다.</p>
 
   <div class="things">
     <div class="thing">
       <span class="idx">01</span>
       <div class="src">Disc</div>
-      <h3>영문 패치가 적용된 CD 이미지</h3>
-      <p>이 한국어 패치는 <b>일본어 원판이 아니라 영문 패치본</b> 위에 올라갑니다.
-         CloneCD 형식 <code>.img</code> + <code>.cue</code>.</p>
-      <p>일본어 원판을 넣으면 패처가 해시로 알아채고 무엇이 문제인지 알려 드립니다.</p>
+      <h3>일본어 원판 CD 이미지</h3>
+      <p>직접 가지고 계신 디스크를 <b>CloneCD 형식</b>으로 덤프하세요 —
+         <code>.img</code>(또는 <code>.bin</code>) + <code>.cue</code>.</p>
+      <p>덤프 방식이 달라도 됩니다. 패처가 트랙 위치를 스스로 찾아 맞춥니다.</p>
     </div>
     <div class="thing">
       <span class="idx">02</span>
+      <div class="src">Patch</div>
+      <h3>영문 <b>텍스트</b> 번역 패치</h3>
+      <p>NightWolve 님의 <code>YsIV(US)v95.zip</code>. 한글 렌더러가 이 패치의 글꼴 개조 위에
+         올라가기 때문에 <b>반드시 먼저 적용</b>해야 합니다.</p>
+      <p><b>음성 더빙 패치는 필요 없습니다</b> — 아래 설명을 보세요.</p>
+    </div>
+    <div class="thing">
+      <span class="idx">03</span>
       <div class="src">BIOS</div>
       <h3>순정 시스템 카드 <code>syscard3.pce</code></h3>
-      <p>가지고 계신 순정 Super System Card 3.0 이미지로 <b>한글 카드를 생성</b>합니다.
+      <p>가지고 계신 순정 Super System Card 3.0 으로 <b>한글 카드를 생성</b>합니다.
          이 단계를 건너뛰면 게임 안 글자가 보이지 않습니다.</p>
-      <p>완성된 한글 카드는 배포하지 않습니다. BIOS 저작권 때문에,
-         <b>이용자 본인 파일로부터 만들어 드리는</b> 방식만 제공합니다.</p>
       <p><b>여기서 만든 카드를 쓰세요.</b> 다른 곳의 한글 시스템 카드로 대체하면
-         세이브를 직접 불러올 때 대화창이 멈춥니다 — 이 게임 전용 수정이 들어 있어야 합니다.</p>
+         세이브를 직접 불러올 때 대화창이 멈춥니다.</p>
     </div>
   </div>
 
-  <h3>영문 패치가 아직 없다면</h3>
-  <p class="sub">NightWolve 님의 영문 번역 패치(v0.95, 2004)를 먼저 적용하셔야 합니다.</p>
-  <ul class="tick">
-    <li>일본어 원판 디스크를 <b>CloneCD 형식</b>으로 덤프합니다</li>
-    <li><b>음성 더빙 패치</b>와 <b>텍스트 번역 패치</b>를 <b>둘 다</b> 적용합니다</li>
-    <li>결과물의 SHA-256이 아래 표 첫 줄과 같은지 확인합니다</li>
-  </ul>
+  <h3>영문 <b>더빙</b> 패치는 받지 않으셔도 됩니다</h3>
+  <p class="sub">예전 안내에서는 두 패치를 모두 적용하라고 했지만, 확인해 보니 필요 없었습니다.</p>
   <div class="callout">
-    <span class="lab">배포하지 않습니다</span>
-    <p>영문 패치는 다른 분이 만드신 저작물이라 여기서 재배포하지 않습니다.
-      아래 공식 배포처에서 받으셔야 합니다.</p>
-    <p style="margin-top:.6rem"><a href="https://www.ysutopia.net/projects/ys4/"
-      rel="noopener noreferrer" target="_blank">ysutopia.net — Ys IV: The Dawn of Ys</a></p>
+    <span class="lab">116 MB 를 아끼실 수 있습니다</span>
+    <p>영문 더빙 패치가 바꾸는 것은 <b>음성 데이터 영역뿐</b>입니다 (27,592,431 B 전부가
+      그 영역 안이고, 밖은 0 바이트). 우리 한국어 음성은 같은 자리를 그대로 덮어쓰므로,
+      <b>영어 더빙을 거쳐 갈 이유가 없습니다.</b></p>
+    <p style="margin-top:.6rem">오히려 이쪽이 낫습니다 — 저희가 한국어로 교체하지 않은
+      자투리 클립 85 KB 가 <b>영어가 아니라 일본어로 남습니다.</b></p>
   </div>
 
-  <div class="callout">
-    <span class="lab">둘 다 적용해야 합니다</span>
-    <p>배포처에는 <b>음성 더빙 패치</b>와 <b>텍스트 번역 패치</b>가 따로 있습니다.
-      이 한국어 패치는 <b>둘 다 적용된 이미지</b>를 기준으로 만들어졌습니다 —
-      한국어 음성은 일본어가 아니라 <b>영어 더빙 위에</b> 올라갑니다.</p>
-    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
-      맞게 준비하셨는지는 아래 해시로 확인하실 수 있고, 웹 패처도 자동으로 검사합니다.</p>
+  <h3>어느 파일을 받아야 하나</h3>
+  <p class="sub">ysutopia.net 의 <b>Downloads</b> 목록에서 <b>두 번째 줄 하나만</b> 받으시면 됩니다.</p>
+  <figure class="shot">
+    <img src="img/ysutopia-download.png" alt="ysutopia.net Downloads 목록에서 YsIV(US)v95.zip 위치"
+         loading="lazy" onerror="this.closest('figure').hidden=true">
+    <figcaption>ysutopia.net 의 <b>Downloads</b> 목록 — 초록 테두리가 받으실 파일입니다.</figcaption>
+  </figure>
+
+  <div class="dlshot">
+    <div class="dlbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <code>ysutopia.net/projects/ys4/</code></div>
+    <div class="dlbody">
+      <div class="dlhead">Downloads</div>
+      <div class="dlrow off">
+        <code>Ys IV English Dub v1.1.zip</code>
+        <span class="mark no">받지 않아도 됩니다</span>
+      </div>
+      <div class="dlrow on">
+        <code>YsIV(US)v95.zip</code>
+        <span class="mark yes">← 이것 하나만</span>
+      </div>
+      <div class="dlrow off"><code>YsIVScriptHTMLData.zip</code></div>
+      <div class="dlrow off"><code>YS4_DUB_KITv2.zip</code></div>
+      <div class="dlrow off"><code>YsIVhack.zip</code></div>
+    </div>
   </div>
+  <p>
+    <a class="cta ghost" href="https://www.ysutopia.net/projects/ys4/"
+       rel="noopener noreferrer" target="_blank">ysutopia.net 배포처 열기</a>
+  </p>
+  <p class="hint">압축을 풀면 <code>PATCH.BAT</code> 과 <code>YsIV-ISO.ppf</code> ·
+    <code>YsIV-BIN.ppf</code> 가 들어 있습니다. <b>영문 패치는 저희가 재배포하지 않습니다</b> —
+    다른 분이 만드신 저작물입니다.</p>
+
+  <div class="callout">
+    <span class="lab">PATCH.BAT 이 “wasn’t found” 라고 하면</span>
+    <p>그 배치 파일은 덤프 크기가 <code>771,213,744</code> · <code>772,634,352</code> ·
+      <code>67,420,160</code> 셋 중 하나일 때만 동작합니다. <b>덤프 방식이 조금만 달라도 거부됩니다</b>
+      — 저희 일본판 립(772,624,944)도 안 받습니다.</p>
+    <p style="margin-top:.6rem">이것 때문에 2단계에서 막히셨다면, 곧 <b>웹 패처가 이 <code>.ppf</code> 를
+      직접 적용</b>하도록 준비하고 있습니다. 그때는 일본판 원판과 이 zip 만 있으면 한 번에 끝납니다.</p>
+  </div>
+
+  <h3>두 갈래 중 고르시면 됩니다</h3>
+  <div class="recipes">
+    <div class="recipe">
+      <span class="tag">원음파</span>
+      <h4>한국어 자막 + 일본어 음성</h4>
+      <ol class="chain">
+        <li>일본판 덤프에 <b>텍스트 패치</b> 적용</li>
+        <li>패처에서 <b>텍스트만</b></li>
+      </ol>
+    </div>
+    <div class="recipe">
+      <span class="tag">풀 더빙</span>
+      <h4>한국어 자막 + 한국어 음성</h4>
+      <ol class="chain">
+        <li>일본판 덤프에 <b>텍스트 패치</b> 적용</li>
+        <li>패처에서 <b>텍스트 + 음성</b></li>
+      </ol>
+    </div>
+  </div>
+  <p class="hint">준비 과정이 같고 <b>마지막에 고르는 모드만 다릅니다.</b>
+    이미 영문 더빙까지 적용된 이미지를 가지고 계셔도 그대로 쓰실 수 있습니다 —
+    그 경우 교체되지 않은 자투리 클립만 영어로 남습니다.</p>
 
   <h3>가진 파일이 맞는지 확인</h3>
-  <p class="sub">웹 패처가 자동으로 검사하지만, 미리 대조해 보셔도 됩니다.</p>
+  <p class="sub">웹 패처가 자동으로 검사하지만, 미리 대조해 보셔도 됩니다.
+    <b>데이터 트랙</b> 기준입니다 — CD 오디오는 덤프마다 달라도 상관없습니다.</p>
   <div class="scroll">
     <table>
-      <thead><tr><th>대상</th><th>SHA-256</th></tr></thead>
+      <thead><tr><th>대상</th><th>데이터 트랙 SHA-256</th></tr></thead>
       <tbody>
-        <tr><td><b>영문 패치본</b> <code>.img</code><br><span style="font-size:.82rem">772,624,944 바이트</span></td>
-            <td class="h">5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7</td></tr>
-        <tr><td><b>영문 패치본</b> 데이터 트랙</td>
-            <td class="h">6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c</td></tr>
-        <tr><td><b>영문 텍스트 패치본</b> 데이터 트랙<br><span style="font-size:.82rem">더빙 패치를 건너뛴 이미지 — 위의 일본어 음성 경로</span></td>
-            <td class="h">0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d</td></tr>
-        <tr><td><b>일본어 원판</b> 데이터 트랙<br><span style="font-size:.82rem">이게 나오면 영문 패치가 아직 안 된 것입니다</span></td>
+        <tr><td><b>일본어 원판</b><br><span style="font-size:.82rem">아직 텍스트 패치 전</span></td>
             <td class="h">a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d</td></tr>
+        <tr><td><b>텍스트 패치 적용본</b> ★<br><span style="font-size:.82rem">권장 — 여기서 시작하시면 됩니다</span></td>
+            <td class="h">0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d</td></tr>
+        <tr><td><b>텍스트 + 더빙 적용본</b><br><span style="font-size:.82rem">이미 가지고 계시면 이것도 됩니다</span></td>
+            <td class="h">6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c</td></tr>
       </tbody>
     </table>
-  </div>
-  <h3>“해시가 안 맞는다”고 나올 때</h3>
-  <p class="sub">인터넷에서 받은 이미지에서 자주 나옵니다. 웹 패처가 이유를 구분해 알려 드립니다.</p>
-  <div class="scroll">
-    <table>
-      <thead><tr><th>패처가 하는 말</th><th>뜻과 해야 할 일</th></tr></thead>
-      <tbody>
-        <tr><td><b>CD 오디오 트랙만 다름</b></td>
-            <td><b>정상입니다. 그대로 진행하세요.</b> 게임 데이터는 완전히 같고 음악 트랙만
-                다르게 떠진 립입니다. 저희는 음악을 건드리지 않습니다.</td></tr>
-        <tr><td><b>데이터트랙 위치를 자동 보정했습니다</b></td>
-            <td><b>정상입니다. 그대로 진행하세요.</b> 프리갭을 파일에 넣지 않는 방식으로
-                떠진 립이라 트랙 위치가 밀려 있을 뿐입니다.</td></tr>
-        <tr><td><b>순정 일본판</b></td>
-            <td>영문 패치가 아직 적용되지 않았습니다. 위 케이스대로 먼저 적용하세요.</td></tr>
-        <tr><td><b>데이터트랙을 찾지 못했습니다</b></td>
-            <td><b>형식 문제입니다.</b> <code>.iso</code> · <code>.chd</code> · <code>.nrg</code> ·
-                <code>.mdf</code> 이거나 트랙별로 쪼개진 <code>.bin</code> 입니다.
-                단일 <code>.bin</code>(또는 <code>.img</code>) + <code>.cue</code> 로 먼저 변환하세요.</td></tr>
-        <tr><td><b>알려진 어느 이미지와도 일치하지 않습니다</b></td>
-            <td>형식은 정상인데 <b>내용이 다릅니다.</b> 다른 버전이거나 이미 다른 패치가
-                올라간 이미지입니다. 원판에서 다시 시작하시는 편이 빠릅니다.</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="callout">
-    <span class="lab">xdelta 에는 이 관용이 없습니다</span>
-    <p>위의 두 “정상입니다” 경우도 <b>xdelta 로는 거부됩니다</b> — 원본 파일 전체가
-      바이트 단위로 같아야 하기 때문입니다. 받은 이미지로 패치가 안 되신다면
-      <b>웹 패처를 써 보세요.</b> 같은 이미지가 그대로 통과하는 경우가 많습니다.</p>
   </div>
 
   <h3>패치 결과물 확인</h3>
-  <p class="sub"><b>데이터 트랙</b>의 해시입니다. 웹 패처가 판정에 쓰는 값도 이것입니다.</p>
+  <p class="sub">웹 패처가 판정에 쓰는 값입니다.</p>
   <div class="callout">
     <span class="lab">전체 .img 해시로 판정하지 마세요</span>
-    <p>이 패치는 <b>CD 오디오 트랙(음악)을 건드리지 않습니다.</b> 그래서 덤프한 립이 다르면
-      음악 부분 때문에 전체 파일 해시가 달라집니다 — <b>한국어화는 완벽히 들어갔는데도</b> 말이죠.</p>
-    <p style="margin-top:.6rem">확인은 게임 데이터가 실제로 들어 있는 <b>데이터 트랙</b>으로 하셔야 합니다.
-      웹 패처가 자동으로 계산해 보여 드립니다.</p>
+    <p>이 패치는 <b>CD 오디오 트랙(음악)을 건드리지 않습니다.</b> 덤프한 립이 다르면 음악 때문에
+      전체 파일 해시가 달라집니다 — <b>한국어화는 완벽히 들어갔는데도</b> 말이죠.
+      확인은 <b>데이터 트랙</b>으로 하셔야 합니다.</p>
   </div>
   <div class="scroll">
     <table>
-      <thead><tr><th>모드</th><th>데이터 트랙 SHA-256</th></tr></thead>
+      <thead><tr><th>베이스</th><th>모드</th><th>데이터 트랙 SHA-256</th></tr></thead>
       <tbody>
-        <tr><td><b>텍스트만</b></td>
-            <td class="h">0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165</td></tr>
-        <tr><td><b>음성만</b></td>
-            <td class="h">b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a</td></tr>
-        <tr><td><b>텍스트 + 음성</b></td>
-            <td class="h">6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3</td></tr>
-        <tr><td><b>텍스트만</b><br><span style="font-size:.82rem">일본어 음성 베이스</span></td>
-            <td class="h">b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9</td></tr>
+        <tr><td rowspan="2"><b>텍스트 패치본</b><br><span style="font-size:.82rem">일본어 음성</span></td>
+            <td>텍스트만</td><td class="h">b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9</td></tr>
+        <tr><td>텍스트+음성</td><td class="h">44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56</td></tr>
+        <tr><td rowspan="3"><b>더빙 적용본</b><br><span style="font-size:.82rem">영어 음성</span></td>
+            <td>텍스트만</td><td class="h">0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165</td></tr>
+        <tr><td>음성만</td><td class="h">b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a</td></tr>
+        <tr><td>텍스트+음성</td><td class="h">6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="hint">참고 — 아래는 <b>제작자의 립으로 만든 전체 <code>.img</code></b> 해시입니다.
-    같으면 완전히 동일한 결과지만, 웹 패처를 쓰셨다면 <b>다르다고 실패가 아닙니다.</b>
-    텍스트만 <code class="h">84d7fede…</code> · 음성만 <code class="h">943891fc…</code> ·
-    텍스트+음성 <code class="h">c783b027…</code> ·
-    텍스트만(일본어 음성) <code class="h">9b502143…</code><br>
-    xdelta 로 적용에 성공하셨다면 원본이 이미 정확히 일치한다는 뜻이므로,
-    <b>이 전체 해시가 그대로 나와야 정상</b>입니다.</p>
+
+  <h3>패치가 안 될 때</h3>
+  <p class="sub">인터넷에서 받은 이미지에서 자주 생깁니다. 원인별 대처는
+    <b>웹 패처 안에서 바로</b> 확인하실 수 있게 옮겨 두었습니다 —
+    패처 1단계의 <b>“이미지가 안 맞는다고 나오면”</b> 을 펼쳐 보세요.</p>
 </section>
 
 <!-- ─────────── 03 패치하기 ─────────── -->
@@ -798,63 +885,34 @@ ol.chain li{margin:.15rem 0}
       다른 곳에서 구한 한글 시스템 카드로 대체하면 세이브를 직접 불러올 때 대화창이 멈춥니다.</p>
   </div>
 
-  <h3>어떤 조합을 원하세요?</h3>
-  <p class="sub">원하는 결과에 따라 <b>준비할 원본이 달라집니다.</b>
-    아래에서 하나를 골라 그 줄대로만 따라가시면 됩니다. 모두 <b>일본어 원판 디스크</b>에서 출발합니다.</p>
+  <h3>어느 쪽을 원하세요?</h3>
+  <p class="sub">갈래는 둘뿐입니다. 준비 과정은 같고 <b>마지막에 고르는 모드만</b> 다릅니다.</p>
 
   <div class="recipes">
-    <div class="recipe">
-      <span class="tag">가장 많이 고르시는 것</span>
-      <h4>한국어 자막 + 한국어 음성</h4>
-      <ol class="chain">
-        <li>일본어 원판을 <b>CloneCD 형식</b>으로 덤프</li>
-        <li>ysutopia 의 <b>텍스트 번역 패치</b> 적용</li>
-        <li>ysutopia 의 <b>음성 더빙 패치</b> 적용</li>
-        <li>웹 패처에서 <b>텍스트 + 음성</b> — 또는 <code>both.xdelta</code></li>
-      </ol>
-    </div>
-
     <div class="recipe">
       <span class="tag">원음파</span>
       <h4>한국어 자막 + 일본어 음성</h4>
       <ol class="chain">
         <li>일본어 원판을 <b>CloneCD 형식</b>으로 덤프</li>
         <li>ysutopia 의 <b>텍스트 번역 패치</b> 적용</li>
-        <li><b>음성 더빙 패치는 적용하지 않습니다</b></li>
         <li>웹 패처에서 <b>텍스트만</b> — 또는 <code>text-jpvoice.xdelta</code></li>
+        <li>한글 시스템 카드 생성 후 에뮬레이터 설정 변경</li>
       </ol>
     </div>
-
     <div class="recipe">
-      <h4>한국어 자막 + 영어 음성</h4>
+      <span class="tag">풀 더빙</span>
+      <h4>한국어 자막 + 한국어 음성</h4>
       <ol class="chain">
         <li>일본어 원판을 <b>CloneCD 형식</b>으로 덤프</li>
         <li>ysutopia 의 <b>텍스트 번역 패치</b> 적용</li>
-        <li>ysutopia 의 <b>음성 더빙 패치</b> 적용</li>
-        <li>웹 패처에서 <b>텍스트만</b> — 또는 <code>text.xdelta</code></li>
-      </ol>
-    </div>
-
-    <div class="recipe">
-      <h4>영어 자막 + 한국어 음성</h4>
-      <ol class="chain">
-        <li>일본어 원판을 <b>CloneCD 형식</b>으로 덤프</li>
-        <li>ysutopia 의 <b>텍스트 번역 패치</b> 적용</li>
-        <li>ysutopia 의 <b>음성 더빙 패치</b> 적용</li>
-        <li>웹 패처에서 <b>음성만</b> — 또는 <code>voice.xdelta</code></li>
+        <li>웹 패처에서 <b>텍스트 + 음성</b> — 또는 <code>both-jpvoice.xdelta</code></li>
+        <li>한글 시스템 카드 생성 후 에뮬레이터 설정 변경</li>
       </ol>
     </div>
   </div>
 
-  <p class="hint">2번만 <b>음성 더빙 패치를 건너뜁니다.</b> 나머지 셋은 준비 과정이 같고
-    마지막에 고르는 모드만 다릅니다. ysutopia 의 두 패치는
-    <a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">이곳</a>에서 받으시면 됩니다.</p>
-
-  <div class="callout">
-    <span class="lab">그리고 어느 경우든 — 한글 시스템 카드</span>
-    <p>위 네 가지 모두, 마지막에 <b>순정 <code>syscard3.pce</code> 로 한글 카드를 만들어
-      에뮬레이터 설정에서 바꿔 주셔야</b> 합니다. 이미지만 패치하면 한글이 화면에 그려지지 않습니다.</p>
-  </div>
+  <p class="hint"><b>영문 음성 더빙 패치는 받지 않으셔도 됩니다</b> — 준비물 탭에 이유를 적어 두었습니다.
+    이미 더빙까지 적용된 이미지를 쓰고 계셔도 그대로 동작합니다.</p>
 
   <h3>브라우저에서 바로</h3>
   <p class="sub">설치할 것이 없습니다. 파일을 고르면 브라우저 안에서 두 단계가 모두 끝납니다.
@@ -897,28 +955,28 @@ ol.chain li{margin:.15rem 0}
     <table>
       <thead><tr><th>파일</th><th>원본</th><th>결과</th><th>크기</th></tr></thead>
       <tbody>
-        <tr><td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a></td>
-            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>한국어 텍스트</b></td><td>163 KB</td></tr>
-        <tr><td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a></td>
-            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>한국어 음성</b></td><td>116.6 MB</td></tr>
-        <tr><td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a></td>
-            <td><b>A</b> 더빙 포함 <code>.img</code></td><td><b>텍스트 + 음성</b></td><td>116.7 MB</td></tr>
         <tr><td class="mono"><a data-dl="text_jpvoice" href="#" aria-disabled="true">text-jpvoice</a></td>
-            <td><b>B</b> 텍스트만 <code>.img</code></td><td><b>한국어 텍스트 + 일본어 음성</b></td><td>186 KB</td></tr>
+            <td>텍스트 패치본</td><td><b>한국어 자막 + 일본어 음성</b></td><td>9.5 MB</td></tr>
+        <tr><td class="mono"><a data-dl="both_jpvoice" href="#" aria-disabled="true">both-jpvoice</a></td>
+            <td>텍스트 패치본</td><td><b>한국어 자막 + 한국어 음성</b></td><td>~140 MB</td></tr>
+        <tr><td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a></td>
+            <td>더빙 적용본</td><td>한국어 자막 + 영어 음성</td><td>247 KB</td></tr>
+        <tr><td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a></td>
+            <td>더빙 적용본</td><td>영어 자막 + 한국어 음성</td><td>129.6 MB</td></tr>
+        <tr><td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a></td>
+            <td>더빙 적용본</td><td>한국어 자막 + 한국어 음성</td><td>129.9 MB</td></tr>
         <tr><td class="mono"><a data-dl="syscard" href="#" aria-disabled="true">syscard</a></td>
             <td>순정 <code>syscard3.pce</code></td><td><b>한글 시스템 카드</b></td><td>18 KB</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="hint"><b>A</b> 는 ysutopia 의 <b>두 패치를 모두</b> 적용한 이미지
-    (<code class="h">5cfc2982…</code>), <b>B</b> 는 <b>텍스트 패치만</b> 적용해 일본어 음성이 남은 이미지
-    (<code class="h">8eb90e52…</code>) 입니다. <b>A 용 패치는 B 에 적용되지 않고, 그 반대도 마찬가지입니다</b> —
-    xdelta3 가 원본 불일치로 거부합니다. B 에는 음성 패치가 없습니다.
+  <p class="hint"><b>원본이 다르면 서로 적용되지 않습니다</b> — xdelta3 가 원본 불일치로 거부합니다.
+    “텍스트 패치본” 용과 “더빙 적용본” 용을 섞어 쓰실 수 없습니다.
     <code>syscard</code> 만 원본이 다릅니다 — 순정 <code>syscard3.pce</code> 에 적용하시고,
     <b>이 단계를 빠뜨리지 마세요.</b></p>
   <p>
     <a class="cta ghost" data-dl="both" href="#" aria-disabled="true">텍스트+음성 내려받기</a>
-    <a class="cta ghost" data-dl="checksums" href="#" aria-disabled="true">체크섬 확인</a>
+    <button class="cta ghost" id="btn-checksums" type="button">체크섬 보기</button>
   </p>
   <p class="hint">적용 후 <b>에뮬레이터의 시스템 카드를 한글 카드로 바꾸는 것</b>까지 하셔야 끝입니다.
     이미지만 바꾸고 순정 카드로 실행하면 한글이 보이지 않습니다.</p>
@@ -926,7 +984,34 @@ ol.chain li{margin:.15rem 0}
 
 <!-- ─────────── 04 릴리스 ─────────── -->
 <section class="panel" id="p-notes" role="tabpanel" aria-labelledby="t-notes" tabindex="0" hidden data-chapter="04">
-  <h2>v0.9</h2>
+  <h2>v0.9.1</h2>
+  <p class="sub">2026년 7월 26일 · <b>중요 수정</b></p>
+
+  <div class="callout">
+    <span class="lab">v0.9 로 만드신 이미지는 다시 만들어 주세요</span>
+    <p>패치된 이미지의 <b>섹터 오류정정 데이터(EDC/ECC)를 다시 계산하지 않는 결함</b>이
+      있었습니다. 이 필드를 검사하는 환경에서 두 가지가 일어납니다.</p>
+    <ul class="tick no" style="margin-top:.6rem">
+      <li><b>“sector 3667 오류”</b> 같은 읽기 실패 — 오프닝은 나오는데 본 게임이 시작되지 않습니다</li>
+      <li>더 조용한 쪽: 일부 섹터가 <b>자동 정정되어 원래 영어로 되돌아갑니다</b> —
+          오류 없이 잘 도는데 한글이 안 나옵니다</li>
+    </ul>
+    <p style="margin-top:.6rem">Mesen 은 이 필드를 보지 않아 정상으로 보였고, 그래서 검증을
+      통과했습니다. <b>Mednafen · RetroArch(Beetle PCE) · 실기 CD-R</b> 에서 문제가 됩니다.</p>
+    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+      게임 데이터 자체는 v0.9 와 동일합니다 — 데이터 트랙 해시는 바뀌지 않았습니다.
+      바뀐 것은 각 섹터의 오류정정 필드뿐입니다.</p>
+  </div>
+
+  <ul class="tick">
+    <li>패치가 건드린 모든 섹터의 <b>EDC/ECC 재계산</b> — 웹 패처 · 패치 파일 · 빌드 전부</li>
+    <li>원본 자체에 오류정정 데이터가 없는 립(일본판 덤프 다수)도 <b>정상으로 복구</b>합니다</li>
+    <li>패치 후 <b>EDC/ECC 검증</b>을 추가 — 이 결함이 다시 배포되지 않습니다</li>
+    <li>데이터트랙 위치 <b>자동 탐지</b> — 프리갭 처리가 다른 립도 그대로 패치됩니다</li>
+    <li><b>일본어 음성 + 한국어 자막</b> 경로 지원 (웹 패처 · 전용 xdelta)</li>
+  </ul>
+
+  <h2 style="margin-top:2rem">v0.9</h2>
   <p class="sub">2026년 7월 · 첫 공개 버전</p>
   <ul class="tick">
     <li>대사 텍스트 한국어화 — 플레이어가 보는 대사 전체</li>
@@ -936,15 +1021,6 @@ ol.chain li{margin:.15rem 0}
     <li>한국어 <b>음성 더빙</b> 242클립 + CD 오디오 5트랙 (AI 음성)</li>
     <li>순정 시스템 카드로 부팅하면 안내를 띄우는 <b>부트 가드</b></li>
     <li>부팅 시 6초간 제작 계보를 보여주는 <b>인트로</b> — 아무 버튼이나 누르면 넘어갑니다</li>
-  </ul>
-
-  <h3>사이트 업데이트 — 7월 26일</h3>
-  <p class="sub">패치 파일은 그대로입니다. 웹 패처와 안내만 고쳤습니다.</p>
-  <ul class="tick">
-    <li><b>일본어 음성 + 한국어 자막</b> 경로 지원 — 영문 텍스트 패치만 적용한 이미지도 받아 줍니다</li>
-    <li>립이 달라 <b>“해시 불일치”</b> 가 뜨던 문제 수정 — 이제 CD 오디오가 아니라
-        <b>데이터 트랙</b>으로 판정합니다. 음악 트랙이 다른 덤프도 정상 처리됩니다</li>
-    <li>시스템 카드 단계를 <b>(선택)</b> 이 아니라 <b>(필수)</b> 로 바로잡았습니다</li>
   </ul>
 
   <h3>알려진 제한</h3>
@@ -1057,6 +1133,38 @@ ol.chain li{margin:.15rem 0}
   <div id="bf-pager" class="pager" hidden></div>
 </section>
 
+<!-- ─────────── 07 집계 ─────────── -->
+<section class="panel" id="p-stats" role="tabpanel" aria-labelledby="t-stats" tabindex="0" hidden data-chapter="07">
+  <h2>얼마나 쓰이고 있나</h2>
+  <p class="sub">방문 수와 패치 종류만 익명으로 셉니다.
+    <b>게임 파일은 어떤 경우에도 서버로 가지 않습니다</b> — 이름도, 내용도, 해시도, 쿠키도요.</p>
+
+  <div id="stats-kpis" class="kpis"></div>
+  <div id="stats-body"></div>
+  <p class="msg" id="stats-msg">집계를 불러오는 중 …</p>
+
+  <p style="margin-top:1.4rem">
+    <a class="cta ghost" href="stats.html">전체 집계 자세히 보기</a>
+  </p>
+  <p class="hint">이 숫자는 <b>웹 패처로 패치한 횟수</b>와 <b>패치 파일 내려받기</b>를 센 것입니다.
+    직접 받아서 오프라인에서 적용하신 분은 잡히지 않으니, 실제 이용자는 이보다 많습니다.</p>
+</section>
+
+</div>
+
+<div id="cs-modal" class="modal" hidden>
+  <div class="modal-back" data-cs-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="cs-title" tabindex="-1">
+    <header>
+      <div>
+        <h3 id="cs-title">체크섬</h3>
+        <p id="cs-ver"></p>
+      </div>
+      <button type="button" class="x" data-cs-close aria-label="닫기">✕</button>
+    </header>
+    <div id="cs-body"></div>
+    <footer>줄을 클릭하면 복사됩니다 · <kbd>Esc</kbd> 로 닫기</footer>
+  </div>
 </div>
 
 <footer>
@@ -1132,6 +1240,146 @@ ol.chain li{margin:.15rem 0}
     addEventListener('keydown', function(e){ if(!done && e.key !== 'Tab') handover(true); }, {once:false});
   }
 
+  /* ── 체크섬 팝업 ── */
+  (function(){
+    var btn = document.getElementById('btn-checksums');
+    var modal = document.getElementById('cs-modal');
+    if (!btn || !modal) return;
+    var body = document.getElementById('cs-body');
+    var loaded = false, lastFocus = null;
+
+    function esc(e){ if (e.key === 'Escape') close(); }
+    function open(){
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      addEventListener('keydown', esc);
+      modal.querySelector('.modal-box').focus();
+      fill();
+    }
+    function close(){
+      modal.hidden = true;
+      document.body.style.overflow = '';
+      removeEventListener('keydown', esc);
+      if (lastFocus) lastFocus.focus();
+    }
+    modal.addEventListener('click', function(e){ if (e.target.closest('[data-cs-close]')) close(); });
+    btn.addEventListener('click', open);
+
+    function fill(){
+      if (loaded) return;
+      loaded = true;
+      fetch('checksums.json', {cache:'no-cache'}).then(function(r){ return r.json(); })
+        .then(function(d){
+          document.getElementById('cs-ver').textContent =
+            d.version + ' · 줄을 누르면 그 값이 클립보드로 들어갑니다';
+          d.groups.forEach(function(g){
+            var h = document.createElement('h4'); h.textContent = g.title; body.appendChild(h);
+            if (g.note){
+              var n = document.createElement('p'); n.className = 'gnote'; n.textContent = g.note;
+              body.appendChild(n);
+            }
+            g.rows.forEach(function(r){
+              var b = document.createElement('button');
+              b.type = 'button'; b.className = 'csrow';
+              var l = document.createElement('span'); l.className = 'lab'; l.textContent = r[0];
+              var v = document.createElement('span'); v.className = 'val'; v.textContent = r[1];
+              var c = document.createElement('span'); c.className = 'cp'; c.textContent = '복사';
+              b.appendChild(l); b.appendChild(v); b.appendChild(c);
+              b.addEventListener('click', function(){
+                var done = function(){
+                  b.classList.add('copied'); c.textContent = '복사됨';
+                  setTimeout(function(){ b.classList.remove('copied'); c.textContent = '복사'; }, 1400);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText){
+                  navigator.clipboard.writeText(r[1]).then(done, function(){ c.textContent = '복사 실패'; });
+                } else {
+                  var ta = document.createElement('textarea');
+                  ta.value = r[1]; document.body.appendChild(ta); ta.select();
+                  try { document.execCommand('copy'); done(); } catch(_){ c.textContent = '복사 실패'; }
+                  ta.remove();
+                }
+              });
+              body.appendChild(b);
+            });
+          });
+        })
+        .catch(function(e){
+          body.textContent = '체크섬을 불러오지 못했습니다. (' + (e.message || e) + ')';
+        });
+    }
+  })();
+
+  /* ── 07 집계 — 탭을 처음 열 때만 불러온다 ── */
+  var statsLoaded = false;
+  function loadStats(){
+    if (statsLoaded) return;
+    statsLoaded = true;
+    var msg = document.getElementById('stats-msg');
+    var kpis = document.getElementById('stats-kpis');
+    var body = document.getElementById('stats-body');
+    var LABEL = {
+      dl_text:'텍스트 패치', dl_voice:'음성 패치', dl_both:'텍스트+음성',
+      dl_text_jpvoice:'텍스트(일본어 음성)', dl_both_jpvoice:'텍스트+음성(일본어 베이스)',
+      dl_syscard:'시스템 카드', dl_checksums:'체크섬',
+      patch_text_ok:'텍스트만', patch_voice_ok:'음성만', patch_both_ok:'텍스트+음성',
+      patch_text_fail:'텍스트만 (실패)', patch_voice_fail:'음성만 (실패)',
+      patch_both_fail:'텍스트+음성 (실패)'
+    };
+    function el(tag, cls, txt){
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (txt != null) e.textContent = txt;
+      return e;
+    }
+    function bars(title, rows){
+      if (!rows.length) return;
+      body.appendChild(el('h3', null, title));
+      var max = Math.max.apply(null, rows.map(function(r){ return r[1]; })) || 1;
+      var tb = el('tbody');
+      rows.forEach(function(r){
+        var tr = el('tr');
+        tr.appendChild(el('td', null, r[0]));
+        tr.appendChild(el('td', 'n', r[1].toLocaleString()));
+        var bar = el('td', 'bar'), i = el('i');
+        i.style.width = (100 * r[1] / max) + '%';
+        bar.appendChild(i); tr.appendChild(bar); tb.appendChild(tr);
+      });
+      var tbl = el('table'); tbl.appendChild(tb); body.appendChild(tbl);
+    }
+    fetch('links.json', {cache:'no-cache'}).then(function(r){ return r.json(); })
+      .then(function(cfg){
+        if (!cfg.stats_api) { msg.textContent = '집계를 켜 두지 않았습니다.'; return null; }
+        return fetch(cfg.stats_api + '?action=stats').then(function(r){ return r.json(); });
+      })
+      .then(function(d){
+        if (!d) return;
+        if (!d.ok) throw new Error(d.error || '집계를 불러오지 못했습니다.');
+        msg.hidden = true;
+        var T = d.totals || {}, g = function(k){ return T[k] || 0; };
+        [['순 방문자', d.unique_visitors || 0, false],
+         ['전체 방문', g('visit'), true],
+         ['패처 열기', g('open_patcher'), true],
+         ['다운로드', g('dl_total'), true],
+         ['패치 완료', g('patch_total'), false]
+        ].forEach(function(c){
+          var k = el('div', 'kpi' + (c[2] ? ' q' : ''));
+          k.appendChild(el('b', null, c[1].toLocaleString()));
+          k.appendChild(el('span', null, c[0]));
+          kpis.appendChild(k);
+        });
+        var dl = [], pa = [];
+        Object.keys(T).forEach(function(k){
+          if (k.indexOf('dl_') === 0 && k !== 'dl_total') dl.push([LABEL[k] || k, T[k]]);
+          if (k.indexOf('patch_') === 0 && k !== 'patch_total') pa.push([LABEL[k] || k, T[k]]);
+        });
+        var byCount = function(a, b){ return b[1] - a[1]; };
+        bars('패치 파일 내려받기', dl.sort(byCount));
+        bars('웹 패처로 패치한 횟수', pa.sort(byCount));
+      })
+      .catch(function(e){ msg.textContent = '집계 서버에 연결하지 못했습니다. (' + (e.message || e) + ')'; });
+  }
+
   /* ── 탭 ── */
   var tabs = [].slice.call(document.querySelectorAll('.tab'));
   function show(id, push){
@@ -1145,6 +1393,7 @@ ol.chain li{margin:.15rem 0}
   tabs.forEach(function(t, i){
     t.addEventListener('click', function(){
       show(t.id, true);
+      if (t.id === 't-stats') loadStats();
       var y = document.querySelector('.tabs').offsetTop;
       if (scrollY > y) scrollTo({top: y, behavior: reduce ? 'auto' : 'smooth'});
     });
@@ -1164,7 +1413,10 @@ ol.chain li{margin:.15rem 0}
   });
   if (location.hash){
     var want = 't-' + location.hash.slice(1);
-    if (document.getElementById(want)) show(want, false);
+    if (document.getElementById(want)) {
+      show(want, false);
+      if (want === 't-stats') loadStats();   // #stats 로 바로 들어온 경우
+    }
   }
 
   /* ── 유튜브: 누르기 전에는 외부 요청이 없다 ──

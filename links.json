@@ -11,34 +11,38 @@
     "stats_api 가 비어 있으면 집계 호출을 아예 하지 않습니다 (외부 요청 0).",
     "주소를 넣으면 방문·패치 횟수만 보냅니다 — 게임 파일은 어떤 경우에도 보내지 않습니다."
   ],
-  "version": "v0.9",
+  "version": "v0.9.1",
   "patches": {
+    "text_jpvoice": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-text-jpvoice.xdelta",
+      "size": "9.5 MB"
+    },
+    "both_jpvoice": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-both-jpvoice.xdelta",
+      "size": "141.1 MB"
+    },
     "text": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-text.xdelta",
-      "size": "163 KB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-text.xdelta",
+      "size": "253 KB"
     },
     "voice": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-voice.xdelta",
-      "size": "116.6 MB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-voice.xdelta",
+      "size": "135.9 MB"
     },
     "both": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-both.xdelta",
-      "size": "116.7 MB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-both.xdelta",
+      "size": "136.2 MB"
     },
     "syscard": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-syscard.xdelta",
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/ys4ko-v0.9.1-syscard.xdelta",
       "size": "18 KB"
-    },
-    "text_jpvoice": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-text-jpvoice.xdelta",
-      "size": "186 KB"
     }
   },
   "checksums": {
-    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/CHECKSUMS.txt"
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/CHECKSUMS.txt"
   },
   "readme": {
-    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/README.txt"
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.1/README.txt"
   },
   "video": {
     "youtube_id": "2SIqYj3H2OU"

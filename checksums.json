@@ -1,0 +1,93 @@
+{
+ "version": "v0.9.1",
+ "groups": [
+  {
+   "title": "원본 이미지 (데이터 트랙)",
+   "note": "CD 오디오는 덤프마다 달라도 됩니다. 데이터 트랙만 보세요.",
+   "rows": [
+    [
+     "일본어 원판",
+     "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d"
+    ],
+    [
+     "텍스트 패치 적용본 ★",
+     "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d"
+    ],
+    [
+     "텍스트 + 더빙 적용본",
+     "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c"
+    ]
+   ]
+  },
+  {
+   "title": "패치 결과물 (데이터 트랙)",
+   "note": "웹 패처가 판정에 쓰는 값입니다.",
+   "rows": [
+    [
+     "텍스트만 · 일본어 음성",
+     "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9"
+    ],
+    [
+     "텍스트+음성 · 일본어 베이스",
+     "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56"
+    ],
+    [
+     "텍스트만 · 더빙 베이스",
+     "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165"
+    ],
+    [
+     "음성만 · 더빙 베이스",
+     "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a"
+    ],
+    [
+     "텍스트+음성 · 더빙 베이스",
+     "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3"
+    ]
+   ]
+  },
+  {
+   "title": "패치 파일 (xdelta)",
+   "note": "내려받은 파일이 온전한지 확인하실 때.",
+   "rows": [
+    [
+     "text-jpvoice · 9.5 MB",
+     "406ca2ca31588c438bcaccc1fa3ab92d05bbf310e8aaef78a69778ae8661af42"
+    ],
+    [
+     "both-jpvoice · 141.1 MB",
+     "8bc4c8ae933afcb6d1c4584ba0b000b797b009adffe57d84865eabde4974c4f3"
+    ],
+    [
+     "text · 253 KB",
+     "a277a0c46f981b89a7458f5dc835a55ebda83567c8fb9b4fb126352e170745e4"
+    ],
+    [
+     "voice · 135.9 MB",
+     "d98212808a106eda3d5a7ab335acf1458b1a5f9b9321f911927cc452e7ae862a"
+    ],
+    [
+     "both · 136.2 MB",
+     "d5e12f0172c69f79310730b4f3ea29c8e11d6e95a78cbb2549bf2c31c5d73ee5"
+    ],
+    [
+     "syscard · 18 KB",
+     "93f743958db43c93ce3b2ff8ae7ea4490f213b05fd87f101201a0cb9af303a1f"
+    ]
+   ]
+  },
+  {
+   "title": "시스템 카드",
+   "note": "여러분 파일로부터 만들어 드립니다. 완성본은 배포하지 않습니다.",
+   "rows": [
+    [
+     "순정 syscard3.pce (262,144 B)",
+     "e11527b3b96ce112a037138988ca72fd117a6b0779c2480d9e03eaebece3d9ce"
+    ],
+    [
+     "만들어지는 한글 카드",
+     "9d0eb52b2abfade9a71752b3bf0208f67f7c6368532c6385467c6ee8f09a2af9"
+    ]
+   ]
+  }
+ ]
+}

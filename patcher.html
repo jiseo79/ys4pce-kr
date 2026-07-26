@@ -98,6 +98,57 @@ button.mode.sel{border-color:var(--amber);color:#171109;background:var(--amber)}
 @media(prefers-reduced-motion:reduce){.status.busy::before{animation:none}}
 .bar{height:7px;border-radius:0;background:#0a0f15;overflow:hidden;margin-top:1rem;border:1px solid #222a34}
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--rust),var(--amber));width:0%;transition:width .15s linear}
+.cmodal{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:1.2rem}
+.cmodal[hidden]{display:none}
+.cmodal-back{position:absolute;inset:0;background:rgba(0,0,0,.78)}
+.cmodal-box{position:relative;width:min(520px,100%);background:var(--bg,#0b1016);
+  border:1px solid var(--edge);border-radius:14px;padding:1.6rem 1.5rem 1.4rem;text-align:center;
+  box-shadow:0 24px 70px rgba(0,0,0,.65);animation:cueIn .18s ease-out}
+@keyframes cueIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.cmodal-box{animation:none}}
+.cmodal-box .tick{width:46px;height:46px;margin:0 auto .7rem;border-radius:50%;
+  background:rgba(90,209,138,.14);color:#5ad18a;font-size:1.5rem;line-height:46px}
+.cmodal-box h3{margin:0 0 .3rem;font-size:1.25rem}
+.cmodal-box #cue-sub{margin:0 0 1rem;font-size:.88rem;color:var(--faint)}
+.cmodal-box .warn{text-align:left;border:1px solid var(--amber);border-radius:10px;
+  background:rgba(227,174,66,.08);padding:.85rem .95rem;font-size:.88rem;line-height:1.7;color:var(--mute)}
+.cmodal-box .acts{display:flex;flex-direction:column;gap:.55rem;margin-top:1.1rem}
+.cmodal-box .acts .cta{display:block;text-align:center}
+.cmodal-box .acts button.ghost{background:none;border:1px solid var(--edge);color:var(--faint);
+  border-radius:8px;padding:.55rem;cursor:pointer;font-size:.85rem}
+.cmodal-box .acts button.ghost:hover{border-color:var(--mute);color:var(--mute)}
+#analysis,#ppf-step{margin-top:.9rem;border:1px solid var(--edge);border-radius:8px;
+  padding:.8rem .9rem;background:#0c1219}
+#analysis h4,#ppf-step h4{margin:0 0 .55rem;font-size:.88rem;color:var(--amber);font-weight:700}
+#ppf-step p{margin:.3rem 0;font-size:.9rem;color:var(--mute)}
+#ppf-step p.fine{font-size:.82rem;color:var(--faint)}
+#an-list{display:grid;grid-template-columns:auto 1fr;gap:.35rem .9rem;margin:0;font-size:.86rem}
+#an-list dt{color:var(--faint);white-space:nowrap}
+#an-list dd{margin:0;overflow-wrap:anywhere}
+#an-list dd.hash{font-family:var(--mono);font-size:.78rem;color:var(--mute)}
+#an-list dd.good{color:#5ad18a}
+#an-list dd.warn{color:var(--amber)}
+#diag{margin-top:.9rem;border:1px solid var(--edge);border-radius:8px;padding:.55rem .8rem;
+  background:#0c1219}
+#diag[open]{padding-bottom:.9rem}
+#diag summary{cursor:pointer;font-size:.9rem;color:var(--mute);list-style:none;
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+#diag summary::-webkit-details-marker{display:none}
+#diag summary .lbl::before{content:"▸ ";color:var(--amber)}
+#diag[open] summary .lbl::before{content:"▾ "}
+#diag[open] summary{color:var(--amber);margin-bottom:.6rem}
+#diag .toggle{flex:none;border:1px solid var(--amber);color:var(--amber);border-radius:6px;
+  padding:.15rem .65rem;font-size:.78rem;line-height:1.6;white-space:nowrap;
+  transition:background .15s,color .15s}
+#diag .toggle::after{content:"보기"}
+#diag[open] .toggle::after{content:"닫기"}
+#diag summary:hover .toggle{background:var(--amber);color:#171109}
+table.diag{width:100%;border-collapse:collapse;font-size:.86rem}
+table.diag th,table.diag td{text-align:left;vertical-align:top;padding:.45rem .5rem;
+  border-bottom:1px solid var(--edge)}
+table.diag th{color:var(--faint);font-weight:600;font-size:.8rem}
+table.diag td:first-child{white-space:normal;color:var(--fg);font-weight:600;width:34%}
+table.diag tr.fine td:first-child{color:#5ad18a}
 #log,#syscard-log{font-family:var(--mono);font-size:.78rem;line-height:1.65;color:var(--mute);
   background:#080c11;border:1px solid var(--edge);border-radius:2px;padding:.9rem 1rem;
   max-height:260px;overflow:auto;white-space:pre-wrap;margin-top:.8rem}
@@ -156,6 +207,59 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
       </div>
       <div id="image-status" class="status" hidden></div>
       <div id="image-progress-wrap" class="bar" hidden><i id="image-progress-bar"></i></div>
+
+      <div id="analysis" hidden>
+        <h4>이미지 분석 결과</h4>
+        <dl id="an-list"></dl>
+      </div>
+
+      <div id="ppf-step" hidden>
+        <h4>영문 텍스트 패치 넣기</h4>
+        <p>순정 일본판이군요. ysutopia 의 <code>YsIV-ISO.ppf</code> 를 넣으시면
+          <b>여기서 바로 적용</b>해 드립니다 — 따로 패치하실 필요가 없습니다.</p>
+        <p class="fine"><code>YsIV(US)v95.zip</code> 의 압축을 풀면 들어 있습니다.
+          <code>YsIV-BIN.ppf</code> 가 아니라 <b>ISO</b> 쪽입니다.
+          <a href="https://www.ysutopia.net/projects/ys4/" target="_blank" rel="noopener noreferrer">배포처 열기</a></p>
+        <div class="row">
+          <input type="file" id="ppf-input" accept=".ppf">
+        </div>
+        <div id="ppf-status" class="status" hidden></div>
+      </div>
+
+      <details id="diag">
+        <summary><span class="lbl">이미지가 안 맞는다고 나오면 — 원인별 대처</span><span class="toggle"></span></summary>
+        <p style="color:var(--faint);font-size:.86rem;margin:.2rem 0 .7rem">
+          인터넷에서 받은 이미지에서 자주 생깁니다. <b>둘은 정상이니 그냥 진행하시면 됩니다.</b></p>
+        <table class="diag">
+          <thead><tr><th>패처가 하는 말</th><th>뜻과 해야 할 일</th></tr></thead>
+          <tbody>
+            <tr class="fine"><td>CD 오디오 트랙만 다름</td>
+                <td><b>정상입니다. 그대로 진행하세요.</b> 게임 데이터는 완전히 같고 음악 트랙만
+                    다르게 떠진 립입니다. 저희는 음악을 건드리지 않습니다.</td></tr>
+            <tr class="fine"><td>데이터트랙 위치를 자동 보정했습니다</td>
+                <td><b>정상입니다. 그대로 진행하세요.</b> 프리갭을 파일에 넣지 않는 방식으로
+                    떠진 립이라 트랙 위치가 밀려 있을 뿐입니다.</td></tr>
+            <tr><td>순정 일본판</td>
+                <td>영문 <b>텍스트</b> 번역 패치를 먼저 적용하셔야 합니다
+                    (<code>YsIV(US)v95.zip</code>). 더빙 패치는 필요 없습니다.</td></tr>
+            <tr><td>데이터트랙을 찾지 못했습니다</td>
+                <td><b>형식 문제입니다.</b> <code>.iso</code> · <code>.chd</code> · <code>.nrg</code> ·
+                    <code>.mdf</code> 이거나 트랙별로 쪼개진 <code>.bin</code> 입니다.
+                    단일 <code>.bin</code>(또는 <code>.img</code>) + <code>.cue</code> 로 먼저 변환하세요.</td></tr>
+            <tr><td>알려진 어느 이미지와도 일치하지 않습니다</td>
+                <td>형식은 정상인데 <b>내용이 다릅니다.</b> 다른 버전이거나 이미 다른 패치가
+                    올라간 이미지입니다. 원판에서 다시 시작하시는 편이 빠릅니다.</td></tr>
+          </tbody>
+        </table>
+        <p style="color:var(--faint);font-size:.86rem;margin:.8rem 0 0">
+          <b>패치 후 게임에서</b> “sector NNNN 오류” 가 나거나, 오류는 없는데 한글이 안 나온다면
+          <b>v0.9 로 만드신 이미지</b>입니다. 섹터 오류정정 데이터 결함이었고 v0.9.1 에서 고쳤습니다 —
+          여기서 다시 만들어 주세요. (시스템 카드를 안 바꾸신 경우에도 한글이 안 나옵니다.)</p>
+        <p style="color:var(--faint);font-size:.86rem;margin:.5rem 0 0">
+          <b>xdelta 에는 이 관용이 없습니다.</b> 위의 두 “정상입니다” 경우도 xdelta 로는 거부됩니다 —
+          원본 파일 전체가 바이트 단위로 같아야 하기 때문입니다. 그럴 때 이 웹 패처를 쓰시면
+          같은 이미지가 그대로 통과하는 경우가 많습니다.</p>
+      </details>
     </div>
 
     <h2>2 — 모드 선택</h2>
@@ -243,6 +347,153 @@ const USER_SIZE = 2048;
 const COOKED_ISO_SIZE = DATA_SECTORS * USER_SIZE; // 67,420,160
 const SECTOR = 2352;
 const MODES = ["text", "voice", "both"];
+
+// ---------------------------------------------------------------------------
+// MODE1 sector integrity — EDC + ECC(P/Q)
+//
+// A raw 2352 B sector is user data plus error-correction fields:
+//   sync[0:12] header[12:16] user[16:2064] EDC[2064:2068] zero[2068:2076]
+//   ECC-P[2076:2248] ECC-Q[2248:2352]
+//
+// We only ever wrote the 2048 B user area, leaving EDC/ECC describing the OLD
+// contents. Mesen and most emulators never look at those fields, so this
+// survived every verification cycle — but Mednafen/Beetle-PCE and real CD
+// drives do check, and they report "uncorrectable data at sector N".
+//
+// Worse than a clean failure: the Mode-1 corrector SILENTLY REPAIRS sectors
+// where each parity codeword sees at most one bad byte — reverting them to the
+// original English bytes and quietly deleting our hooks. Our 2-byte boot-guard
+// edit to the IPL block was exactly such a case.
+//
+// Standard Yellow Book algorithm; LUT form follows the widely used ECM code.
+// ---------------------------------------------------------------------------
+const ECC_F = new Uint8Array(256);
+const ECC_B = new Uint8Array(256);
+const EDC_LUT = new Uint32Array(256);
+for (let i = 0; i < 256; i++) {
+  const j = ((i << 1) ^ (i & 0x80 ? 0x11d : 0)) & 0xff;
+  ECC_F[i] = j;
+  ECC_B[i ^ j] = i;
+  let e = i;
+  for (let k = 0; k < 8; k++) e = (e >>> 1) ^ (e & 1 ? 0xd8018001 : 0);
+  EDC_LUT[i] = e >>> 0;
+}
+
+function computeEdc(buf, len) {
+  let e = 0;
+  for (let i = 0; i < len; i++) e = ((e >>> 8) ^ EDC_LUT[(e ^ buf[i]) & 0xff]) >>> 0;
+  return e >>> 0;
+}
+
+// src window always starts at sector[12]. Q's window (2236 B) deliberately
+// extends over the ECC-P parity, so P must be written before Q is computed.
+function eccBlock(sector, majorCount, minorCount, majorMult, minorInc, destOff) {
+  const size = majorCount * minorCount;
+  for (let major = 0; major < majorCount; major++) {
+    let index = (major >> 1) * majorMult + (major & 1);
+    let a = 0, b = 0;
+    for (let minor = 0; minor < minorCount; minor++) {
+      const t = sector[12 + index];
+      index += minorInc;
+      if (index >= size) index -= size;
+      a ^= t; b ^= t; a = ECC_F[a];
+    }
+    a = ECC_B[ECC_F[a] ^ b];
+    sector[destOff + major] = a;
+    sector[destOff + major + majorCount] = (a ^ b) & 0xff;
+  }
+}
+
+function isMode1(s) {
+  if (s.length < 16 || s[0] !== 0x00 || s[11] !== 0x00 || s[15] !== 0x01) return false;
+  for (let i = 1; i <= 10; i++) if (s[i] !== 0xff) return false;
+  return true;
+}
+
+/** Recompute EDC/ECC in place. Returns false for non-MODE1 (audio) sectors. */
+function repairSector(s) {
+  if (!isMode1(s)) return false;
+  const e = computeEdc(s, 2064);
+  s[2064] = e & 0xff; s[2065] = (e >>> 8) & 0xff;
+  s[2066] = (e >>> 16) & 0xff; s[2067] = (e >>> 24) & 0xff;
+  for (let i = 2068; i < 2076; i++) s[i] = 0;
+  eccBlock(s, 86, 24, 2, 86, 2076);
+  eccBlock(s, 52, 43, 86, 88, 2248);
+  return true;
+}
+
+function sectorIntact(s) {
+  if (!isMode1(s)) return true;
+  const copy = s.slice();
+  repairSector(copy);
+  for (let i = 2064; i < RAW_SECTOR; i++) if (copy[i] !== s[i]) return false;
+  return true;
+}
+
+/**
+ * Rebuild EDC/ECC across the whole data track.
+ *
+ * Scoped to the whole track rather than only our own writes on purpose: on a
+ * sector that is already consistent the recomputation is a byte-exact no-op, so
+ * for a healthy source this is identical to repairing only what we touched —
+ * but a source that was itself dumped without error-correction data (our JP rip
+ * has all-zero EDC/ECC throughout) comes out valid instead of half-valid.
+ *
+ * The output is a copy of the source, so each sector = source sector plus our
+ * user-data writes. Reconstructing from the source reader avoids needing the
+ * output to be readable mid-write — the browser holds an exclusive writable
+ * stream open until the patch finishes.
+ *
+ * Only tails that actually change are written back.
+ */
+async function repairDataTrack(srcReader, writer, appliedRegions, dataLba, log, progress) {
+  const bySector = new Map();
+  for (const [off, length, chunk] of appliedRegions) {
+    let pos = off, done = 0;
+    while (done < length) {
+      const sector = Math.floor(pos / USER_SIZE);
+      const inSec = pos % USER_SIZE;
+      const n = Math.min(length - done, USER_SIZE - inSec);
+      if (!bySector.has(sector)) bySector.set(sector, []);
+      bySector.get(sector).push([inSec, chunk.subarray(done, done + n)]);
+      pos += n; done += n;
+    }
+  }
+
+  const CHUNK = 512;                     // sectors per read — 1.2 MB
+  let fixed = 0, patchedFixed = 0, skipped = 0;
+  for (let start = 0; start < DATA_SECTORS; start += CHUNK) {
+    const count = Math.min(CHUNK, DATA_SECTORS - start);
+    const base = (dataLba + start) * RAW_SECTOR;
+    const buf = new Uint8Array(await srcReader.read(base, count * RAW_SECTOR));
+    for (let i = 0; i < count; i++) {
+      const sec = start + i;
+      const raw = buf.subarray(i * RAW_SECTOR, (i + 1) * RAW_SECTOR);
+      if (!isMode1(raw)) { skipped++; continue; }
+      const writes = bySector.get(sec);
+      if (writes) for (const [inSec, bytes] of writes) raw.set(bytes, USER_OFFSET + inSec);
+      const before = raw.slice(2064);
+      repairSector(raw);
+      let changed = false;
+      for (let k = 0; k < before.length; k++) {
+        if (before[k] !== raw[2064 + k]) { changed = true; break; }
+      }
+      if (changed) {
+        await writer.write((dataLba + sec) * RAW_SECTOR + 2064, raw.subarray(2064));
+        fixed++;
+        if (writes) patchedFixed++;
+      }
+    }
+    if (progress) progress(Math.min(start + count, DATA_SECTORS), DATA_SECTORS);
+  }
+  if (log) {
+    log(`  EDC/ECC 재계산: ${fixed.toLocaleString()}개 섹터 수정` +
+        (fixed > patchedFixed
+          ? ` (그중 ${patchedFixed.toLocaleString()}개는 우리가 고친 섹터, 나머지는 원본에 이미 깨져 있던 것)`
+          : ""));
+  }
+  return { fixed, patchedFixed, skipped, sectors: [...bySector.keys()].sort((a, b) => a - b) };
+}
 
 // ---------------------------------------------------------------------------
 // Where does the data track actually START in this file?
@@ -341,6 +592,61 @@ async function locateDataTrack(reader, size, cueText, log) {
   }
   throw new PatchAborted(
     "이 파일에서 PC Engine 데이터트랙을 찾지 못했습니다 — CloneCD/BIN 형식의 raw 이미지(섹터 2352 B)가 맞는지 확인해 주세요.");
+}
+
+// ---------------------------------------------------------------------------
+// PPF 3.0 — ysutopia 의 영문 텍스트 번역 패치 형식
+//
+// 사용자가 자기 파일을 올려서 쓰는 것이므로 우리가 재배포하는 것이 아니다.
+// YsIV-ISO.ppf 의 오프셋은 cooked ISO(2048 B/섹터) 기준이라, 우리 패치 엔트리와
+// 완전히 같은 좌표계다 — 그래서 같은 쓰기 경로에 그대로 흘려보낼 수 있다.
+// (YsIV-BIN.ppf 는 raw 좌표계에 데이터트랙이 파일 섹터 3365 인 덤프를 전제하므로
+//  쓰지 않는다. 고르셨을 때 알아보고 안내만 한다.)
+// ---------------------------------------------------------------------------
+function parsePpf(bytes) {
+  const magic = String.fromCharCode(...bytes.subarray(0, 5));
+  if (magic !== "PPF30") {
+    throw new PatchAborted("PPF 3.0 파일이 아닙니다 — YsIV-ISO.ppf 를 골라 주세요.");
+  }
+  const desc = new TextDecoder("latin1").decode(bytes.subarray(6, 56)).split("\0")[0].trim();
+  const blockCheck = bytes[57], undo = bytes[58];
+  let pos = 60 + (blockCheck ? 1024 : 0);
+  const entries = [];
+  let total = 0;
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  while (pos + 9 <= bytes.length) {
+    // 8바이트 리틀엔디언 오프셋. 이 게임의 ISO 는 64 MB 대라 상위 4바이트는 항상 0.
+    const lo = dv.getUint32(pos, true), hi = dv.getUint32(pos + 4, true);
+    if (hi !== 0) throw new PatchAborted("PPF 오프셋이 너무 큽니다 — 다른 게임의 패치입니다.");
+    pos += 8;
+    const len = bytes[pos]; pos += 1;
+    if (pos + len > bytes.length) throw new PatchAborted("PPF 파일이 잘렸습니다.");
+    entries.push({ off: lo, len, data: bytes.subarray(pos, pos + len) });
+    total += len;
+    pos += len + (undo ? len : 0);
+  }
+  return { desc, entries, total };
+}
+
+/** 판정: 우리가 원하는 ISO 쪽인지, BIN 쪽인지, 아예 다른 것인지. */
+function identifyPpf(bytes, sha256, manifest) {
+  const info = manifest && manifest.english_text_ppf;
+  if (info) {
+    if (sha256 === info.iso.sha256) return ["ok", "영문 텍스트 패치 (ISO) 확인됨 — 이 파일이 맞습니다."];
+    if (sha256 === info.bin.sha256) {
+      return ["wrong_kind",
+        "이건 BIN 쪽 패치입니다 — 같은 zip 안의 " + info.iso.name + " 를 골라 주세요."];
+    }
+  }
+  let parsed;
+  try { parsed = parsePpf(bytes); }
+  catch (e) { return ["bad", e.message || String(e)]; }
+  if (info && parsed.entries.length === info.iso.records && parsed.total === info.iso.patch_bytes) {
+    return ["ok_variant",
+      `PPF 3.0 (${parsed.entries.length.toLocaleString()}개 구간) — 알려진 파일과 해시는 다르지만 구조가 같습니다.`];
+  }
+  return ["unknown",
+    `PPF 3.0 이지만 알려진 이스 IV 텍스트 패치가 아닙니다 (${parsed.entries.length.toLocaleString()}개 구간).`];
 }
 
 // ---------------------------------------------------------------------------
@@ -476,6 +782,20 @@ function bytesEqual(a, b) {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
   return true;
+}
+
+/** 기록한 섹터들의 EDC/ECC 가 실제로 유효한지 확인한다. */
+async function verifySectorIntegrity(reader, sectors, dataLba = DATA_LBA) {
+  const bad = [];
+  for (const sec of sectors) {
+    const raw = new Uint8Array(await reader.read((dataLba + sec) * RAW_SECTOR, RAW_SECTOR));
+    if (!sectorIntact(raw)) bad.push(dataLba + sec);
+    if (bad.length >= 8) break;
+  }
+  if (bad.length) {
+    throw new PatchAborted(
+      `EDC/ECC 검증 실패 — LBA ${bad.join(", ")}${bad.length >= 8 ? " …" : ""}`);
+  }
 }
 
 async function verifyPatchRegions(reader, appliedRegions, dataLba = DATA_LBA) {
@@ -635,8 +955,9 @@ async function copyWithProgress(reader, writer, size, progress, chunkSize = 4 * 
 //   fetchTrackPcm(trackMeta) -> Promise<Uint8Array>   (already gunzip-applied raw PCM)
 // Returns { appliedRegions, appliedTracks, ranges }.
 // ---------------------------------------------------------------------------
-async function runPatchCore({ cueText, imgSize, outWriter, outReader, dataLba: dataLbaIn,
-  mode, manifest, fetchAssetBlob, fetchTrackPcm, log = () => {} }) {
+async function runPatchCore({ cueText, imgSize, outWriter, outReader, srcReader,
+  dataLba: dataLbaIn, mode, manifest, fetchAssetBlob, fetchTrackPcm, ppfEntries = null,
+  log = () => {}, eccProgress = null }) {
   if (!MODES.includes(mode)) throw new Error(`알 수 없는 모드: ${mode}`);
 
   // 크기가 다르다고 곧바로 막지 않는다. 프리갭을 파일에 넣지 않는 립은 내용이
@@ -649,7 +970,7 @@ async function runPatchCore({ cueText, imgSize, outWriter, outReader, dataLba: d
   // 호출자가 식별 단계에서 이미 구한 값이 있으면 그걸 쓰고, 없으면 여기서 찾는다.
   const dataLba = dataLbaIn !== undefined && dataLbaIn !== null
     ? dataLbaIn
-    : (await locateDataTrack(outReader, imgSize, cueText, log)).lba;
+    : (await locateDataTrack(outReader || srcReader, imgSize, cueText, log)).lba;
 
   const needsTracks = mode === "voice" || mode === "both";
   let ranges = {};
@@ -669,6 +990,28 @@ async function runPatchCore({ cueText, imgSize, outWriter, outReader, dataLba: d
   }
 
   let appliedRegions = [];
+  // PPF 구간은 '검증' 대상이 아니다 — 우리 패치가 같은 자리를 다시 덮어쓰므로
+  // 읽어보면 당연히 PPF 바이트와 다르다. 다만 EDC/ECC 재계산에는 반드시
+  // 포함돼야 한다. 안 그러면 그 섹터의 ECC 를 원본 내용 기준으로 계산해 버린다.
+  const ppfRegions = [];
+
+  // 순정 일본판이면 영문 텍스트 패치를 먼저 올린다. 우리 text.patch 는 그 위에서
+  // 뜬 차이라, 순서를 바꾸면 결과가 달라진다.
+  if (ppfEntries && ppfEntries.length) {
+    log("영문 텍스트 패치 적용 중 …");
+    let bytes = 0;
+    for (const e of ppfEntries) {
+      let cpos = 0;
+      for (const [imgPos, clen] of isoToImgWrites(e.off, e.len, dataLba)) {
+        await outWriter.write(imgPos, e.data.subarray(cpos, cpos + clen));
+        cpos += clen;
+      }
+      ppfRegions.push([e.off, e.len, e.data]);
+      bytes += e.len;
+    }
+    log(`  ${ppfEntries.length.toLocaleString()}개 구간, ${bytes.toLocaleString()} B 적용`);
+  }
+
   if (mode === "text" || mode === "both") {
     log("텍스트 패치 적용 중 …");
     const blob = await fetchAssetBlob(manifest.text_patch.asset);
@@ -688,7 +1031,19 @@ async function runPatchCore({ cueText, imgSize, outWriter, outReader, dataLba: d
     appliedTracks = await applyTracks(manifest.tracks, ranges, outWriter, fetchTrackPcm, log);
   }
 
-  return { appliedRegions, appliedTracks, ranges, dataLba };
+  // 유저데이터만 고치면 그 섹터의 EDC/ECC 는 옛 내용에 대한 값으로 남는다.
+  // 그대로 두면 검사하는 리더에서 읽기 오류가 나고, 더 나쁘게는 오류가 적은
+  // 섹터가 '정정' 되어 원래 영어 바이트로 되돌아간다 — 패치가 조용히 사라진다.
+  let repaired = null;
+  if (appliedRegions.length || ppfRegions.length) {
+    log("EDC/ECC 재계산 중 …");
+    // 순서가 중요하다 — 나중 것이 앞의 것을 덮는다. 실제 쓰기 순서와 같아야 한다.
+    repaired = await repairDataTrack(
+      srcReader || outReader, outWriter, ppfRegions.concat(appliedRegions),
+      dataLba, log, eccProgress);
+  }
+
+  return { appliedRegions, appliedTracks, ranges, dataLba, repaired };
 }
 
 </script>
@@ -840,6 +1195,8 @@ class Sha256 {
   const els = {
     unsupported: $("unsupported"), unsupportedMsg: $("unsupported-msg"), app: $("app"),
     btnPickDir: $("btn-pick-dir"), btnPickFiles: $("btn-pick-files"),
+    analysis: $("analysis"), anList: $("an-list"),
+    ppfStep: $("ppf-step"), ppfInput: $("ppf-input"), ppfStatus: $("ppf-status"),
     candidateSelect: $("candidate-select"),
     imageStatus: $("image-status"), imageProgressWrap: $("image-progress-wrap"), imageProgressBar: $("image-progress-bar"),
     modeButtons: [...document.querySelectorAll("button.mode")], modeSize: $("mode-size"),
@@ -970,7 +1327,8 @@ class Sha256 {
   let dirHandle = null, cueFileHandle = null, imgFileHandle = null;
   let cueFile = null, imgFile = null, cueText = null;
   let mode = "both";
-  let identifyResult = null; // [status, msg, sha]
+  let identifyResult = null; // [status, msg, fullSha, info]
+  let ppfEntries = null;     // 순정 일본판일 때 사용자가 올린 영문 텍스트 패치
 
   els.modeButtons.forEach((b) => {
     b.addEventListener("click", () => {
@@ -1076,8 +1434,15 @@ class Sha256 {
       if (info && info.shift) {
         logLine(`데이터트랙 위치 자동 보정: LBA ${info.dataLba} (표준에서 ${info.shift > 0 ? "+" : ""}${info.shift}) — 프리갭 처리가 다른 립입니다.`);
       }
+      renderAnalysis(imgFile, result);
       const kind = (status === "en" || status === "en_jpvoice" || status === "already")
                  ? "ok" : (status === "jp" || status === "not_raw") ? "err" : "warn";
+      // 순정 일본판이면 그 자리에서 영문 패치를 넣을 수 있게 열어 준다.
+      els.ppfStep.hidden = status !== "jp";
+      if (status !== "jp") { ppfEntries = null; els.ppfInput.value = ""; els.ppfStatus.hidden = true; }
+      // 문제가 있으면 대처표를 펼쳐 둔다. 오류 문구만 보고 나가버리는 게 제일 아깝다.
+      const diag = document.getElementById("diag");
+      if (diag) diag.open = kind !== "ok" || !!(info && info.shift);
       setStatus(els.imageStatus, `[${status}] ${msg}`, kind);
     } catch (e) {
       setStatus(els.imageStatus, `식별 중 오류: ${e.message || e}`, "err");
@@ -1085,11 +1450,75 @@ class Sha256 {
     updateRunButton();
   }
 
+  function row(dt, dd, cls) {
+    const a = document.createElement("dt"); a.textContent = dt;
+    const b = document.createElement("dd"); b.textContent = dd;
+    if (cls) b.className = cls;
+    els.anList.appendChild(a); els.anList.appendChild(b);
+  }
+
+  /** 무엇을 읽었고 어떻게 판단했는지 그대로 보여 준다 — 숨기면 의심만 산다. */
+  function renderAnalysis(file, result) {
+    const [status, , fullSha, info] = result;
+    els.anList.textContent = "";
+    row("파일", `${file.name}  ·  ${file.size.toLocaleString()} B`);
+    if (info && info.dataLba !== undefined) {
+      row("데이터트랙 위치", info.shift
+        ? `LBA ${info.dataLba}  (표준 3590 에서 ${info.shift > 0 ? "+" : ""}${info.shift} — 자동 보정)`
+        : `LBA ${info.dataLba}  (표준)`, info.shift ? "warn" : "good");
+      row("찾은 방법", info.source === "cue" ? ".cue 의 트랙 정보 + 섹터 헤더 대조"
+                                             : "이미지의 섹터 헤더에서 직접");
+    }
+    if (info && info.cookedSha) row("데이터트랙 SHA-256", info.cookedSha, "hash");
+    row("전체 이미지 SHA-256",
+        fullSha || "계산하지 않음 (크기가 기준과 달라 대조 대상이 아닙니다)", fullSha ? "hash" : "");
+    const LABEL = {
+      en: "영문 패치본 (더빙 포함)", en_jpvoice: "영문 텍스트 패치본 (일본어 음성)",
+      jp: "순정 일본판", already: "이미 한국어화된 이미지",
+      not_raw: "raw CD 이미지가 아님", unknown: "알 수 없는 이미지",
+    };
+    row("판정", LABEL[status] || status,
+        (status === "en" || status === "en_jpvoice") ? "good"
+        : (status === "jp" || status === "not_raw" || status === "unknown") ? "warn" : "");
+    els.analysis.hidden = false;
+  }
+
+  els.ppfInput.addEventListener("change", async () => {
+    const f = els.ppfInput.files && els.ppfInput.files[0];
+    ppfEntries = null;
+    if (!f) { els.ppfStatus.hidden = true; updateRunButton(); return; }
+    setStatus(els.ppfStatus, `${f.name} 확인 중 …`, "busy");
+    try {
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      const h = new Sha256(); h.update(bytes);
+      const manifest = await manifestPromise;
+      const [verdict, msg] = identifyPpf(bytes, h.hexDigest(), manifest);
+      if (verdict === "wrong_kind" || verdict === "bad") {
+        setStatus(els.ppfStatus, msg, "err");
+        updateRunButton();
+        return;
+      }
+      const parsed = parsePpf(bytes);
+      ppfEntries = parsed.entries;
+      setStatus(els.ppfStatus,
+        `${msg}  ${parsed.entries.length.toLocaleString()}개 구간 · ${parsed.total.toLocaleString()} B`,
+        verdict === "unknown" ? "warn" : "ok");
+      logLine(`영문 텍스트 패치 준비됨: ${f.name} (${parsed.entries.length.toLocaleString()}개 구간)`);
+    } catch (e) {
+      setStatus(els.ppfStatus, String(e.message || e), "err");
+    }
+    updateRunButton();
+  });
+
   function updateRunButton() {
     const st = identifyResult && identifyResult[0];
-    const ok = st === "en" || st === "en_jpvoice" || st === "already";
+    const jpReady = st === "jp" && ppfEntries && ppfEntries.length;
+    const ok = st === "en" || st === "en_jpvoice" || st === "already" || jpReady;
     els.btnRun.disabled = !ok;
-    els.btnRun.textContent = ok ? "출력 파일 선택하고 패치 시작" : "먼저 올바른 원본 이미지를 선택하세요";
+    els.btnRun.textContent = ok
+      ? (jpReady ? "출력 파일 선택하고 패치 시작 (영문 패치까지 함께)" : "출력 파일 선택하고 패치 시작")
+      : (st === "jp" ? "위에서 영문 텍스트 패치(.ppf)를 넣어 주세요"
+                     : "먼저 올바른 원본 이미지를 선택하세요");
   }
 
   // ---------------------------------------------------------------------
@@ -1139,8 +1568,11 @@ class Sha256 {
 
       const idInfo = (identifyResult && identifyResult[3]) || {};
       const result = await runPatchCore({
-        cueText, imgSize: imgFile.size, outWriter: writer, mode, manifest,
-        dataLba: idInfo.dataLba, fetchAssetBlob, fetchTrackPcm, log: logLine,
+        cueText, imgSize: imgFile.size, outWriter: writer, srcReader: imgReader, mode, manifest,
+        dataLba: idInfo.dataLba, ppfEntries, fetchAssetBlob, fetchTrackPcm, log: logLine,
+        eccProgress: (done, total) => {
+          setStatus(els.runStatus, `EDC/ECC 재계산 중 ${((100*done)/total).toFixed(0)}% …`, "busy");
+        },
       });
       setProgress(els.runProgressBar, els.runProgressWrap, 80);
 
@@ -1152,7 +1584,10 @@ class Sha256 {
       const outReader = new FileReaderRA(outFile);
       await verifyPatchRegions(outReader, result.appliedRegions, result.dataLba);
       await verifyTracks(outReader, result.appliedTracks, Sha256);
-      logLine("  검증 통과: 기록분 일치, 파일 크기 불변");
+      // 이 검사가 없어서 EDC/ECC 결함이 그대로 배포됐다. 다시는 안 되게 한다.
+      const touched = result.repaired ? result.repaired.sectors : [];
+      await verifySectorIntegrity(outReader, touched, result.dataLba);
+      logLine(`  검증 통과: 기록분 일치, EDC/ECC 유효(${touched.length.toLocaleString()}개 섹터), 파일 크기 불변`);
       setProgress(els.runProgressBar, els.runProgressWrap, 90);
 
       logLine("출력 해시 계산 중 …");
@@ -1171,7 +1606,10 @@ class Sha256 {
       const cookedSha = await extractCookedIsoSha256(outReader, Sha256, null, result.dataLba);
       // 베이스가 '더빙 없는 영문 텍스트 패치본'이면 음성이 일본어로 남으므로
       // 결과 데이터트랙도 달라진다. 베이스에 맞는 기대값을 골라야 한다.
-      const jpv = identifyResult && identifyResult[0] === "en_jpvoice";
+      // 일본판 + PPF 로 만든 결과도 '일본어 음성' 계열이다.
+      const jpv = identifyResult
+        && (identifyResult[0] === "en_jpvoice"
+            || (identifyResult[0] === "jp" && ppfEntries && ppfEntries.length));
       const expectCooked = manifest.expected_output[
         mode + (jpv ? "_jpvoice_cooked_sha256" : "_cooked_sha256")];
       const expectedKey = mode === "both" ? "both_sha256" : `${mode}_only_sha256`;
@@ -1243,16 +1681,47 @@ class Sha256 {
     var text = buildCueText(imgName);
     if (text === null) return;
     var cueName = imgName.replace(/\.[^.]+$/, "") + ".cue";
+    var url = URL.createObjectURL(new Blob([text], {type: "application/octet-stream"}));
+
+    // 페이지에도 남겨 둔다 — 팝업을 닫아 버린 뒤에도 다시 받을 수 있어야 한다.
     var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([text], {type: "application/octet-stream"}));
-    a.download = cueName;
+    a.href = url; a.download = cueName;
     a.className = "cta";
     a.textContent = cueName + " 내려받기";
     a.style.marginTop = ".8rem";
     els.runStatus.after(a);
+
     logLine('  .cue 준비 완료: FILE -> "' + imgName + '"');
     logLine("  ※ .cue 를 받지 않으면 에뮬레이터가 패치된 이미지를 찾지 못합니다.");
     logLine("     원본 .cue 는 패치 전 파일명을 가리키고 있어 그대로는 쓸 수 없습니다.");
+
+    // 그리고 팝업으로 한 번 더 막아 세운다. 인라인 버튼만으로는 자꾸 놓친다.
+    var modal = document.getElementById("cue-modal");
+    if (!modal) return;
+    var dl = document.getElementById("cue-dl");
+    var later = document.getElementById("cue-later");
+    document.getElementById("cue-sub").textContent = imgName + " 저장됨";
+    dl.href = url; dl.download = cueName;
+    dl.textContent = cueName + " 내려받기";
+    var got = false;
+    function close(){
+      modal.hidden = true;
+      document.body.style.overflow = "";
+      removeEventListener("keydown", onEsc);
+    }
+    function onEsc(e){ if (e.key === "Escape" && got) close(); }
+    dl.onclick = function(){
+      got = true;
+      dl.textContent = "받았습니다 ✓ — 같은 폴더에 두세요";
+      later.textContent = "닫기";
+      logLine("  .cue 내려받음: " + cueName);
+    };
+    later.onclick = close;
+    // 배경 클릭으로는 닫지 않는다 — 실수로 지나치는 것이 이 팝업의 존재 이유다.
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    addEventListener("keydown", onEsc);
+    modal.querySelector(".cmodal-box").focus();
   }
 
   /** 폴더가 막혔을 때의 우회: .cue 와 .img 를 파일로 직접 고른다.
@@ -1457,5 +1926,24 @@ class Sha256 {
 })();
 
 </script>
+<div id="cue-modal" class="cmodal" hidden>
+  <div class="cmodal-back"></div>
+  <div class="cmodal-box" role="dialog" aria-modal="true" aria-labelledby="cue-title" tabindex="-1">
+    <div class="tick">✓</div>
+    <h3 id="cue-title">패치 완료</h3>
+    <p id="cue-sub"></p>
+    <div class="warn">
+      <b>.cue 파일도 반드시 받으세요.</b>
+      원본 <code>.cue</code> 는 <b>패치 전 파일명</b>을 가리키고 있어서, 받지 않으면
+      에뮬레이터가 방금 만든 이미지를 찾지 못합니다.
+      받으신 <code>.cue</code> 는 <code>.img</code> 와 <b>같은 폴더</b>에 두시면 됩니다.
+    </div>
+    <div class="acts">
+      <a id="cue-dl" class="cta" download>.cue 내려받기</a>
+      <button type="button" id="cue-later" class="ghost">이미 받았습니다 · 닫기</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -82,15 +82,40 @@
     }
   ],
   "expected_output": {
-    "text_only_sha256": "84d7fedea64e6313959c067d41a49a3dcdf8556e2fa4cdae291dacd237ace7eb",
-    "voice_only_sha256": "943891fce46f9673a6327e3d70ba1b080190fb98526153714c71286b49e5c912",
-    "both_sha256": "c783b02795a819a45de5a3f606733ec69c272c08063512882cdb0d37649f63fb",
-    "_note": "*_sha256 는 .img 전체 해시라 CD 오디오 트랙까지 포함한다. 우리는 오디오를 건드리지 않으므로 립(rip)이 다르면 이 값이 달라진다 — 판정 기준으로 쓰면 안 된다. 실제 검증은 *_cooked_sha256(데이터트랙)과 기록된 트랙 해시로 한다.",
+    "text_only_sha256": "4ccec17de11a2f900c3a98cfbb244f88112734a26c08aa4398897845915a3d79",
+    "voice_only_sha256": "39ae18137b186f7b013926bb00f81871f09e86bce6f3e25832e4f9a0d0f5f7ce",
+    "both_sha256": "419c885edcc2a0e0c80b6ba494071a837188834f9ab267527230082fbdc5f454",
+    "_note": "전체 .img 해시는 판정 기준이 아니다 (CD 오디오 립 차이로 달라진다). 판정은 *_cooked_sha256 으로 한다. 이 값들은 v0.9.1 — EDC/ECC 재계산 반영본이며, cooked 값은 v0.9 와 동일하다 (EDC/ECC 는 유저데이터 밖에 있다).",
     "text_cooked_sha256": "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165",
     "voice_cooked_sha256": "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
     "both_cooked_sha256": "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3",
     "text_jpvoice_cooked_sha256": "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9",
     "voice_jpvoice_cooked_sha256": "125745a8d4f0a5d72e2eeb000477f6f37fd6be10e9474c60f80cb21c22924053",
     "both_jpvoice_cooked_sha256": "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56"
+  },
+  "english_text_ppf": {
+    "_읽어주세요": [
+      "ysutopia 의 영문 텍스트 번역 패치를 식별하기 위한 지문. 패치 파일 자체는 배포하지 않는다.",
+      "사용자가 BIN 쪽을 골랐을 때 '그거 말고 ISO 쪽' 이라고 알려주기 위해 둘 다 기록한다."
+    ],
+    "iso": {
+      "sha256": "fe78de06f5646f01e0b19414af12d85314fdef0c42f136986c6a275c6b5d699f",
+      "size": 427465,
+      "records": 4498,
+      "patch_bytes": 386923,
+      "name": "YsIV-ISO.ppf",
+      "domain": "cooked"
+    },
+    "bin": {
+      "sha256": "950bee37650e5a43d5b3b960c9b5d2149e9174e9a8c0f8e0f64d6c5ced8e56db",
+      "size": 502398,
+      "records": 5412,
+      "patch_bytes": 453630,
+      "name": "YsIV-BIN.ppf",
+      "domain": "raw",
+      "note": "데이터트랙이 파일 섹터 3365 에서 시작하는 덤프를 전제한다 — 우리는 ISO 쪽만 쓴다."
+    },
+    "result_cooked_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
+    "source": "https://www.ysutopia.net/projects/ys4/  (YsIV(US)v95.zip)"
   }
 }
