@@ -560,6 +560,14 @@ ol.chain{margin:0;padding-left:1.15rem;font-size:.92rem;line-height:1.75;color:v
 ol.chain li{margin:.15rem 0}
 /* .brand 는 2열 그리드(로고 | 글). 로고가 1~2행만 차지해서 3번째 자식인 연락처가
    1열(로고 아래)로 떨어졌다. 로고 span 을 늘리고 열을 못박아 TopperJI 줄에 맞춘다. */
+.fthanks{min-width:min(100%,17rem)}
+.fthanks .lab{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:.35rem}
+.fthanks a{display:inline-block;color:var(--phos);text-decoration:none;font-size:.92rem;
+  border-bottom:1px solid var(--edge)}
+.fthanks a:hover{color:var(--amber);border-bottom-color:var(--amber)}
+.fthanks small{display:block;margin-top:.3rem;color:var(--faint);font-size:.74rem;line-height:1.6}
+.callout.thanks .lab{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
 .brand img{grid-row:1/4}
 .brand .contact{grid-column:2;margin-top:.15rem}
 .brand .contact a{color:var(--faint);text-decoration:none;border-bottom:1px solid transparent}
@@ -1061,6 +1069,18 @@ ol.chain li{margin:.15rem 0}
   <p class="sub">33년에 걸친 다른 사람들의 작업 위에 올라가 있습니다.
     게임을 켜면 가장 먼저 보이는 화면이 이 순서인 이유입니다.</p>
 
+  <div class="callout thanks">
+    <span class="lab">Thanks</span>
+    <p>NightWolve 님과 팀이 2004년에 스크립트를 뽑아내고 폰트 렌더러를 열어 두지 않았다면,
+      그리고 Burnt Lasagna 님이 2012년에 음성 슬롯의 구조를 밝혀 두지 않았다면
+      이 한국어 패치는 시작조차 할 수 없었습니다.</p>
+    <p lang="en" class="thanks-en">If NightWolve and their team had not extracted the script and
+      opened up the font renderer in 2004, and if Burnt Lasagna had not mapped out the structure of
+      the voice slots in 2012, this Korean patch could never have begun.</p>
+    <p style="margin-top:.7rem"><a href="https://www.ysutopia.net/projects/ys4/"
+      rel="noopener noreferrer" target="_blank">ysutopia.net — Ys IV: The Dawn of Ys</a></p>
+  </div>
+
   <div class="hist">
     <div class="era">
       <div class="yr">1993</div>
@@ -1087,15 +1107,6 @@ ol.chain li{margin:.15rem 0}
     </div>
   </div>
 
-  <div class="callout">
-    <span class="lab">감사</span>
-    <p>NightWolve 님과 팀이 2004년에 스크립트를 뽑아내고 폰트 렌더러를 열어 두지 않았다면,
-      그리고 Burnt Lasagna 님이 2012년에 음성 슬롯의 구조를 밝혀 두지 않았다면
-      이 한국어 패치는 시작조차 할 수 없었습니다.</p>
-    <p lang="en" class="thanks-en">If NightWolve and their team had not extracted the script and
-      opened up the font renderer in 2004, and if Burnt Lasagna had not mapped out the structure of
-      the voice slots in 2012, this Korean patch could never have begun.</p>
-  </div>
 </section>
 
 <!-- ─────────── 06 버그 신고 ─────────── -->
@@ -1189,6 +1200,12 @@ ol.chain li{margin:.15rem 0}
         <li><button data-go="t-notes">릴리스</button></li>
         <li><button data-go="t-credit">계보</button></li>
       </ul>
+      <div class="fthanks">
+        <span class="lab">Special Thanks</span>
+        <a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">
+          ysutopia.net</a>
+        <small>NightWolve 님의 영문 번역 패치 · Burnt Lasagna 님의 영문 더빙 패치</small>
+      </div>
     </div>
     <p class="legal">
       『Ys IV: The Dawn of Ys』의 저작권은 Hudson Soft 및 Nihon Falcom 에 있습니다.
