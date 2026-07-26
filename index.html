@@ -558,7 +558,10 @@ figure.shot figcaption{padding:.6rem .9rem;font-size:.86rem;color:var(--faint);
   color:var(--amber);border:1px solid var(--amber);border-radius:99px;padding:.1rem .5rem;margin-bottom:.5rem}
 ol.chain{margin:0;padding-left:1.15rem;font-size:.92rem;line-height:1.75;color:var(--mute)}
 ol.chain li{margin:.15rem 0}
-.brand .contact{margin-top:.15rem}
+/* .brand 는 2열 그리드(로고 | 글). 로고가 1~2행만 차지해서 3번째 자식인 연락처가
+   1열(로고 아래)로 떨어졌다. 로고 span 을 늘리고 열을 못박아 TopperJI 줄에 맞춘다. */
+.brand img{grid-row:1/4}
+.brand .contact{grid-column:2;margin-top:.15rem}
 .brand .contact a{color:var(--faint);text-decoration:none;border-bottom:1px solid transparent}
 .brand .contact a:hover{color:var(--amber);border-bottom-color:var(--amber)}
 [data-dl][aria-disabled=true]{opacity:.42;pointer-events:none;text-decoration:none}
