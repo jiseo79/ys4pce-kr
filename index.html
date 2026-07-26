@@ -1023,7 +1023,10 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
    남이 올린 글이 스크립트가 될 방법이 없다. */
 (function(){
   "use strict";
-  var API = "board/api.php";
+  // 게시판 API 는 다른 도메인(개인 서버)에 있다 — GitHub Pages 는 PHP 를 못 돌린다.
+  // 주소는 links.json 의 board.url 한 곳에서만 관리한다. 비어 있으면 게시판을
+  // 켜지 않고 안내만 띄운다.
+  var API = null;
   var form = document.getElementById("bf");
   if (!form) return;
   var $ = function(id){ return document.getElementById(id); };
@@ -1051,6 +1054,7 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 
   // 선택지는 HTML 에 정적으로도 들어 있다 — 서버가 죽어도 폼은 쓸 수 있어야 한다.
   // meta 가 오면 서버 쪽 목록으로 덮어쓴다 (양쪽이 어긋나면 서버가 정답).
+  function loadMeta(){
   fetch(API + "?action=meta").then(function(r){ return r.json(); }).then(function(m){
     if (!m || !m.ok) return;
     meta = m;
@@ -1060,6 +1064,7 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
     $("bf-imghint").textContent =
       "PNG · JPEG · GIF · WebP, 최대 " + m.max_images + "장, 장당 " + m.max_image_mb + "MB";
   }).catch(function(){ /* 목록 쪽에서 한 번만 알린다 */ });
+  }
 
   function render(data){
     listEl.textContent = "";
@@ -1096,9 +1101,9 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
         var box = document.createElement("div"); box.className = "shots-in-post";
         p.images.forEach(function(im){
           var a = document.createElement("a");
-          a.href = "board/" + im.src; a.target = "_blank"; a.rel = "noopener noreferrer";
+          a.href = im.src; a.target = "_blank"; a.rel = "noopener noreferrer";
           var img = document.createElement("img");
-          img.src = "board/" + im.src; img.loading = "lazy";
+          img.src = im.src; img.loading = "lazy";
           img.width = im.w; img.height = im.h;
           img.alt = p.title + " 첨부 화면";
           a.appendChild(img); box.appendChild(a);
@@ -1183,9 +1188,31 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 
   // 탭이 처음 열릴 때만 목록을 부른다 — 소개만 보고 갈 사람에게 요청을 만들지 않는다.
   var loaded = false;
+  function start(){
+    if (loaded) return;
+    loaded = true;
+    fetch("links.json", {cache:"no-cache"})
+      .then(function(r){ return r.json(); })
+      .then(function(cfg){
+        if (!cfg.board || !cfg.board.url){
+          listEl.textContent = "";
+          var e = document.createElement("p");
+          e.className = "sub";
+          e.textContent = "게시판이 아직 열리지 않았습니다.";
+          listEl.appendChild(e);
+          form.querySelectorAll("input,select,textarea,button")
+              .forEach(function(x){ x.disabled = true; });
+          return;
+        }
+        API = cfg.board.url;
+        loadMeta();
+        load(1);
+      })
+      .catch(function(){ loaded = false; });
+  }
   var tab = document.getElementById("t-board");
-  if (tab) tab.addEventListener("click", function(){ if (!loaded){ loaded = true; load(1); } });
-  if (location.hash === "#board"){ loaded = true; load(1); }
+  if (tab) tab.addEventListener("click", start);
+  if (location.hash === "#board") start();
 })();
 
 /* ══════════════ 외부 파일 주소 (links.json) ══════════════
