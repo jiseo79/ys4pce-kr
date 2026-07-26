@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이스 IV: 이스의 여명 — 한국어 패치</title>
+<meta name="description" content="PC Engine Super CD-ROM² 『Ys IV: The Dawn of Ys』 한국어 패치. 한글이 시스템 카드 ROM에서 렌더링됩니다. 브라우저에서 바로 패치하며 파일은 서버로 전송되지 않습니다.">
+<meta property="og:title" content="이스 IV: 이스의 여명 — 한국어 패치 v0.9">
+<meta property="og:description" content="브라우저에서 바로 패치. 파일은 서버로 전송되지 않습니다.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#090d13">
+<link rel="preload" href="img/ys4-box-art.jpg" as="image">
+<link rel="preload" href="img/ys4-gameplay-village.webp" as="image">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   이스 IV — 한국어 패치 배포 페이지
+   외부 폰트 · CDN · 추적 스크립트 없음.
+   팔레트는 실제 ROM 값에서 가져왔다: 배경 $000, 잉크 $1FF, 스킵 확인 $1F8.
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --void:#0a0a0c;          /* VCE $000 — CRT 블랙은 완전 중립이 아니다 */
+  --deep:#101116;
+  --panel:#15161c;
+  --edge:#24262f;
+  --phos:#f1eee4;          /* VCE $1FF — 인광체 화이트 */
+  --mute:#8b8f9c;
+  --faint:#585c68;
+  --amber:#ffb200;         /* VCE $1F8 — 스킵 확인 노랑. 이 페이지의 강조색 */
+  --rust:#c8410f;          /* 계보 · 시대 */
+  --ok:#5ec27a;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--void);color:var(--phos);font:16px/1.75 var(--sans);
+  -webkit-text-size-adjust:100%;overflow-x:hidden}
+a{color:var(--amber);text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:3px}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+
+/* ── 유틸리티 서체: 이 게임은 8×8 타일 격자다. 라벨·데이터는 전부 고정폭. ── */
+.lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--faint)}
+.mono{font-family:var(--mono)}
+
+/* ══════════════ 1. 부팅 시퀀스 = 히어로 ══════════════
+   실제 패치가 부팅 때 보여주는 화면 그대로. 6초 후, 또는 클릭하면
+   노랗게 바뀌며 페이지로 넘어간다 — 게임에서 일어나는 일과 같다. */
+#boot{position:fixed;inset:0;z-index:100;background:var(--void);
+  display:grid;place-items:center;cursor:pointer}
+#boot.gone{opacity:0;pointer-events:none;transition:opacity .5s ease}
+.crt{position:relative;width:min(86vw,720px);aspect-ratio:8/7;background:#000;
+  border-radius:6px;overflow:hidden;
+  box-shadow:0 0 0 1px #1d1f27, 0 40px 120px -30px rgba(255,178,0,.18)}
+.crt::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.34) 0 1px,transparent 1px 3px)}
+.crt::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.55))}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  font-family:var(--mono);color:var(--phos);
+  font-size:clamp(9px,1.72vw,15px);line-height:1.9;white-space:pre;
+  padding-left:8%;letter-spacing:.02em}
+.screen .ttl{text-align:center;padding-right:8%;margin-bottom:1.9em}
+.screen b{font-weight:400}
+#boot.ack .screen{color:var(--amber)}
+.skip{position:absolute;bottom:6%;left:0;right:0;text-align:center;z-index:3;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:#5a5a5a}
+@keyframes bootin{from{opacity:0}to{opacity:1}}
+.screen>*{animation:bootin .5s ease both}
+.screen .ttl{animation-delay:.15s}
+.screen .r1{animation-delay:.55s} .screen .r2{animation-delay:.75s}
+.screen .r3{animation-delay:.95s} .screen .r4{animation-delay:1.15s}
+
+/* ══════════════ 2. 헤더 ══════════════ */
+header{padding:5rem 0 2.2rem}
+.kicker{display:flex;align-items:center;gap:.7rem;margin:0 0 1.4rem}
+.kicker .rule{flex:1;height:1px;background:var(--edge)}
+h1{font-size:clamp(2rem,6.4vw,3.4rem);line-height:1.08;margin:0;letter-spacing:-.035em;font-weight:800}
+h1 .en{display:block;font-family:var(--mono);font-size:clamp(.78rem,2vw,1rem);font-weight:400;
+  letter-spacing:.24em;color:var(--rust);margin-top:1rem;text-transform:uppercase}
+.ver{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.6rem;
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;color:var(--amber);
+  border:1px solid rgba(255,178,0,.35);border-radius:100px;padding:.3rem .9rem}
+.ver::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber)}
+.lede{font-size:1.12rem;line-height:1.85;color:var(--mute);max-width:54ch;margin:1.8rem 0 0}
+.lede b{color:var(--phos);font-weight:600}
+
+/* ══════════════ 3. 탭 ══════════════ */
+.tabs{position:sticky;top:0;z-index:20;background:rgba(10,10,12,.86);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);margin-top:3.5rem}
+.tabs .wrap{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tab{appearance:none;background:none;border:0;color:var(--mute);cursor:pointer;
+  font:600 .93rem/1 var(--sans);padding:1.15rem .3rem;margin-right:2rem;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:color .18s}
+.tab:last-child{margin-right:0}
+.tab:hover{color:var(--phos)}
+.tab[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.tab .n{font-family:var(--mono);font-size:.7rem;color:var(--faint);margin-right:.5rem}
+.tab[aria-selected=true] .n{color:var(--amber)}
+
+.panel{display:none;padding:3.2rem 0 5rem;animation:fade .35s ease both}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h2{font-size:1.55rem;letter-spacing:-.02em;margin:0 0 .5rem;font-weight:700}
+h3{font-size:1.06rem;margin:2.4rem 0 .5rem;font-weight:700;letter-spacing:-.01em}
+p{margin:.8rem 0}
+.sub{color:var(--mute);max-width:62ch;margin-top:0}
+code{font-family:var(--mono);font-size:.85em;background:#1b1d24;padding:.14em .42em;
+  border-radius:4px;color:#dcd8cc}
+ul.tick{list-style:none;padding:0;margin:1rem 0}
+ul.tick li{padding-left:1.5rem;position:relative;margin:.5rem 0;color:var(--mute)}
+ul.tick li b{color:var(--phos);font-weight:600}
+ul.tick li::before{content:"";position:absolute;left:.25rem;top:.72em;
+  width:5px;height:5px;background:var(--amber)}
+ul.tick.no li::before{background:var(--faint)}
+
+/* ── 영상 슬롯 ── */
+.video{aspect-ratio:16/9;background:linear-gradient(160deg,#141519,#0d0e12);
+  border:1px solid var(--edge);border-radius:10px;display:grid;place-items:center;
+  margin:1.6rem 0;position:relative;overflow:hidden;text-align:center}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video .ph{color:var(--faint);font-family:var(--mono);font-size:.78rem;letter-spacing:.16em}
+
+/* ── 2단 편집형 ── */
+.split{display:grid;gap:2.4rem;grid-template-columns:1fr 1fr;margin:2rem 0}
+@media(max-width:680px){.split{grid-template-columns:1fr;gap:1.6rem}}
+
+/* ── 준비물: 두 개의 물건 ── */
+.things{display:grid;gap:1.2rem;grid-template-columns:1fr 1fr;margin:2rem 0}
+@media(max-width:760px){.things{grid-template-columns:1fr}}
+.thing{background:var(--panel);border:1px solid var(--edge);border-radius:12px;
+  padding:1.6rem 1.5rem;position:relative}
+.thing .idx{font-family:var(--mono);font-size:3.2rem;line-height:1;color:#1e2029;
+  position:absolute;top:1rem;right:1.2rem;font-weight:700}
+.thing h3{margin:0 0 .1rem;font-size:1.08rem}
+.thing .src{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;
+  color:var(--rust);text-transform:uppercase;margin-bottom:.9rem}
+.thing p{color:var(--mute);font-size:.93rem;margin:.6rem 0 0}
+.thing p b{color:var(--phos)}
+
+/* ── 강조 콜아웃 ── */
+.callout{border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(255,178,0,.07),transparent 70%);
+  padding:1.1rem 1.4rem;margin:1.8rem 0;border-radius:0 8px 8px 0}
+.callout .lab{color:var(--amber);display:block;margin-bottom:.35rem}
+.callout p{margin:0;color:var(--mute)}
+.callout p b{color:var(--phos)}
+
+/* ── CTA ── */
+.cta{display:inline-flex;align-items:center;gap:.6rem;background:var(--amber);color:#100f0c;
+  text-decoration:none;font-weight:800;padding:.95em 1.8em;border-radius:8px;
+  margin:.4rem .5rem .4rem 0;font-size:1rem;transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px -12px rgba(255,178,0,.6)}
+.cta.ghost{background:none;color:var(--phos);border:1px solid var(--edge);font-weight:600}
+.cta.ghost:hover{border-color:var(--amber);box-shadow:none}
+.cta.off{opacity:.4;pointer-events:none;transform:none}
+.hint{color:var(--faint);font-size:.87rem;margin-top:.8rem}
+
+/* ── 표 ── */
+.scroll{overflow-x:auto;margin:1.4rem 0;border:1px solid var(--edge);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--edge);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--mono);font-weight:400;font-size:.68rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);background:#111219}
+td{color:var(--mute)}
+td b{color:var(--phos);font-weight:600}
+td.h{font-family:var(--mono);font-size:.72rem;word-break:break-all;color:#a8acb8}
+
+/* ── 계보 ── */
+.hist{margin:2.2rem 0;border-top:1px solid var(--edge)}
+.era{display:grid;grid-template-columns:6.5rem 1fr;gap:1.8rem;padding:1.6rem 0;
+  border-bottom:1px solid var(--edge);align-items:baseline}
+@media(max-width:600px){.era{grid-template-columns:1fr;gap:.3rem}}
+.era .yr{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--rust);
+  letter-spacing:-.02em;line-height:1}
+.era h3{margin:0 0 .25rem;font-size:1.05rem}
+.era .who{color:var(--mute);font-size:.9rem;line-height:1.7}
+.era.now .yr{color:var(--amber)}
+.era.now h3::after{content:"현재";font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+  color:var(--amber);border:1px solid rgba(255,178,0,.4);border-radius:3px;
+  padding:.15em .45em;margin-left:.7rem;vertical-align:.15em}
+
+/* ── 푸터 ── */
+footer{border-top:1px solid var(--edge);background:var(--deep);margin-top:2rem}
+footer .wrap{padding:3rem 22px 3.4rem}
+.ftop{display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;align-items:flex-start}
+.brand .mark{font-family:var(--mono);font-size:1.15rem;font-weight:700;letter-spacing:.14em}
+.brand .mark i{color:var(--amber);font-style:normal}
+.brand small{display:block;color:var(--faint);font-size:.78rem;margin-top:.4rem;letter-spacing:.02em}
+.brand img{height:34px;width:auto;display:block;margin-bottom:.6rem}
+.flinks{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;font-size:.88rem}
+.flinks button{background:none;border:0;color:var(--mute);cursor:pointer;font:inherit;padding:0}
+.flinks button:hover{color:var(--amber)}
+.legal{margin-top:2.4rem;padding-top:1.5rem;border-top:1px solid var(--edge);
+  color:var(--faint);font-size:.8rem;line-height:1.8;max-width:78ch}
+
+/* ══════════════ 2026 리디자인: PC Engine CD 재킷 × 팬 번역 작업실 ══════════════ */
+:root{
+  --void:#090d13;
+  --deep:#0d131b;
+  --panel:#121a24;
+  --edge:#303845;
+  --phos:#f4ead7;
+  --mute:#a5a395;
+  --faint:#6f746f;
+  --amber:#e3ae42;
+  --rust:#b43832;
+  --blue:#6d8ecf;
+  --paper:#d8c9a6;
+  --display:"Iowan Old Style","AppleMyungjo","Noto Serif KR","Batang",serif;
+}
+body{
+  background:
+    radial-gradient(circle at 18% 5%,rgba(71,99,153,.14),transparent 28rem),
+    linear-gradient(180deg,#080b10 0,#0b1118 45rem,#090d13 100%);
+  color:var(--phos);
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:url("img/ys4-gameplay-village.webp") 50% 35%/cover no-repeat;
+  filter:grayscale(1) contrast(1.18);opacity:.035;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.12;
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 3px 4px),
+    radial-gradient(circle at 20% 30%,rgba(255,255,255,.035) 0 1px,transparent 1.5px);
+  background-size:auto,5px 5px;mix-blend-mode:soft-light;
+}
+.wrap{max-width:1120px;padding-left:clamp(20px,4vw,44px);padding-right:clamp(20px,4vw,44px)}
+
+/* 히어로: 박스아트·실기·2026 작업자 서명을 한 화면에 겹친다. */
+.hero{
+  position:relative;min-height:min(920px,96svh);display:grid;align-items:center;
+  overflow:hidden;isolation:isolate;padding:clamp(5rem,11vh,9rem) 0 5rem;
+  border-bottom:1px solid rgba(227,174,66,.24);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:-5;
+  background:
+    linear-gradient(90deg,rgba(5,8,12,.98) 0%,rgba(5,8,12,.9) 38%,rgba(5,8,12,.32) 72%,rgba(5,8,12,.76) 100%),
+    linear-gradient(0deg,#090d13 0,transparent 26%,rgba(7,10,15,.16) 100%);
+}
+.hero-bg{position:absolute;inset:-8%;z-index:-7;will-change:transform;pointer-events:none}
+.hero-bg.cover{
+  left:38%;background:url("img/ys4-box-art.jpg") 50% 47%/cover no-repeat;
+  filter:saturate(.72) contrast(1.08);opacity:.78;
+  transform:translate3d(0,var(--parallax-y,0),0) scale(1.07);
+}
+.hero-bg.scene{
+  inset:28% 0 -28% 46%;background:url("img/ys4-gameplay-village.webp") 50% 42%/cover no-repeat;
+  filter:saturate(.68) contrast(1.18);opacity:.18;mix-blend-mode:screen;
+  transform:translate3d(0,var(--parallax-y,0),0) scale(1.12);
+}
+.hero-grid{
+  width:min(100%,1240px);margin:0 auto;padding:0 clamp(20px,5vw,68px);
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.75fr);gap:clamp(2rem,6vw,7rem);
+  align-items:center;
+}
+.hero-copy{position:relative;z-index:2;max-width:700px}
+.hero-copy::before{
+  content:"PC ENGINE / SUPER CD-ROM²";display:block;width:max-content;max-width:100%;
+  padding:.5rem .7rem;border:1px solid rgba(244,234,215,.34);
+  font:700 .64rem/1 var(--mono);letter-spacing:.2em;color:var(--phos);margin-bottom:1.6rem;
+}
+.hero .kicker{margin:0 0 1rem;max-width:34rem}
+.hero .kicker .rule{background:linear-gradient(90deg,var(--amber),transparent)}
+.hero .kicker .lab:first-child{color:var(--amber)}
+.hero h1{
+  font:800 clamp(3.2rem,8.3vw,7.4rem)/.88 var(--display);letter-spacing:-.07em;
+  text-shadow:0 4px 30px rgba(0,0,0,.42);
+}
+.hero h1 .line{display:block}
+.hero h1 .line:last-of-type{margin-left:clamp(1rem,7vw,5.5rem);color:var(--paper)}
+.hero h1 .en{
+  max-width:46rem;font-family:var(--mono);font-size:clamp(.62rem,1.25vw,.84rem);
+  letter-spacing:.24em;color:var(--blue);margin:1.75rem 0 0 .35rem;line-height:1.6;
+}
+.edition-row{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-top:1.65rem}
+.hero .ver{
+  margin:0;border-radius:0;background:var(--amber);border-color:var(--amber);color:#171109;
+  font-weight:800;padding:.46rem .82rem;box-shadow:6px 6px 0 rgba(180,56,50,.68);
+}
+.hero .ver::before{background:#171109}
+.maker-sign{
+  font:700 .7rem/1.4 var(--mono);letter-spacing:.12em;color:var(--mute);
+  border-left:1px solid var(--edge);padding-left:.8rem;
+}
+.hero .lede{font-size:clamp(1rem,1.8vw,1.18rem);line-height:1.9;color:#c4c0b1;margin-top:2rem}
+.hero-actions{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-top:2rem}
+.hero-actions .cta{margin:0;border-radius:2px}
+.hero-actions .cta.primary{
+  background:var(--rust);color:#fff;border:1px solid #d15149;
+  box-shadow:7px 7px 0 rgba(227,174,66,.9);
+}
+.hero-actions .cta.primary:hover{box-shadow:10px 10px 0 rgba(227,174,66,.9)}
+.hero-proof{
+  display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:2rem;padding-top:1.2rem;
+  border-top:1px solid rgba(244,234,215,.14);
+}
+.hero-proof span{font:600 .68rem/1.55 var(--mono);letter-spacing:.08em;color:var(--mute)}
+.hero-proof b{display:block;color:var(--phos);font-size:.84rem;letter-spacing:.02em}
+.hero-object{position:relative;z-index:1;min-height:530px;align-self:stretch}
+.jewel{
+  position:absolute;width:min(34vw,430px);aspect-ratio:1;top:47%;left:50%;
+  transform:translate(-50%,calc(-50% + var(--parallax-y,0px))) rotate(3deg);
+  padding:10px;background:rgba(226,218,198,.16);
+  border:1px solid rgba(255,255,255,.3);box-shadow:0 45px 90px -35px #000,12px 14px 0 rgba(8,11,16,.7);
+}
+.jewel::before{content:"";position:absolute;inset:4px;border:1px solid rgba(255,255,255,.16);z-index:1}
+.jewel img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.86) contrast(1.05)}
+.jewel-caption{
+  position:absolute;right:-1px;bottom:-2.8rem;display:flex;gap:.7rem;align-items:center;
+  font:700 .6rem/1 var(--mono);letter-spacing:.16em;color:var(--paper);white-space:nowrap;
+}
+.jewel-caption::before{content:"";width:2.6rem;height:1px;background:var(--amber)}
+.console-float{
+  position:absolute;width:min(34vw,420px);right:-8%;bottom:-4%;z-index:3;
+  filter:drop-shadow(0 30px 26px rgba(0,0,0,.62));transform:rotate(-8deg);
+}
+.serial{
+  position:absolute;top:8%;right:-1.4rem;writing-mode:vertical-rl;
+  font:700 .58rem/1 var(--mono);letter-spacing:.25em;color:rgba(244,234,215,.48);
+}
+.scroll-cue{
+  position:absolute;left:clamp(20px,4vw,58px);bottom:1.7rem;display:flex;align-items:center;gap:.8rem;
+  font:600 .57rem/1 var(--mono);letter-spacing:.22em;color:var(--faint);z-index:3;
+}
+.scroll-cue::before{content:"";width:4.6rem;height:1px;background:linear-gradient(90deg,var(--amber),transparent)}
+
+/* 발매·번역 계보 요약 띠 */
+.edition-strip{border-bottom:1px solid var(--edge);background:#0c1118}
+.edition-strip .wrap{
+  display:grid;grid-template-columns:repeat(4,1fr);padding-top:0;padding-bottom:0;
+}
+.edition-fact{padding:1.35rem 1.2rem;border-left:1px solid var(--edge)}
+.edition-fact:last-child{border-right:1px solid var(--edge)}
+.edition-fact b{display:block;font:800 clamp(1.15rem,2.4vw,1.7rem)/1 var(--display);color:var(--paper)}
+.edition-fact span{display:block;margin-top:.38rem;font:600 .61rem/1.4 var(--mono);letter-spacing:.12em;color:var(--faint)}
+
+/* 내비게이션과 본문을 게임 매뉴얼처럼 편집한다. */
+.tabs{margin-top:0;background:rgba(9,13,19,.93);border-top:0;box-shadow:0 14px 40px rgba(0,0,0,.24)}
+.tabs .wrap{max-width:1120px}
+.tab{padding:1.25rem .25rem;margin-right:clamp(1.1rem,4vw,3.3rem);font-size:.88rem;letter-spacing:.03em}
+.tab[aria-selected=true]{color:var(--phos)}
+.tab .n{color:var(--rust)}
+.panel{
+  position:relative;margin:0 auto 4rem;padding:clamp(3rem,6vw,5.5rem) clamp(0px,3vw,2.5rem) 5rem;
+  animation:fade .35s ease both;
+}
+.panel::before{
+  content:attr(data-chapter);position:absolute;right:clamp(0px,3vw,2rem);top:2.8rem;
+  font:800 clamp(3.5rem,10vw,7rem)/1 var(--display);color:rgba(227,174,66,.07);
+}
+h2{font:800 clamp(2rem,4vw,3rem)/1.08 var(--display);letter-spacing:-.035em;color:var(--paper)}
+h3{color:#e7ddc9}
+.sub{font-size:1rem}
+.thing,.video,.scroll{border-radius:2px}
+.thing{
+  background:linear-gradient(145deg,rgba(25,34,45,.96),rgba(13,19,27,.96));
+  border-top:2px solid var(--rust);box-shadow:0 20px 50px -35px #000;
+}
+.thing .idx{color:rgba(227,174,66,.08);font-family:var(--display)}
+.callout{border-radius:0;background:linear-gradient(90deg,rgba(227,174,66,.09),rgba(227,174,66,.015))}
+.cta{border-radius:2px}
+.scroll{background:rgba(8,12,17,.52)}
+th{background:#0e141d}
+
+/* 실제 게임 화면: 웹용 목업 대신 촬영본의 픽셀과 CRT 결을 살린다. */
+.game-gallery{
+  display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(1rem,2.5vw,2rem);
+  margin:2rem 0 3rem;align-items:start;
+}
+.game-shot{position:relative;margin:0;background:#05070a;border:1px solid var(--edge);overflow:hidden}
+.game-shot.primary{margin-top:2.4rem}
+.game-shot img{display:block;width:100%;height:auto;filter:saturate(.82) contrast(1.06)}
+.game-shot.title img{image-rendering:pixelated}
+.game-shot::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+.game-shot figcaption{
+  position:absolute;left:0;bottom:0;z-index:2;display:flex;gap:.7rem;align-items:center;
+  background:rgba(7,10,14,.88);padding:.65rem .8rem;
+  font:700 .62rem/1 var(--mono);letter-spacing:.13em;color:var(--paper);
+}
+.game-shot figcaption b{color:var(--amber)}
+.screen-note{
+  margin-top:.75rem;font:600 .68rem/1.65 var(--mono);letter-spacing:.04em;color:var(--faint)
+}
+.video{
+  background:
+    linear-gradient(90deg,rgba(8,12,17,.96),rgba(8,12,17,.72)),
+    url("img/ys4-title-screen.jpg") center/cover;
+  border-style:dashed;min-height:180px;aspect-ratio:auto;
+}
+.video .ph::before{content:"REC  •  ";color:var(--rust)}
+/* 푸터의 Mars-Drive 표식 */
+footer{position:relative;overflow:hidden;background:#080c11;border-top:1px solid rgba(227,174,66,.35)}
+footer::before{
+  content:"MARS–DRIVE";position:absolute;right:-.02em;bottom:-.3em;
+  font:800 clamp(4rem,15vw,12rem)/1 var(--display);letter-spacing:-.06em;color:rgba(244,234,215,.025);
+}
+footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;padding-bottom:4rem}
+.brand{display:grid;grid-template-columns:72px auto;column-gap:1rem;align-items:center}
+.brand img{grid-row:1/3;height:72px;width:72px;margin:0;border-radius:50%;box-shadow:0 0 0 1px rgba(244,234,215,.22),0 12px 30px rgba(0,0,0,.35)}
+.brand .mark{align-self:end}
+.brand small{align-self:start}
+.source-note{margin-top:.8rem;color:var(--faint);font-size:.72rem;line-height:1.65}
+.source-note a{color:#858b91}
+
+@media(max-width:900px){
+  .hero{min-height:auto;padding-top:7rem}
+  .hero-grid{grid-template-columns:1fr;gap:1rem}
+  .hero-object{min-height:470px}
+  .jewel{width:min(70vw,390px)}
+  .console-float{width:min(56vw,360px);right:5%}
+  .edition-strip .wrap{grid-template-columns:repeat(2,1fr)}
+  .edition-fact:nth-child(2){border-right:1px solid var(--edge)}
+  .game-gallery{grid-template-columns:1fr}
+  .game-shot.primary{margin-top:0}
+}
+@media(max-width:600px){
+  .hero{padding-top:5.5rem;padding-bottom:3.5rem}
+  .hero h1{font-size:clamp(3.1rem,17vw,5.2rem)}
+  .hero h1 .line:last-of-type{margin-left:.45rem}
+  .hero-object{min-height:380px}
+  .jewel{width:min(82vw,340px)}
+  .console-float{width:min(68vw,310px);right:-2%;bottom:-2%}
+  .serial{display:none}
+  .scroll-cue{display:none}
+  .edition-strip .wrap{padding-left:0;padding-right:0}
+  .edition-fact{padding:1.1rem}
+  .edition-fact span{font-size:.55rem}
+  .tabs .wrap{padding-left:18px;padding-right:18px}
+  .panel::before{display:none}
+  .brand{grid-template-columns:58px auto}
+  .brand img{height:58px;width:58px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .hero-bg{transform:none!important}
+}
+
+/* ══════════════ 6. 버그 신고 게시판 ══════════════ */
+#bf{display:grid;gap:1rem;margin:1.6rem 0 2.6rem;position:relative}
+.bf-row{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+#bf label{display:grid;gap:.4rem;font-size:.8rem;color:var(--mute);
+  font-family:var(--mono);letter-spacing:.06em}
+#bf input,#bf select,#bf textarea{font-family:var(--sans);font-size:.95rem;
+  background:var(--panel);color:var(--phos);border:1px solid var(--edge);
+  border-radius:6px;padding:.6em .7em;width:100%}
+#bf textarea{resize:vertical;line-height:1.7}
+#bf input:focus,#bf select:focus,#bf textarea:focus{border-color:var(--amber);outline:none}
+#bf input[type=file]{padding:.5em;font-size:.85rem;color:var(--mute)}
+.bf-hint{color:var(--faint);text-transform:none;letter-spacing:0}
+.bf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.bf-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bf-actions .status{margin-top:0;flex:1;min-width:220px}
+.posts{display:grid;gap:1rem;margin:1.2rem 0}
+.post{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:1.1rem 1.3rem}
+.post-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;margin-bottom:.5rem}
+.post-title{font-weight:700;font-size:1.02rem;flex:1;min-width:200px}
+.post-meta{font-family:var(--mono);font-size:.72rem;color:var(--faint);letter-spacing:.06em}
+.tagrow{display:flex;gap:.4rem;flex-wrap:wrap;margin:.5rem 0}
+.tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--rust);
+  border:1px solid var(--edge);border-radius:100px;padding:.18em .7em}
+.post-body{white-space:pre-wrap;color:var(--mute);font-size:.94rem;margin:.6rem 0 0}
+.shots-in-post{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
+.shots-in-post a{display:block;line-height:0}
+.shots-in-post img{max-height:150px;width:auto;border:1px solid var(--edge);border-radius:6px;
+  image-rendering:pixelated;background:#000}
+.post-del{background:none;border:0;color:var(--faint);font-size:.78rem;
+  cursor:pointer;padding:0;margin-top:.8rem}
+.post-del:hover{color:var(--rust)}
+.pager{display:flex;gap:.4rem;justify-content:center;margin:1.6rem 0}
+.pager button{background:none;border:1px solid var(--edge);color:var(--mute);
+  font-size:.85rem;border-radius:6px;padding:.4em .8em;cursor:pointer}
+.pager button[aria-current=true]{border-color:var(--amber);color:var(--amber)}
+
+/* 외부 링크가 아직 안 채워진 항목 — links.json 을 채우면 자동으로 풀린다 */
+[data-dl][aria-disabled=true]{opacity:.42;pointer-events:none;text-decoration:none}
+[data-dl][aria-disabled=true]::after{content:" (준비 중)";font-size:.85em;color:var(--faint)}
+</style>
+</head>
+<body>
+
+<!-- ══════════ 부팅 시퀀스 ══════════ -->
+<div id="boot" role="button" tabindex="0" aria-label="건너뛰기">
+  <div class="crt">
+    <div class="screen">
+<div class="ttl">Ys IV: The Dawn of Ys</div><div class="r1">  1993 원작 HUDSON SOFT</div><div class="r2">  2004 영문번역 NightWolve</div><div class="r3">  2012 영문더빙 Burnt Lasagna</div><div class="r4">  2026 한글화/AI더빙 TopperJI</div>
+    </div>
+    <div class="skip">아무 곳이나 누르면 넘어갑니다</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg cover" data-parallax data-speed="0.10" aria-hidden="true"></div>
+  <div class="hero-bg scene" data-parallax data-speed="-0.06" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="kicker">
+        <span class="lab">Fan localization archive</span><span class="rule"></span>
+        <span class="lab">1993 → 2026</span>
+      </div>
+      <h1 id="page-title">
+        <span class="line">이스 IV</span>
+        <span class="line">이스의 여명</span>
+        <span class="en">Ys IV: The Dawn of Ys — Korean Patch</span>
+      </h1>
+      <div class="edition-row">
+        <div class="ver">v0.9 · 2026</div>
+        <div class="maker-sign">LOCALIZED BY TOPPERJI<br>MARS–DRIVE</div>
+      </div>
+      <p class="lede">33년 전 PC Engine CD로 떠났던 모험을, 이제 한국어로 다시 만납니다.
+        <b>대사 전체와 엔딩 스태프롤</b>, 그리고 한국어 음성까지 한 장의 팬 패치에 담았습니다.</p>
+      <div class="hero-actions">
+        <a class="cta primary" href="#patch" data-go="t-patch">지금 패치하기</a>
+        <a class="cta ghost" href="#about" data-go="t-about">작업 이야기 보기</a>
+      </div>
+      <div class="hero-proof" aria-label="패치 주요 특징">
+        <span><b>브라우저 패치</b>파일 외부 전송 없음</span>
+        <span><b>실기 검증</b>PC Engine Super CD-ROM²</span>
+        <span><b>한국어 음성</b>242 클립 + CD 5 트랙</span>
+      </div>
+    </div>
+    <div class="hero-object" aria-label="이스 IV PC Engine 패키지 이미지">
+      <div class="jewel" data-parallax data-speed="-0.035">
+        <img src="img/ys4-box-art.jpg" alt="이스 IV 이스의 여명 PC Engine판 패키지 아트">
+        <span class="jewel-caption">THE DAWN OF YS / HCD3051</span>
+      </div>
+      <img class="console-float" src="img/pc-engine-console.webp" alt="" aria-hidden="true">
+      <span class="serial">SUPER CD-ROM² / FAN PATCH EDITION / 2026</span>
+    </div>
+  </div>
+  <span class="scroll-cue">SCROLL TO CONTINUE</span>
+</header>
+
+<div class="edition-strip" aria-label="프로젝트 요약">
+  <div class="wrap">
+    <div class="edition-fact"><b>1993</b><span>HUDSON SOFT 원작</span></div>
+    <div class="edition-fact"><b>2026</b><span>TOPPERJI 한국어화</span></div>
+    <div class="edition-fact"><b>ALL DIALOGUE</b><span>플레이 대사 전체</span></div>
+    <div class="edition-fact"><b>LOCAL ONLY</b><span>브라우저 안에서 패치</span></div>
+  </div>
+</div>
+
+<!-- ══════════ 탭 ══════════ -->
+<nav class="tabs">
+  <div class="wrap" role="tablist" aria-label="섹션">
+    <button class="tab" role="tab" id="t-about"  aria-controls="p-about"  aria-selected="true"><span class="n">01</span>소개</button>
+    <button class="tab" role="tab" id="t-need"   aria-controls="p-need"   aria-selected="false"><span class="n">02</span>준비물</button>
+    <button class="tab" role="tab" id="t-patch"  aria-controls="p-patch"  aria-selected="false"><span class="n">03</span>패치하기</button>
+    <button class="tab" role="tab" id="t-notes"  aria-controls="p-notes"  aria-selected="false"><span class="n">04</span>릴리스</button>
+    <button class="tab" role="tab" id="t-credit" aria-controls="p-credit" aria-selected="false"><span class="n">05</span>계보</button>
+    <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">06</span>버그 신고</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ─────────── 01 소개 ─────────── -->
+<section class="panel on" id="p-about" role="tabpanel" aria-labelledby="t-about" tabindex="0" data-chapter="01">
+  <h2>플레이 영상</h2>
+  <p class="sub">1993년의 픽셀과 CRT 질감부터 천천히 다시 꺼내 봅니다.</p>
+
+  <div class="game-gallery">
+    <div>
+      <figure class="game-shot primary">
+        <img src="img/ys4-gameplay-village.webp" alt="이스 IV 오프닝의 아돌 장면" loading="lazy">
+        <figcaption><b>01</b> PC ENGINE CD CUTSCENE</figcaption>
+      </figure>
+      <p class="screen-note">실기 화면을 촬영한 원본의 주사선과 번짐도 이 시대의 일부라 판단해 그대로 살렸습니다.</p>
+    </div>
+    <figure class="game-shot title">
+      <img src="img/ys4-title-screen.jpg" alt="이스 IV 이스의 여명 타이틀 화면" loading="lazy">
+      <figcaption><b>02</b> THE DAWN OF YS / 1993</figcaption>
+    </figure>
+  </div>
+
+  <!-- 유튜브 ID 를 넣으면 클릭 시 재생됩니다. 넣기 전까지는 외부 요청이 전혀 없습니다.
+       예) <div class="video" data-yt="dQw4w9WgXcQ"> -->
+  <div class="video" data-yt="">
+    <span class="ph">영상 준비 중</span>
+  </div>
+
+  <div class="split">
+    <div>
+      <h3>한국어로 바뀝니다</h3>
+      <ul class="tick">
+        <li>플레이어가 보는 <b>대사 전체</b></li>
+        <li>메뉴 · 시스템 메시지</li>
+        <li><b>엔딩 스태프롤</b> — 원본에서 깨져 있던 한자 138자를 복구한 뒤 한국어화</li>
+        <li><b>음성 더빙</b> — 음성 클립 242개와 CD 오디오 5트랙</li>
+      </ul>
+    </div>
+    <div>
+      <h3>영문으로 남습니다</h3>
+      <ul class="tick no">
+        <li>아이템 · 장비 이름</li>
+        <li>지명</li>
+        <li>상태창 헤더</li>
+      </ul>
+      <p class="sub" style="font-size:.9rem">이 항목들은 대사와 다른 렌더링 경로(반각 폰트)를 씁니다.
+        한국어로 바꾸려면 게임을 멈추게 할 위험이 큰 별도 개조가 필요해 남겨 두었습니다.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lab">왜 시스템 카드인가</span>
+    <p>PC엔진의 RAM에는 한글 글꼴이 들어갈 자리가 없습니다. 그래서 글자를
+      <b>시스템 카드 ROM 안에</b> 넣고 렌더러가 거기서 읽어 오도록 고쳤습니다.
+      덕분에 게임이 RAM을 어떻게 쓰든 글꼴이 지워지지 않습니다 —
+      대신 <b>한글 시스템 카드를 만드는 단계가 반드시 필요합니다.</b></p>
+  </div>
+</section>
+
+<!-- ─────────── 02 준비물 ─────────── -->
+<section class="panel" id="p-need" role="tabpanel" aria-labelledby="t-need" tabindex="0" hidden data-chapter="02">
+  <h2>두 가지가 필요합니다</h2>
+  <p class="sub">둘 다 저작물이라 이 패치에 담을 수 없습니다. 직접 준비하셔야 합니다.</p>
+
+  <div class="things">
+    <div class="thing">
+      <span class="idx">01</span>
+      <div class="src">Disc</div>
+      <h3>영문 패치가 적용된 CD 이미지</h3>
+      <p>이 한국어 패치는 <b>일본어 원판이 아니라 영문 패치본</b> 위에 올라갑니다.
+         CloneCD 형식 <code>.img</code> + <code>.cue</code>.</p>
+      <p>일본어 원판을 넣으면 패처가 해시로 알아채고 무엇이 문제인지 알려 드립니다.</p>
+    </div>
+    <div class="thing">
+      <span class="idx">02</span>
+      <div class="src">BIOS</div>
+      <h3>순정 시스템 카드 <code>syscard3.pce</code></h3>
+      <p>가지고 계신 순정 Super System Card 3.0 이미지로 <b>한글 카드를 생성</b>합니다.
+         이 단계를 건너뛰면 게임 안 글자가 보이지 않습니다.</p>
+      <p>완성된 한글 카드는 배포하지 않습니다. BIOS 저작권 때문에,
+         <b>이용자 본인 파일로부터 만들어 드리는</b> 방식만 제공합니다.</p>
+      <p><b>여기서 만든 카드를 쓰세요.</b> 다른 곳의 한글 시스템 카드로 대체하면
+         세이브를 직접 불러올 때 대화창이 멈춥니다 — 이 게임 전용 수정이 들어 있어야 합니다.</p>
+    </div>
+  </div>
+
+  <h3>영문 패치가 아직 없다면</h3>
+  <p class="sub">NightWolve 님의 영문 번역 패치(v0.95, 2004)를 먼저 적용하셔야 합니다.</p>
+  <ul class="tick">
+    <li>일본어 원판 디스크를 <b>CloneCD 형식</b>으로 덤프합니다</li>
+    <li>영문 패치 배포본의 <code>.ppf</code>를 적용합니다</li>
+    <li>결과물의 SHA-256이 아래 표 첫 줄과 같은지 확인합니다</li>
+  </ul>
+  <div class="callout">
+    <span class="lab">배포하지 않습니다</span>
+    <p>영문 패치는 다른 분이 만드신 저작물이라 여기서 재배포하지 않습니다.
+      배포처 링크는 확인되는 대로 이 자리에 올립니다.</p>
+  </div>
+
+  <h3>가진 파일이 맞는지 확인</h3>
+  <p class="sub">웹 패처가 자동으로 검사하지만, 미리 대조해 보셔도 됩니다.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>대상</th><th>SHA-256</th></tr></thead>
+      <tbody>
+        <tr><td><b>영문 패치본</b> <code>.img</code><br><span style="font-size:.82rem">772,624,944 바이트</span></td>
+            <td class="h">5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7</td></tr>
+        <tr><td><b>영문 패치본</b> 데이터 트랙</td>
+            <td class="h">6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c</td></tr>
+        <tr><td><b>일본어 원판</b> 데이터 트랙<br><span style="font-size:.82rem">이게 나오면 영문 패치가 아직 안 된 것입니다</span></td>
+            <td class="h">a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>패치 결과물 확인</h3>
+  <p class="sub">패치가 끝난 <code>.img</code> 파일의 해시입니다. 고르신 모드에 해당하는 줄과
+    같으면 정상입니다. 웹 패처는 이것도 자동으로 확인합니다.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>모드</th><th>SHA-256</th></tr></thead>
+      <tbody>
+        <tr><td><b>텍스트만</b></td>
+            <td class="h">84d7fedea64e6313959c067d41a49a3dcdf8556e2fa4cdae291dacd237ace7eb</td></tr>
+        <tr><td><b>음성만</b></td>
+            <td class="h">943891fce46f9673a6327e3d70ba1b080190fb98526153714c71286b49e5c912</td></tr>
+        <tr><td><b>텍스트 + 음성</b></td>
+            <td class="h">c783b02795a819a45de5a3f606733ec69c272c08063512882cdb0d37649f63fb</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────── 03 패치하기 ─────────── -->
+<section class="panel" id="p-patch" role="tabpanel" aria-labelledby="t-patch" tabindex="0" hidden data-chapter="03">
+  <h2>브라우저에서 바로</h2>
+  <p class="sub">설치할 것이 없습니다. 파일을 고르면 브라우저 안에서 패치가 끝납니다.</p>
+
+  <div class="callout">
+    <span class="lab">파일은 서버로 전송되지 않습니다</span>
+    <p>약속이 아니라 구조입니다 — 이 페이지에는 업로드 코드가 존재하지 않습니다.
+      개발자도구(<code>F12</code>)의 네트워크 탭을 켜 두고 패치해 보시면
+      <b>직접 확인하실 수 있습니다.</b></p>
+  </div>
+
+  <p>
+    <a class="cta" href="patcher.html">웹 패처 열기</a>
+  </p>
+  <p class="hint"><b>크롬 · 엣지 · 웨일</b>에서 열어 주세요.
+    파일을 디스크로 직접 쓰는 기능이 필요한데 파이어폭스와 사파리에는 아직 없습니다.
+    지원하지 않는 브라우저면 패처가 시작 전에 알려 드립니다.</p>
+
+  <h3>패치 파일로 직접 적용</h3>
+  <p class="sub">웹 도구를 쓰고 싶지 않으시면 xdelta 형식도 제공합니다.
+    <a href="https://www.romhacking.net/utilities/598/" rel="noopener noreferrer">Delta Patcher</a> 같은 도구로 적용하시면 됩니다.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>파일</th><th>원본</th><th>결과</th><th>크기</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a></td>
+            <td>영문 패치본 <code>.img</code></td><td><b>한국어 텍스트</b></td><td>163 KB</td></tr>
+        <tr><td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a></td>
+            <td>영문 패치본 <code>.img</code></td><td><b>한국어 음성</b></td><td>116.6 MB</td></tr>
+        <tr><td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a></td>
+            <td>영문 패치본 <code>.img</code></td><td><b>텍스트 + 음성</b></td><td>116.7 MB</td></tr>
+        <tr><td class="mono"><a data-dl="syscard" href="#" aria-disabled="true">syscard</a></td>
+            <td>순정 <code>syscard3.pce</code></td><td><b>한글 시스템 카드</b></td><td>18 KB</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">네 파일 모두 <b>같은 원본</b>에 적용합니다. 텍스트를 먼저 적용한 파일에
+    음성 패치를 겹쳐 대면 원본 해시가 달라 거부됩니다 — 둘 다 원하시면 <code>both.xdelta</code> 하나만 쓰세요.</p>
+  <p>
+    <a class="cta ghost" data-dl="both" href="#" aria-disabled="true">텍스트+음성 내려받기</a>
+    <a class="cta ghost" data-dl="checksums" href="#" aria-disabled="true">체크섬 확인</a>
+  </p>
+  <p class="hint">잘못된 원본에 적용하면 xdelta3 가 <b>스스로 거부합니다</b> — 원본 파일 전체의
+    체크섬을 검사하기 때문이며, <code>-f</code> 옵션으로도 통과되지 않습니다.
+    이미 텍스트를 적용한 이미지에 음성 패치를 덧대는 것도 같은 이유로 막힙니다.</p>
+</section>
+
+<!-- ─────────── 04 릴리스 ─────────── -->
+<section class="panel" id="p-notes" role="tabpanel" aria-labelledby="t-notes" tabindex="0" hidden data-chapter="04">
+  <h2>v0.9</h2>
+  <p class="sub">2026년 7월 · 첫 공개 버전</p>
+  <ul class="tick">
+    <li>대사 텍스트 한국어화 — 플레이어가 보는 대사 전체</li>
+    <li>시스템 카드 ROM 글리프 방식 <b>한글 렌더러</b> — 실기 확인</li>
+    <li>세이브를 직접 불러올 때 발생하던 <b>대화창 프리즈 수정</b></li>
+    <li><b>엔딩 스태프롤</b> — 깨진 한자 138자 복구 후 한국어화</li>
+    <li>한국어 <b>음성 더빙</b> 242클립 + CD 오디오 5트랙 (AI 음성)</li>
+    <li>순정 시스템 카드로 부팅하면 안내를 띄우는 <b>부트 가드</b></li>
+    <li>부팅 시 6초간 제작 계보를 보여주는 <b>인트로</b> — 아무 버튼이나 누르면 넘어갑니다</li>
+  </ul>
+
+  <h3>알려진 제한</h3>
+  <ul class="tick no">
+    <li>아이템 · 장비 · 지명 · 상태창 헤더는 <b>영문</b>으로 남습니다</li>
+    <li>음성은 <b>AI로 생성</b>했습니다. 사람 성우가 아닙니다</li>
+    <li>대사 상자 밖으로 글자가 넘치는 곳이 소수 남아 있을 수 있습니다</li>
+    <li>파이어폭스 · 사파리에서는 웹 패처가 동작하지 않습니다</li>
+  </ul>
+
+  <div class="callout">
+    <span class="lab">왜 v1.0 이 아닌가</span>
+    <p>기능은 모두 에뮬레이터와 실기에서 확인했습니다. 다만 <b>넓은 환경에서의 플레이 검증이
+      아직 부족합니다.</b> 실제 사용자들이 겪는 문제가 정리되면 v1.0 으로 올립니다.</p>
+  </div>
+
+  <h3>버그를 찾으셨다면</h3>
+  <p class="sub">글자가 깨지거나, 상자 밖으로 넘치거나, 게임이 멈추는 곳을 알려 주세요.
+    <b>화면 사진</b>을 함께 올려 주시면 원인을 찾는 시간이 크게 줄어듭니다.</p>
+  <ul class="tick">
+    <li>어느 장면인지</li>
+    <li>에뮬레이터인지 실기인지</li>
+    <li>텍스트만인지 음성 포함인지</li>
+  </ul>
+  <p><a class="cta ghost off" href="#">버그 신고 게시판 · 준비 중</a></p>
+</section>
+
+<!-- ─────────── 05 계보 ─────────── -->
+<section class="panel" id="p-credit" role="tabpanel" aria-labelledby="t-credit" tabindex="0" hidden data-chapter="05">
+  <h2>이 패치가 서 있는 자리</h2>
+  <p class="sub">33년에 걸친 다른 사람들의 작업 위에 올라가 있습니다.
+    게임을 켜면 가장 먼저 보이는 화면이 이 순서인 이유입니다.</p>
+
+  <div class="hist">
+    <div class="era">
+      <div class="yr">1993</div>
+      <div><h3>원작</h3>
+        <div class="who"><b style="color:var(--phos)">HUDSON SOFT</b> — 1993년 12월 22일 발매<br>
+          PC Engine Super CD-ROM²</div></div>
+    </div>
+    <div class="era">
+      <div class="yr">2004</div>
+      <div><h3>영문 번역 패치 v0.95</h3>
+        <div class="who"><b style="color:var(--phos)">NightWolve</b> (Nick Livaditis)<br>
+          Neill Corlett · Dave Shadoff · Shimarisu · Deuce</div></div>
+    </div>
+    <div class="era">
+      <div class="yr">2012</div>
+      <div><h3>영문 음성 더빙 패치 v1.1</h3>
+        <div class="who"><b style="color:var(--phos)">Burnt Lasagna</b> (Michael G.)<br>
+          성우 30여 명</div></div>
+    </div>
+    <div class="era now">
+      <div class="yr">2026</div>
+      <div><h3>한국어화 · AI 더빙</h3>
+        <div class="who"><b style="color:var(--phos)">TopperJI</b> — Mars-Drive</div></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lab">감사</span>
+    <p>NightWolve 님과 팀이 2004년에 스크립트를 뽑아내고 폰트 렌더러를 열어 두지 않았다면,
+      그리고 Burnt Lasagna 님이 2012년에 음성 슬롯의 구조를 밝혀 두지 않았다면
+      이 한국어 패치는 시작조차 할 수 없었습니다.</p>
+  </div>
+</section>
+
+<!-- ─────────── 06 버그 신고 ─────────── -->
+<section class="panel" id="p-board" role="tabpanel" aria-labelledby="t-board" tabindex="0" hidden data-chapter="06">
+  <h2>버그 신고</h2>
+  <p class="sub">글자가 깨지거나, 상자 밖으로 넘치거나, 게임이 멈추는 곳을 알려 주세요.
+    <b>화면 사진</b>을 함께 올려 주시면 원인을 찾는 시간이 크게 줄어듭니다.</p>
+
+  <div class="callout">
+    <span class="lab">패처와는 별개입니다</span>
+    <p>여기에 올리시는 <b>사진과 글만</b> 서버에 저장됩니다.
+      패처는 여전히 아무것도 전송하지 않습니다 — 게임 이미지는 이 페이지 근처에도 오지 않습니다.</p>
+  </div>
+
+  <form id="bf" autocomplete="off">
+    <div class="bf-row">
+      <label>이름 <input name="nick" maxlength="24" required placeholder="닉네임"></label>
+      <label>삭제 번호 <input name="pin" inputmode="numeric" pattern="\d{4,8}" required
+        placeholder="숫자 4~8자리" title="나중에 글을 지울 때 씁니다"></label>
+    </div>
+    <div class="bf-row">
+      <label>분류 <select name="category" id="bf-cat"><option>텍스트</option><option>음성</option><option>시스템카드</option><option>멈춤/크래시</option><option>기타</option></select></label>
+      <label>환경 <select name="environment" id="bf-env"><option>에뮬레이터</option><option>실기</option><option>모름</option></select></label>
+      <label>패치 <select name="mode" id="bf-mode"><option>텍스트만</option><option>음성만</option><option>텍스트+음성</option><option>모름</option></select></label>
+    </div>
+    <label class="bf-full">제목 <input name="title" maxlength="120" required
+      placeholder="예) 이스 마을 촌장 대화에서 글자가 상자 밖으로 나감"></label>
+    <label class="bf-full">내용 <textarea name="body" rows="6" maxlength="4000" required
+      placeholder="어느 장면인지, 어떻게 하면 다시 나타나는지 적어 주시면 큰 도움이 됩니다."></textarea></label>
+    <label class="bf-full">화면 사진 <span class="bf-hint" id="bf-imghint">PNG · JPEG · GIF · WebP, 최대 3장, 장당 5MB</span>
+      <input type="file" name="images" id="bf-files" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
+    <!-- 봇 함정: 사람에게는 보이지 않는다 -->
+    <div class="bf-hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1"></label></div>
+    <div class="bf-actions">
+      <button type="submit" class="cta" id="bf-submit">신고 올리기</button>
+      <span class="status" id="bf-status" hidden></span>
+    </div>
+  </form>
+
+  <h3>올라온 신고</h3>
+  <div id="bf-list" class="posts"><p class="sub" id="bf-empty">불러오는 중 …</p></div>
+  <div id="bf-pager" class="pager" hidden></div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="ftop">
+      <div class="brand">
+        <img src="img/mars-drive-logo.png" alt="Mars-Drive 로고">
+        <div class="mark">MARS<i>–</i>DRIVE</div>
+        <small>TopperJI · 이스 IV 한국어 패치 · v0.9 · 2026</small>
+      </div>
+      <ul class="flinks">
+        <li><button data-go="t-need">준비물</button></li>
+        <li><button data-go="t-patch">패치하기</button></li>
+        <li><button data-go="t-notes">릴리스</button></li>
+        <li><button data-go="t-credit">계보</button></li>
+      </ul>
+    </div>
+    <p class="legal">
+      『Ys IV: The Dawn of Ys』의 저작권은 Hudson Soft 및 Nihon Falcom 에 있습니다.
+      이 패치는 <b>원본 게임 데이터를 포함하지 않으며</b>, 정품을 소유한 이용자가 자신의 사본을
+      개인적으로 이용하기 위한 <b>차이분 데이터</b>만을 배포합니다. 시스템 카드 BIOS 역시 배포하지 않고
+      이용자 본인의 파일로부터 생성하는 방식만 제공합니다. 상업적 목적이 없으며,
+      Hudson Soft · Nihon Falcom 과 어떠한 제휴 관계도 없습니다.
+    </p>
+    <p class="source-note">
+      시각 자료:
+      <a href="https://gamesdb.launchbox-app.com/games/images/9634-ys-iv-the-dawn-of-ys" rel="noopener noreferrer">LaunchBox Games Database</a>,
+      <a href="https://twentiethcenturygamer.wordpress.com/2022/06/27/ys-iv-the-dawn-of-ys-pc-engine/" rel="noopener noreferrer">Twentieth Century Gamer</a>.
+      PC Engine 콘솔 사진: Evan-Amos / Gunnar.offel, public domain.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 히어로 패럴랙스: 장식 레이어만 움직이고 본문·조작 요소는 고정 ── */
+  var parallax = [].slice.call(document.querySelectorAll('[data-parallax]'));
+  var parallaxFrame = 0;
+  function paintParallax(){
+    parallaxFrame = 0;
+    var y = Math.min(scrollY, document.querySelector('.hero').offsetHeight);
+    parallax.forEach(function(layer){
+      var shift = y * parseFloat(layer.dataset.speed || '0');
+      layer.style.setProperty('--parallax-y', shift.toFixed(2) + 'px');
+    });
+  }
+  if (!reduce && parallax.length){
+    addEventListener('scroll', function(){
+      if (!parallaxFrame) parallaxFrame = requestAnimationFrame(paintParallax);
+    }, {passive:true});
+    paintParallax();
+  }
+
+  /* ── 부팅 시퀀스: 게임과 같다. 6초, 또는 누르면 노랑 → 넘어감 ── */
+  var boot = document.getElementById('boot'), done = false, timer;
+  function handover(pressed){
+    if (done) return; done = true;
+    clearTimeout(timer);
+    if (pressed && !reduce){ boot.classList.add('ack'); setTimeout(off, 220); }
+    else off();
+    function off(){ boot.classList.add('gone'); setTimeout(function(){ boot.remove(); }, 550); }
+  }
+  if (reduce || location.hash){ boot.remove(); done = true; }
+  else {
+    timer = setTimeout(function(){ handover(false); }, 6000);
+    boot.addEventListener('click', function(){ handover(true); });
+    boot.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handover(true); }
+    });
+    addEventListener('keydown', function(e){ if(!done && e.key !== 'Tab') handover(true); }, {once:false});
+  }
+
+  /* ── 탭 ── */
+  var tabs = [].slice.call(document.querySelectorAll('.tab'));
+  function show(id, push){
+    tabs.forEach(function(t){
+      var on = t.id === id, p = document.getElementById(t.getAttribute('aria-controls'));
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      p.classList.toggle('on', on); p.hidden = !on;
+    });
+    if (push) history.replaceState(null, '', '#' + id.slice(2));
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){
+      show(t.id, true);
+      var y = document.querySelector('.tabs').offsetTop;
+      if (scrollY > y) scrollTo({top: y, behavior: reduce ? 'auto' : 'smooth'});
+    });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var n = tabs[(i + d + tabs.length) % tabs.length];
+      n.focus(); show(n.id, true);
+    });
+  });
+  document.querySelectorAll('[data-go]').forEach(function(b){
+    b.addEventListener('click', function(){
+      show(b.dataset.go, true);
+      scrollTo({top: document.querySelector('.tabs').offsetTop, behavior: reduce ? 'auto' : 'smooth'});
+    });
+  });
+  if (location.hash){
+    var want = 't-' + location.hash.slice(1);
+    if (document.getElementById(want)) show(want, false);
+  }
+
+  /* ── 유튜브: 누르기 전에는 외부 요청이 없다 ──
+     ID 는 HTML 에 직접 적을 수도, links.json 이 나중에 채울 수도 있다. 그래서
+     초기화를 함수로 두고 links.json 이 도착한 뒤에도 다시 부를 수 있게 한다
+     (한 번만 붙도록 data-wired 로 표시). */
+  window.__initVideo = function(){
+    document.querySelectorAll('.video[data-yt]').forEach(function(v){
+      var id = v.dataset.yt;
+      if (!id || v.dataset.wired) return;
+      v.dataset.wired = "1";
+      v.querySelector('.ph').textContent = '▶  재생';
+      v.style.cursor = 'pointer';
+      v.addEventListener('click', function(){
+        v.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
+          '?autoplay=1&rel=0" title="플레이 영상" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+      }, {once:true});
+    });
+  };
+  window.__initVideo();
+})();
+
+/* ══════════════ 버그 신고 게시판 ══════════════
+   서버는 JSON 만 돌려주고, 여기서 textContent 로 넣는다. innerHTML 을 쓰지 않으므로
+   남이 올린 글이 스크립트가 될 방법이 없다. */
+(function(){
+  "use strict";
+  var API = "board/api.php";
+  var form = document.getElementById("bf");
+  if (!form) return;
+  var $ = function(id){ return document.getElementById(id); };
+  var listEl = $("bf-list"), pagerEl = $("bf-pager"), statusEl = $("bf-status");
+  var page = 1, meta = null;
+
+  function say(msg, kind){
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = "status" + (kind ? " " + kind : "");
+  }
+  function fillSelect(el, items){
+    el.innerHTML = "";
+    items.forEach(function(v){
+      var o = document.createElement("option");
+      o.value = v; o.textContent = v;
+      el.appendChild(o);
+    });
+  }
+  function when(ts){
+    var d = new Date(ts * 1000), p = function(n){ return String(n).padStart(2, "0"); };
+    return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate()) +
+           " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+
+  // 선택지는 HTML 에 정적으로도 들어 있다 — 서버가 죽어도 폼은 쓸 수 있어야 한다.
+  // meta 가 오면 서버 쪽 목록으로 덮어쓴다 (양쪽이 어긋나면 서버가 정답).
+  fetch(API + "?action=meta").then(function(r){ return r.json(); }).then(function(m){
+    if (!m || !m.ok) return;
+    meta = m;
+    fillSelect($("bf-cat"), m.categories);
+    fillSelect($("bf-env"), m.environments);
+    fillSelect($("bf-mode"), m.modes);
+    $("bf-imghint").textContent =
+      "PNG · JPEG · GIF · WebP, 최대 " + m.max_images + "장, 장당 " + m.max_image_mb + "MB";
+  }).catch(function(){ /* 목록 쪽에서 한 번만 알린다 */ });
+
+  function render(data){
+    listEl.textContent = "";
+    if (!data.posts || !data.posts.length){
+      var e = document.createElement("p");
+      e.className = "sub";
+      e.textContent = "아직 올라온 신고가 없습니다. 첫 번째로 알려 주세요.";
+      listEl.appendChild(e);
+      pagerEl.hidden = true;
+      return;
+    }
+    data.posts.forEach(function(p){
+      var art = document.createElement("article");
+      art.className = "post";
+
+      var head = document.createElement("div"); head.className = "post-head";
+      var ti = document.createElement("div"); ti.className = "post-title"; ti.textContent = p.title;
+      var me = document.createElement("div"); me.className = "post-meta";
+      me.textContent = p.nick + " · " + when(p.created_at) + " · #" + p.id;
+      head.appendChild(ti); head.appendChild(me); art.appendChild(head);
+
+      var tags = document.createElement("div"); tags.className = "tagrow";
+      [p.category, p.environment, p.mode].forEach(function(v){
+        if (!v) return;
+        var s = document.createElement("span"); s.className = "tag"; s.textContent = v;
+        tags.appendChild(s);
+      });
+      art.appendChild(tags);
+
+      var body = document.createElement("p"); body.className = "post-body";
+      body.textContent = p.body; art.appendChild(body);
+
+      if (p.images && p.images.length){
+        var box = document.createElement("div"); box.className = "shots-in-post";
+        p.images.forEach(function(im){
+          var a = document.createElement("a");
+          a.href = "board/" + im.src; a.target = "_blank"; a.rel = "noopener noreferrer";
+          var img = document.createElement("img");
+          img.src = "board/" + im.src; img.loading = "lazy";
+          img.width = im.w; img.height = im.h;
+          img.alt = p.title + " 첨부 화면";
+          a.appendChild(img); box.appendChild(a);
+        });
+        art.appendChild(box);
+      }
+
+      var del = document.createElement("button");
+      del.type = "button"; del.className = "post-del"; del.textContent = "이 글 지우기";
+      del.addEventListener("click", function(){
+        var pin = prompt("글을 올릴 때 입력한 삭제 번호를 넣어 주세요.");
+        if (!pin) return;
+        var fd = new FormData();
+        fd.append("action", "delete"); fd.append("id", p.id); fd.append("pin", pin);
+        fetch(API, { method: "POST", body: fd })
+          .then(function(r){ return r.json(); })
+          .then(function(j){
+            if (j.ok) load(page);
+            else alert(j.error || "지우지 못했습니다.");
+          })
+          .catch(function(){ alert("서버에 연결하지 못했습니다."); });
+      });
+      art.appendChild(del);
+      listEl.appendChild(art);
+    });
+
+    pagerEl.textContent = "";
+    pagerEl.hidden = data.pages <= 1;
+    for (var i = 1; i <= data.pages; i++){
+      (function(n){
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = n;
+        if (n === data.page) b.setAttribute("aria-current", "true");
+        b.addEventListener("click", function(){ load(n); });
+        pagerEl.appendChild(b);
+      })(i);
+    }
+  }
+
+  function load(n){
+    page = n;
+    fetch(API + "?action=list&page=" + n)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (!d.ok) throw new Error(d.error || "목록을 불러오지 못했습니다.");
+        render(d);
+      })
+      .catch(function(){
+        listEl.textContent = "";
+        var e = document.createElement("p");
+        e.className = "sub";
+        e.textContent = "게시판에 연결하지 못했습니다. PHP 가 동작하는 서버에 올려야 합니다 " +
+                        "(board/selftest.php 로 환경을 확인하세요).";
+        listEl.appendChild(e);
+        pagerEl.hidden = true;
+      });
+  }
+
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var files = $("bf-files").files;
+    if (meta && files.length > meta.max_images){
+      say("이미지는 최대 " + meta.max_images + "장까지 올릴 수 있습니다.", "err");
+      return;
+    }
+    var btn = $("bf-submit");
+    btn.disabled = true;
+    say("올리는 중 …", "busy");
+    var fd = new FormData(form);
+    fd.append("action", "create");
+    fetch(API, { method: "POST", body: fd })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (!j.ok) throw new Error(j.error || "올리지 못했습니다.");
+        form.reset();
+        say("신고를 올렸습니다. 감사합니다.", "ok");
+        load(1);
+      })
+      .catch(function(e){ say(e.message || "올리지 못했습니다.", "err"); })
+      .finally(function(){ btn.disabled = false; });
+  });
+
+  // 탭이 처음 열릴 때만 목록을 부른다 — 소개만 보고 갈 사람에게 요청을 만들지 않는다.
+  var loaded = false;
+  var tab = document.getElementById("t-board");
+  if (tab) tab.addEventListener("click", function(){ if (!loaded){ loaded = true; load(1); } });
+  if (location.hash === "#board"){ loaded = true; load(1); }
+})();
+
+/* ══════════════ 외부 파일 주소 (links.json) ══════════════
+   큰 패치 파일은 사이트 밖(GitHub Releases · NAS 등)에 두고 주소만 여기서 읽는다.
+   HTML 을 고치지 않고 links.json 만 갈아끼우면 되도록 한 곳에 모았다.
+
+   ⚠ 웹 패처는 이것과 무관하다. patcher.html 이 쓰는 assets/ 는 사이트와 같은 곳에
+     있어야 하고, 그래서 동일 출처라 CORS 설정이 필요 없다. assets/ 를 외부로
+     옮기는 순간 브라우저가 fetch 를 막아 음성 모드가 죽는다. */
+(function(){
+  "use strict";
+  fetch("links.json", {cache: "no-cache"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(cfg){
+      if (!cfg) return;
+      var map = {};
+      Object.keys(cfg.patches || {}).forEach(function(k){ map[k] = cfg.patches[k]; });
+      ["checksums", "readme"].forEach(function(k){ if (cfg[k]) map[k] = cfg[k]; });
+
+      document.querySelectorAll("[data-dl]").forEach(function(a){
+        var e = map[a.dataset.dl];
+        if (!e || !e.url) return;                 // 비어 있으면 '준비 중' 유지
+        a.href = e.url;
+        a.removeAttribute("aria-disabled");
+        a.setAttribute("rel", "noopener noreferrer");
+        if (e.size) a.title = e.size;
+      });
+
+      var v = document.querySelector(".video[data-yt]");
+      if (v && cfg.video && cfg.video.youtube_id){
+        v.dataset.yt = cfg.video.youtube_id;
+        if (window.__initVideo) window.__initVideo();   // 초기화는 이미 끝났으니 다시 건다
+      }
+
+      if (cfg.board && cfg.board.url){
+        document.querySelectorAll('[data-board-link]').forEach(function(a){
+          a.href = cfg.board.url; a.removeAttribute("aria-disabled");
+        });
+      }
+    })
+    .catch(function(){ /* 없으면 전부 '준비 중' 으로 남는다 — 깨진 링크보다 낫다 */ });
+})();
+</script>
+</body>
+</html>

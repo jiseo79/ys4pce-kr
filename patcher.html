@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이스 IV 한국어 패치 — 웹 패처</title>
+<meta name="description" content="브라우저 안에서 바로 실행되는 이스 IV 한국어 패치 도구. 파일은 서버로 전송되지 않습니다.">
+<meta name="theme-color" content="#090d13">
+<style>
+:root{
+  --void:#090d13; --deep:#0d131b; --panel:#121a24; --edge:#303845;
+  --phos:#f4ead7; --mute:#a5a395; --faint:#6f746f;
+  --amber:#e3ae42; --rust:#b43832; --ok:#69c586; --err:#e56a62;
+  --mono: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans: -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI","Malgun Gothic",sans-serif;
+  --display:"Iowan Old Style","AppleMyungjo","Noto Serif KR","Batang",serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{
+  margin:0;color:var(--phos);font:16px/1.7 var(--sans);min-height:100vh;
+  background:
+    radial-gradient(circle at 80% 0,rgba(71,99,153,.13),transparent 26rem),
+    linear-gradient(180deg,#080b10,#0c1219 42rem,#090d13);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.12;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 3px 4px);
+}
+a{color:var(--amber);text-underline-offset:.2em}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.topbar{
+  position:relative;z-index:2;border-bottom:1px solid var(--edge);background:rgba(8,12,17,.76);
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem clamp(20px,4vw,48px);
+}
+.topbar a{font:700 .68rem/1 var(--mono);letter-spacing:.12em;text-decoration:none;color:var(--mute)}
+.topbar a:hover{color:var(--phos)}
+.topbar .catalog{font:600 .58rem/1 var(--mono);letter-spacing:.18em;color:var(--faint)}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) 22px 6rem}
+.masthead{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end;padding-bottom:2rem;border-bottom:1px solid var(--edge)}
+.lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.mono{font-family:var(--mono)}
+h1{font:800 clamp(2.3rem,6vw,4.2rem)/.98 var(--display);margin:.65rem 0 .5rem;letter-spacing:-.055em}
+.stamp{
+  min-width:112px;border:1px solid rgba(227,174,66,.5);padding:.75rem .8rem;text-align:center;
+  box-shadow:5px 5px 0 rgba(180,56,50,.6);transform:rotate(1.5deg);
+  font:800 .66rem/1.55 var(--mono);letter-spacing:.12em;color:var(--amber);
+}
+.intro{max-width:61ch;margin:1rem 0 0}
+.privacy-line{
+  display:flex;gap:.75rem;align-items:center;margin:1.5rem 0 0;padding:.8rem 1rem;
+  border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(227,174,66,.08),transparent);
+  font:600 .7rem/1.5 var(--mono);letter-spacing:.04em;color:var(--mute);
+}
+.privacy-line b{color:var(--phos)}
+h2{
+  font:800 1.25rem/1.2 var(--display);margin:3rem 0 .7rem;letter-spacing:-.02em;
+  color:#e8dec9;display:flex;align-items:center;gap:.75rem;
+}
+h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--edge),transparent)}
+p{color:var(--mute);margin:.5rem 0}
+p b{color:var(--phos)}
+.card{
+  position:relative;background:linear-gradient(145deg,rgba(20,29,40,.96),rgba(13,19,27,.96));
+  border:1px solid var(--edge);border-top:2px solid var(--rust);border-radius:2px;
+  padding:clamp(1.25rem,4vw,1.8rem);margin:1rem 0;box-shadow:0 22px 50px -38px #000;
+}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+button{
+  font:700 .9rem/1 var(--sans);background:var(--rust);color:#fff;border:1px solid #ce514a;border-radius:2px;
+  padding:.82em 1.4em;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:5px 5px 0 rgba(227,174,66,.62)}
+button.ghost{background:none;border:1px solid var(--edge);color:var(--phos)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.mode{background:#0c1219;border:1px solid var(--edge);color:var(--mute);box-shadow:none}
+button.mode.sel{border-color:var(--amber);color:#171109;background:var(--amber)}
+.status{font-family:var(--mono);font-size:.85rem;padding:.7em .9em;border-radius:2px;margin-top:.8rem;
+  border:1px solid var(--edge);white-space:pre-wrap;word-break:break-all}
+.status.ok{border-color:var(--ok);color:var(--ok)}
+.status.err{border-color:var(--err);color:var(--err)}
+.status.warn{border-color:var(--amber);color:var(--amber)}
+/* 작업 중 표시. 사용자가 가장 불안해하는 순간은 파일을 읽는 동안이다 —
+   "지금 업로드되는 건가?" 그래서 진행 중이라는 신호와 함께 아니라는 말을 같이 둔다. */
+.status.busy{border-color:var(--amber);color:var(--amber);
+  display:flex;align-items:flex-start;gap:.65em}
+.status.busy::before{content:"";width:.55em;height:.55em;border-radius:50%;
+  background:var(--amber);flex:none;margin-top:.5em;animation:blink 1.1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.12}}
+@media(prefers-reduced-motion:reduce){.status.busy::before{animation:none}}
+.bar{height:7px;border-radius:0;background:#0a0f15;overflow:hidden;margin-top:1rem;border:1px solid #222a34}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--rust),var(--amber));width:0%;transition:width .15s linear}
+#log,#syscard-log{font-family:var(--mono);font-size:.78rem;line-height:1.65;color:var(--mute);
+  background:#080c11;border:1px solid var(--edge);border-radius:2px;padding:.9rem 1rem;
+  max-height:260px;overflow:auto;white-space:pre-wrap;margin-top:.8rem}
+.notice{border:1px solid var(--rust);background:rgba(180,56,50,.08);border-radius:2px;
+  padding:1.2rem 1.4rem;margin:1.4rem 0}
+.notice .lab{color:var(--rust)}
+select,input[type=file]{font:inherit;color:var(--phos);background:#0e0f13;border:1px solid var(--edge);
+  border-radius:2px;padding:.55em .7em;max-width:100%}
+code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid #252d37;padding:.12em .38em;color:#ddd4c2}
+.eta{font-family:var(--mono);font-size:.78rem;color:var(--faint);margin-top:.3rem}
+.maker-footer{
+  position:relative;z-index:1;border-top:1px solid var(--edge);background:#080c11;
+  display:flex;justify-content:space-between;align-items:center;gap:1.2rem;
+  padding:1.35rem clamp(20px,4vw,48px);color:var(--faint);
+}
+.maker{display:flex;align-items:center;gap:.7rem}
+.maker img{width:38px;height:38px;border-radius:50%;box-shadow:0 0 0 1px rgba(244,234,215,.18)}
+.maker b{display:block;font:800 .72rem/1.2 var(--mono);letter-spacing:.12em;color:var(--phos)}
+.maker small,.maker-footer>small{font:600 .6rem/1.5 var(--mono);letter-spacing:.06em}
+@media(max-width:600px){
+  .masthead{grid-template-columns:1fr}.stamp{width:max-content;transform:none}
+  .maker-footer{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html#patch">← 배포 페이지로 돌아가기</a>
+  <span class="catalog">HCD3051 / KO v0.9</span>
+</header>
+<main class="wrap">
+  <section class="masthead">
+    <div>
+      <span class="lab">Ys IV KO Patch · Web Patcher</span>
+      <h1>브라우저 안에서<br>바로 패치</h1>
+      <p class="intro">파일은 이 페이지 밖으로 전송되지 않습니다. <code>./assets/*</code> 정적 자산만 이 페이지가 직접 불러옵니다 — 업로드 코드는 존재하지 않습니다.</p>
+    </div>
+    <div class="stamp">TOPPERJI<br>MARS–DRIVE<br>2026</div>
+  </section>
+  <div class="privacy-line"><b>LOCAL PROCESS</b> 선택한 게임 파일은 브라우저 안에서만 읽고 씁니다.</div>
+
+  <div id="unsupported" class="notice" hidden>
+    <span class="lab">이 브라우저에서는 실행할 수 없습니다</span>
+    <p id="unsupported-msg"></p>
+    <p>크롬 · 엣지 · 웨일 최신 버전으로 열어 주세요. (파이어폭스 · 사파리는 파일을 디스크에 직접 쓰는 기능이 없습니다.)</p>
+  </div>
+
+  <div id="app" hidden>
+    <h2>1 — 원본 이미지 선택</h2>
+    <div class="card">
+      <p>영문 패치가 적용된 <code>.cue</code>/<code>.img</code>(또는 <code>.bin</code>) 파일이 있는 폴더를 선택하세요.</p>
+      <div class="row">
+        <button id="btn-pick-dir">이미지 폴더 선택</button>
+        <select id="candidate-select" hidden></select>
+      </div>
+      <div id="image-status" class="status" hidden></div>
+      <div id="image-progress-wrap" class="bar" hidden><i id="image-progress-bar"></i></div>
+    </div>
+
+    <h2>2 — 모드 선택</h2>
+    <div class="card">
+      <div class="row">
+        <button class="mode" data-mode="text">텍스트만</button>
+        <button class="mode" data-mode="voice">음성만</button>
+        <button class="mode sel" data-mode="both">텍스트 + 음성</button>
+      </div>
+      <p class="mono" id="mode-size" style="font-size:.82rem"></p>
+    </div>
+
+    <h2>3 — 패치 실행</h2>
+    <div class="card">
+      <div class="row">
+        <button id="btn-run" disabled>출력 파일 선택 후 패치 시작</button>
+      </div>
+      <div class="bar" hidden id="run-progress-wrap"><i id="run-progress-bar"></i></div>
+      <div class="eta" id="run-eta"></div>
+      <div id="run-status" class="status" hidden></div>
+      <div id="log" hidden></div>
+    </div>
+
+    <h2>0 — 한글 시스템 카드 생성 (선택)</h2>
+    <div class="card">
+      <p>순정 <code>syscard3.pce</code>(256KB)를 선택하면 한글 글리프가 내장된 카드를 만들어 드립니다.
+        이 파일 자체는 배포하지 않으며, 여러분이 고른 파일로부터만 생성합니다.</p>
+      <div class="row">
+        <input type="file" id="syscard-input" accept=".pce">
+        <button id="btn-syscard" disabled>한글 카드 생성 · 저장</button>
+      </div>
+      <div id="syscard-status" class="status" hidden></div>
+      <div id="syscard-log" hidden></div>
+    </div>
+  </div>
+</main>
+<footer class="maker-footer">
+  <div class="maker">
+    <img src="img/mars-drive-logo.png" alt="Mars-Drive 로고">
+    <span><b>MARS–DRIVE</b><small>TopperJI · Korean localization</small></span>
+  </div>
+  <small>YS IV: THE DAWN OF YS / FAN PATCH v0.9 / 2026</small>
+</footer>
+
+<!-- ══════════ core.mjs (verbatim, export-stripped) — canonical source: dist/web/tools/core.mjs ══════════ -->
+<script>
+// Ys IV KO web patcher — core algorithm module.
+//
+// Direct 1:1 port of dist/ys4-ko-patcher/tools/ys4_ko_patcher.py's headless core
+// (iso_to_img_writes, parse_cue, track_ranges, load_patch, apply_patch_entries,
+// apply_tracks, verify_patch_regions, verify_tracks, sha256_file, extract_cooked_iso,
+// identify_image, run_patch). Every primitive that differs between Node and the
+// browser (gzip decompression, random-access file I/O) is INJECTED so this exact
+// module — not a copy, not a shim — is what both dist/web/tools/node_test/*.mjs and
+// dist/web/patcher.html execute. patcher.html inlines this file's source verbatim
+// (see build_patcher_html.py) to keep the shipped page a single file.
+//
+// This module has no top-level side effects and imports nothing — safe under both
+// Node (`import` from a .mjs) and a browser <script type="module">.
+
+// ---------------------------------------------------------------------------
+// Constants (must match ys4_ko_patcher.py exactly)
+// ---------------------------------------------------------------------------
+const DATA_LBA = 3590;
+const DATA_SECTORS = 32920;
+const RAW_SECTOR = 2352;
+const USER_OFFSET = 16;
+const USER_SIZE = 2048;
+const COOKED_ISO_SIZE = DATA_SECTORS * USER_SIZE; // 67,420,160
+const SECTOR = 2352;
+const MODES = ["text", "voice", "both"];
+
+// ---------------------------------------------------------------------------
+// ISO(2048/sector) <-> raw CloneCD image offset conversion
+// ---------------------------------------------------------------------------
+function* isoToImgWrites(off, length) {
+  let pos = off;
+  let remaining = length;
+  while (remaining > 0) {
+    const sector = Math.floor(pos / USER_SIZE);
+    const inSec = pos % USER_SIZE;
+    const chunk = Math.min(remaining, USER_SIZE - inSec);
+    const imgPos = (DATA_LBA + sector) * RAW_SECTOR + USER_OFFSET + inSec;
+    yield [imgPos, chunk];
+    pos += chunk;
+    remaining -= chunk;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// .cue parsing
+// ---------------------------------------------------------------------------
+function parseCue(cueText) {
+  const tracks = [];
+  let cur = null;
+  const trackRe = /^\s*TRACK\s+(\d+)\s+(\S+)/;
+  const indexRe = /^\s*INDEX\s+01\s+(\d+):(\d+):(\d+)/;
+  for (const ln of cueText.split(/\r\n|\n|\r/)) {
+    let m = ln.match(trackRe);
+    if (m) {
+      cur = [parseInt(m[1], 10), m[2]];
+      continue;
+    }
+    m = ln.match(indexRe);
+    if (m && cur) {
+      const mm = parseInt(m[1], 10), ss = parseInt(m[2], 10), ff = parseInt(m[3], 10);
+      tracks.push([cur[0], cur[1], mm * 60 * 75 + ss * 75 + ff]);
+      cur = null;
+    }
+  }
+  return tracks;
+}
+
+function trackRanges(tracks, imgSize) {
+  const out = {};
+  for (let i = 0; i < tracks.length; i++) {
+    const [no, , lba] = tracks[i];
+    const nxt = i + 1 < tracks.length ? tracks[i + 1][2] : Math.floor(imgSize / SECTOR);
+    out[no] = [lba * SECTOR, (nxt - lba) * SECTOR];
+  }
+  return out;
+}
+
+// find_cue_bin_pair equivalent, operating on a filename list (from a directory
+// handle) rather than filesystem existence checks.
+function findCueBinPair(chosenName, namesInDir) {
+  const lower = new Set(namesInDir.map((n) => n.toLowerCase()));
+  const dot = chosenName.lastIndexOf(".");
+  const stem = dot >= 0 ? chosenName.slice(0, dot) : chosenName;
+  const suffix = (dot >= 0 ? chosenName.slice(dot) : "").toLowerCase();
+  const find = (want) => namesInDir.find((n) => n.toLowerCase() === want.toLowerCase());
+  if (suffix === ".cue") {
+    for (const ext of [".bin", ".img"]) {
+      const cand = stem + ext;
+      if (lower.has(cand.toLowerCase())) return [chosenName, find(cand)];
+    }
+    throw new Error(`${chosenName} 과 같은 폴더에서 .bin/.img 를 찾지 못했습니다.`);
+  } else if (suffix === ".bin" || suffix === ".img") {
+    const cueCand = stem + ".cue";
+    if (!lower.has(cueCand.toLowerCase())) {
+      throw new Error(`${chosenName} 과 같은 이름의 .cue 파일이 없습니다.`);
+    }
+    return [find(cueCand), chosenName];
+  }
+  throw new Error(`지원하지 않는 파일 형식: ${suffix}`);
+}
+
+// ---------------------------------------------------------------------------
+// Patch asset parsing — lzma/gzip-decompressed blob = JSON header + "\n" + payload
+// ---------------------------------------------------------------------------
+function parsePatchBlob(blob) {
+  // blob: Uint8Array. Find first \n (0x0A) byte, like Python's bytes.index(b"\n").
+  const nl = blob.indexOf(0x0a);
+  if (nl < 0) throw new Error("patch blob missing header newline");
+  const headerText = new TextDecoder("utf-8").decode(blob.subarray(0, nl));
+  const header = JSON.parse(headerText);
+  const data = blob.subarray(nl + 1);
+  return { header, data };
+}
+
+// ---------------------------------------------------------------------------
+// Apply / verify — writer/reader are injected random-access interfaces:
+//   writer.write(pos: number, bytes: Uint8Array) -> Promise<void>
+//   reader.read(pos: number, len: number) -> Promise<Uint8Array>
+// ---------------------------------------------------------------------------
+async function applyPatchEntries(header, data, writer, log) {
+  const applied = [];
+  let pos = 0;
+  for (const entry of header.entries) {
+    const off = entry.off, length = entry.len;
+    const chunk = data.subarray(pos, pos + length);
+    pos += length;
+    let cpos = 0;
+    for (const [imgPos, clen] of isoToImgWrites(off, length)) {
+      await writer.write(imgPos, chunk.subarray(cpos, cpos + clen));
+      cpos += clen;
+    }
+    applied.push([off, length, chunk]);
+  }
+  if (log) log(`  ${header.entries.length}개 구간, ${data.length.toLocaleString()} B 적용`);
+  return applied;
+}
+
+// assetBytesFor(track) -> Promise<Uint8Array> (already-decompressed raw PCM)
+async function applyTracks(tracksMeta, ranges, writer, assetBytesFor, log) {
+  const applied = [];
+  for (const t of tracksMeta) {
+    const no = t.no;
+    const pcm = await assetBytesFor(t);
+    if (pcm.length !== t.slot_len) {
+      throw new PatchAborted(
+        `트랙 ${no} PCM 길이 불일치 (기대 ${t.slot_len.toLocaleString()}, 실제 ${pcm.length.toLocaleString()})`);
+    }
+    const [off] = ranges[no];
+    await writer.write(off, pcm);
+    if (log) log(`  트랙 ${no}: 0x${off.toString(16)} 에 ${pcm.length.toLocaleString()} B 기록`);
+    applied.push([no, off, t.slot_len, t.sha256]);
+  }
+  return applied;
+}
+
+function bytesEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+async function verifyPatchRegions(reader, appliedRegions) {
+  for (const [off, length, chunk] of appliedRegions) {
+    const rebuilt = new Uint8Array(length);
+    let rpos = 0;
+    for (const [imgPos, clen] of isoToImgWrites(off, length)) {
+      const piece = await reader.read(imgPos, clen);
+      rebuilt.set(piece, rpos);
+      rpos += clen;
+    }
+    if (!bytesEqual(rebuilt, chunk)) {
+      throw new PatchAborted(`검증 실패 (데이터트랙 offset=${off})`);
+    }
+  }
+}
+
+async function verifyTracks(reader, appliedTracks, Sha256Ctor) {
+  for (const [no, off, slotLen, sha] of appliedTracks) {
+    const actual = await reader.read(off, slotLen);
+    const h = new Sha256Ctor();
+    h.update(actual);
+    const hex = h.hexDigest();
+    if (hex !== sha) {
+      throw new PatchAborted(`검증 실패 (트랙 ${no})`);
+    }
+  }
+}
+
+class PatchAborted extends Error {}
+
+// ---------------------------------------------------------------------------
+// Hashing / image identification
+// ---------------------------------------------------------------------------
+async function sha256OfReader(reader, size, Sha256Ctor, chunkSize = 4 * 1024 * 1024, progress) {
+  const h = new Sha256Ctor();
+  let done = 0;
+  while (done < size) {
+    const len = Math.min(chunkSize, size - done);
+    const buf = await reader.read(done, len);
+    h.update(buf);
+    done += len;
+    if (progress) progress(done, size);
+  }
+  return h.hexDigest();
+}
+
+async function extractCookedIsoSha256(reader, Sha256Ctor, progress) {
+  const h = new Sha256Ctor();
+  for (let sector = 0; sector < DATA_SECTORS; sector++) {
+    const pos = (DATA_LBA + sector) * RAW_SECTOR + USER_OFFSET;
+    const buf = await reader.read(pos, USER_SIZE);
+    h.update(buf);
+    if (progress && (sector & 0x3ff) === 0) progress(sector, DATA_SECTORS);
+  }
+  return h.hexDigest();
+}
+
+// status: "en" | "jp" | "size_mismatch" | "unknown"
+async function identifyImage(reader, size, manifest, Sha256Ctor, progress) {
+  const expectSize = manifest.image.size;
+  if (size !== expectSize) {
+    return ["size_mismatch",
+      `크기가 예상과 다릅니다 (예상 ${expectSize.toLocaleString()} B, 실제 ${size.toLocaleString()} B) — 다른 파일일 수 있습니다.`];
+  }
+  const fullSha = await sha256OfReader(reader, size, Sha256Ctor, 4 * 1024 * 1024, progress);
+  if (fullSha === manifest.image.sha256) {
+    return ["en", "영문패치본 — 알려진 base 이미지와 완전히 일치합니다.", fullSha];
+  }
+  if (manifest.expected_output) {
+    if (fullSha === manifest.expected_output.text_only_sha256) return ["already", "이미 텍스트만 패치된 이미지입니다.", fullSha];
+    if (fullSha === manifest.expected_output.voice_only_sha256) return ["already", "이미 음성만 패치된 이미지입니다.", fullSha];
+    if (fullSha === manifest.expected_output.both_sha256) return ["already", "이미 텍스트+음성 패치된 이미지입니다.", fullSha];
+  }
+  let cookedSha;
+  try {
+    cookedSha = await extractCookedIsoSha256(reader, Sha256Ctor);
+  } catch (e) {
+    return ["unknown", "미상 — 데이터트랙을 읽는 중 오류가 발생했습니다.", fullSha];
+  }
+  if (cookedSha === manifest.image.cooked_iso_sha256) {
+    return ["en", "영문패치본 — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름).", fullSha];
+  }
+  if (cookedSha === manifest.image.jp_cooked_iso_sha256) {
+    return ["jp", "순정 일본판 — 먼저 영문패치를 적용한 이미지가 필요합니다.", fullSha];
+  }
+  return ["unknown", "미상 — 알려진 base/일본판 어느 쪽과도 일치하지 않습니다.", fullSha];
+}
+
+// ---------------------------------------------------------------------------
+// Streaming copy (input reader -> output writer), chunked like Python's
+// _copy_with_progress.
+// ---------------------------------------------------------------------------
+async function copyWithProgress(reader, writer, size, progress, chunkSize = 4 * 1024 * 1024) {
+  let done = 0;
+  while (done < size) {
+    const len = Math.min(chunkSize, size - done);
+    const buf = await reader.read(done, len);
+    await writer.write(done, buf);
+    done += len;
+    if (progress) progress(done, size);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Orchestration — mirrors run_patch(). Callers supply:
+//   cueText: string
+//   imgReader: {read(pos,len)}   imgSize: number
+//   outWriter: {write(pos,bytes)}
+//   mode: "text"|"voice"|"both"
+//   manifest: object
+//   fetchAssetBlob(assetName) -> Promise<Uint8Array>  (already gunzip-applied raw bytes)
+//   fetchTrackPcm(trackMeta) -> Promise<Uint8Array>   (already gunzip-applied raw PCM)
+// Returns { appliedRegions, appliedTracks, ranges }.
+// ---------------------------------------------------------------------------
+async function runPatchCore({ cueText, imgSize, outWriter, mode, manifest,
+  fetchAssetBlob, fetchTrackPcm, log = () => {} }) {
+  if (!MODES.includes(mode)) throw new Error(`알 수 없는 모드: ${mode}`);
+
+  const expectSize = manifest.image.size;
+  if (imgSize !== expectSize) {
+    throw new PatchAborted(
+      `이미지 크기가 예상과 다릅니다 (예상 ${expectSize.toLocaleString()} B, 실제 ${imgSize.toLocaleString()} B)`);
+  }
+
+  const needsTracks = mode === "voice" || mode === "both";
+  let ranges = {};
+  if (needsTracks) {
+    ranges = trackRanges(parseCue(cueText), imgSize);
+    for (const t of manifest.tracks) {
+      if (!(t.no in ranges)) {
+        throw new PatchAborted(`트랙 ${t.no} 이 이 디스크의 .cue 에 없습니다 (다른 버전 디스크?)`);
+      }
+      const actualLen = ranges[t.no][1];
+      if (actualLen !== t.slot_len) {
+        throw new PatchAborted(
+          `트랙 ${t.no} 슬롯 길이 불일치 (기대 ${t.slot_len.toLocaleString()} B, 실제 ${actualLen.toLocaleString()} B) — 다른 버전의 디스크로 보입니다.`);
+      }
+    }
+    log(`트랙 레이아웃 검증 완료 (${manifest.tracks.length}개 트랙)`);
+  }
+
+  let appliedRegions = [];
+  if (mode === "text" || mode === "both") {
+    log("텍스트 패치 적용 중 …");
+    const blob = await fetchAssetBlob(manifest.text_patch.asset);
+    const { header, data } = parsePatchBlob(blob);
+    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log));
+  }
+  if (mode === "voice" || mode === "both") {
+    log("음성 패치 적용 중 …");
+    const blob = await fetchAssetBlob(manifest.voice_patch.asset);
+    const { header, data } = parsePatchBlob(blob);
+    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log));
+  }
+
+  let appliedTracks = [];
+  if (needsTracks) {
+    log("오디오 트랙 적용 중 …");
+    appliedTracks = await applyTracks(manifest.tracks, ranges, outWriter, fetchTrackPcm, log);
+  }
+
+  return { appliedRegions, appliedTracks, ranges };
+}
+
+</script>
+<!-- ══════════ sha256.mjs (verbatim, export-stripped) — canonical source: dist/web/tools/sha256.mjs ══════════ -->
+<script>
+// Minimal incremental SHA-256 (FIPS 180-4), pure JS, no dependencies.
+//
+// Needed because the Web Crypto SubtleCrypto API only exposes a one-shot
+// digest() — there is no incremental update()/finalize() — so a 772 MB file
+// cannot be hashed without buffering it whole. This same class is used by
+// both the browser page (dist/web/patcher.html) and the Node verification
+// harness (dist/web/tools/node_test/*.mjs) so the exact hashing code that
+// ships is what gets tested, cross-checked there against Node's native
+// crypto.createHash('sha256') for correctness.
+
+const K = new Uint32Array([
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+]);
+
+function rotr(x, n) {
+  return (x >>> n) | (x << (32 - n));
+}
+
+class Sha256 {
+  constructor() {
+    this.h = new Uint32Array([
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+    ]);
+    this.buffer = new Uint8Array(64);
+    this.bufLen = 0;
+    this.totalLen = 0; // bytes, as a Number (safe up to 2^53; 772MB is fine)
+    this._w = new Uint32Array(64);
+  }
+
+  update(bytes) {
+    this.totalLen += bytes.length;
+    let off = 0;
+    if (this.bufLen > 0) {
+      const need = 64 - this.bufLen;
+      const take = Math.min(need, bytes.length);
+      this.buffer.set(bytes.subarray(0, take), this.bufLen);
+      this.bufLen += take;
+      off += take;
+      if (this.bufLen === 64) {
+        this._processBlock(this.buffer, 0);
+        this.bufLen = 0;
+      }
+    }
+    while (off + 64 <= bytes.length) {
+      this._processBlock(bytes, off);
+      off += 64;
+    }
+    if (off < bytes.length) {
+      const rem = bytes.length - off;
+      this.buffer.set(bytes.subarray(off), 0);
+      this.bufLen = rem;
+    }
+    return this;
+  }
+
+  _processBlock(data, start) {
+    const w = this._w;
+    for (let i = 0; i < 16; i++) {
+      const p = start + i * 4;
+      w[i] = (data[p] << 24) | (data[p + 1] << 16) | (data[p + 2] << 8) | data[p + 3];
+    }
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    let [a, b, c, d, e, f, g, h] = this.h;
+    for (let i = 0; i < 64; i++) {
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      const ch = (e & f) ^ (~e & g);
+      const temp1 = (h + S1 + ch + K[i] + w[i]) | 0;
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const temp2 = (S0 + maj) | 0;
+      h = g; g = f; f = e; e = (d + temp1) | 0;
+      d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+    }
+    this.h[0] = (this.h[0] + a) | 0;
+    this.h[1] = (this.h[1] + b) | 0;
+    this.h[2] = (this.h[2] + c) | 0;
+    this.h[3] = (this.h[3] + d) | 0;
+    this.h[4] = (this.h[4] + e) | 0;
+    this.h[5] = (this.h[5] + f) | 0;
+    this.h[6] = (this.h[6] + g) | 0;
+    this.h[7] = (this.h[7] + h) | 0;
+  }
+
+  hexDigest() {
+    // Pad a COPY of the running state so the instance stays usable (not
+    // strictly needed here but avoids surprises if a caller inspects again).
+    const totalBits = this.totalLen * 8;
+    const padLen = ((this.bufLen < 56) ? 56 - this.bufLen : 120 - this.bufLen);
+    const tail = new Uint8Array(this.bufLen + padLen + 8);
+    tail.set(this.buffer.subarray(0, this.bufLen), 0);
+    tail[this.bufLen] = 0x80;
+    // 64-bit big-endian bit length (totalBits fits in 53 bits for our file sizes)
+    const hi = Math.floor(totalBits / 0x100000000);
+    const lo = totalBits >>> 0;
+    const view = new DataView(tail.buffer);
+    view.setUint32(tail.length - 8, hi, false);
+    view.setUint32(tail.length - 4, lo, false);
+
+    // Process the padded tail against a snapshot of h so update() semantics
+    // (if ever called again) are unaffected — but hexDigest() is meant to be
+    // terminal, so mutate a clone instead of `this`.
+    const hSnap = this.h.slice();
+    const savedH = this.h;
+    this.h = hSnap;
+    for (let off = 0; off < tail.length; off += 64) {
+      this._processBlock(tail, off);
+    }
+    const finalH = this.h;
+    this.h = savedH;
+
+    let hex = "";
+    for (let i = 0; i < 8; i++) {
+      hex += finalH[i].toString(16).padStart(8, "0");
+    }
+    return hex;
+  }
+}
+
+</script>
+<!-- ══════════ UI driver ══════════ -->
+<script>
+// UI driver for patcher.html. Runs entirely client-side. The only network
+// calls in this file are same-origin fetch("./assets/...") of this page's own
+// static patch assets — there is no fetch/XHR/WebSocket anywhere in this file
+// (or core.mjs/sha256.mjs) that sends any byte of the user's chosen disc image
+// or its hash to anywhere. Audit that claim by reading this file in full.
+
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    unsupported: $("unsupported"), unsupportedMsg: $("unsupported-msg"), app: $("app"),
+    btnPickDir: $("btn-pick-dir"), candidateSelect: $("candidate-select"),
+    imageStatus: $("image-status"), imageProgressWrap: $("image-progress-wrap"), imageProgressBar: $("image-progress-bar"),
+    modeButtons: [...document.querySelectorAll("button.mode")], modeSize: $("mode-size"),
+    btnRun: $("btn-run"), runProgressWrap: $("run-progress-wrap"), runProgressBar: $("run-progress-bar"),
+    runEta: $("run-eta"), runStatus: $("run-status"), log: $("log"),
+    syscardInput: $("syscard-input"), btnSyscard: $("btn-syscard"), syscardStatus: $("syscard-status"),
+    syscardLog: $("syscard-log"),
+  };
+
+  function logLine(msg) {
+    els.log.hidden = false;
+    els.log.textContent += msg + "\n";
+    els.log.scrollTop = els.log.scrollHeight;
+  }
+  function setStatus(el, text, kind) {
+    el.hidden = false;
+    el.textContent = text;
+    el.className = "status" + (kind ? " " + kind : "");
+  }
+  function setProgress(barEl, wrapEl, pct) {
+    wrapEl.hidden = false;
+    barEl.style.width = Math.max(0, Math.min(100, pct)) + "%";
+  }
+
+  // ---- file:// 로 열었는가 --------------------------------------------------
+  // 이게 첫 번째 검사여야 한다. file:// 에서는 fetch("./assets/…") 가 CORS 로 막혀
+  // "Failed to fetch" 만 던지는데, 그 시점은 사용자가 이미 폴더를 다 고른 뒤다.
+  // 원인이 전혀 드러나지 않는 메시지라, 시작하기 전에 잡아서 해결 방법까지 말해 준다.
+  if (location.protocol === "file:") {
+    els.unsupportedMsg.innerHTML =
+      "이 파일을 <b>직접 열어서(file://)</b> 실행하셨습니다. " +
+      "그 상태에서는 브라우저가 보안 정책 때문에 패치 데이터를 읽지 못합니다.<br><br>" +
+      "웹 서버를 통해 열어 주세요. 이 폴더에서 아래를 실행한 뒤 " +
+      "<code>http://localhost:8000/patcher.html</code> 로 접속하시면 됩니다:" +
+      "<br><br><code>python3 -m http.server 8000</code><br><br>" +
+      "배포된 사이트에서 여실 때는 이 문제가 없습니다.";
+    els.unsupported.hidden = false;
+    return;
+  }
+
+  // ---- feature detection (before the user commits to a 772MB operation) ----
+  const hasSaveFilePicker = "showSaveFilePicker" in window;
+  const hasOpenFilePicker = "showOpenFilePicker" in window;
+  const hasDirPicker = "showDirectoryPicker" in window;
+  const hasDecompressionStream = "DecompressionStream" in window;
+  if (!hasSaveFilePicker || !hasOpenFilePicker || !hasDirPicker || !hasDecompressionStream) {
+    const missing = [];
+    if (!hasDirPicker) missing.push("showDirectoryPicker");
+    if (!hasSaveFilePicker) missing.push("showSaveFilePicker");
+    if (!hasDecompressionStream) missing.push("DecompressionStream");
+    els.unsupportedMsg.textContent = `필요한 기능이 없습니다: ${missing.join(", ")}`;
+    els.unsupported.hidden = false;
+    return; // do not show the app at all
+  }
+  els.app.hidden = false;
+
+  // ---- gzip decompression (browser: DecompressionStream) ----
+  async function gunzip(bytes) {
+    const ds = new DecompressionStream("gzip");
+    const stream = new Blob([bytes]).stream().pipeThrough(ds);
+    const buf = await new Response(stream).arrayBuffer();
+    return new Uint8Array(buf);
+  }
+
+  // ---- manifest (fetched once; same-origin static asset only) ----
+  let manifestPromise = fetch("./assets/manifest.json").then((r) => {
+    if (!r.ok) throw new Error(`manifest.json 을 불러오지 못했습니다 (HTTP ${r.status})`);
+    return r.json();
+  });
+
+  const assetCache = new Map();
+  async function fetchAssetBlob(assetName) {
+    if (assetCache.has(assetName)) return assetCache.get(assetName);
+    const r = await fetch(`./assets/${assetName}`);
+    if (!r.ok) throw new Error(`${assetName} 을 불러오지 못했습니다 (HTTP ${r.status})`);
+    const raw = new Uint8Array(await r.arrayBuffer());
+    const decompressed = await gunzip(raw);
+    assetCache.set(assetName, decompressed);
+    return decompressed;
+  }
+  async function fetchTrackPcm(trackMeta) {
+    return fetchAssetBlob(trackMeta.asset);
+  }
+
+  // ---- random-access reader over a File (input image) ----
+  class FileReaderRA {
+    constructor(file) { this.file = file; this.size = file.size; }
+    async read(pos, len) {
+      const blob = this.file.slice(pos, pos + len);
+      return new Uint8Array(await blob.arrayBuffer());
+    }
+  }
+  // ---- random-access writer over a FileSystemWritableFileStream ----
+  class WritableRA {
+    constructor(writable) { this.writable = writable; }
+    async write(pos, bytes) {
+      await this.writable.write({ type: "write", position: pos, data: bytes });
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // state
+  // ---------------------------------------------------------------------
+  let dirHandle = null, cueFileHandle = null, imgFileHandle = null;
+  let cueFile = null, imgFile = null, cueText = null;
+  let mode = "both";
+  let identifyResult = null; // [status, msg, sha]
+
+  els.modeButtons.forEach((b) => {
+    b.addEventListener("click", () => {
+      mode = b.dataset.mode;
+      els.modeButtons.forEach((x) => x.classList.toggle("sel", x === b));
+      updateModeSize();
+      updateRunButton();
+    });
+  });
+
+  async function updateModeSize() {
+    const m = await manifestPromise;
+    let bytes = 0;
+    if (mode === "text" || mode === "both") bytes += m.text_patch.compressed_bytes;
+    if (mode === "voice" || mode === "both") {
+      bytes += m.voice_patch.compressed_bytes;
+      for (const t of m.tracks) bytes += t.gz_bytes || 0;
+    }
+    const mb = (bytes / (1024 * 1024)).toFixed(1);
+    els.modeSize.textContent = `내려받을 자산(gzip): ${mb} MB`;
+  }
+  updateModeSize();
+
+  // ---------------------------------------------------------------------
+  // Step 1 — pick image folder, mirror find_cue_bin_pair() over directory entries
+  // ---------------------------------------------------------------------
+  els.btnPickDir.addEventListener("click", async () => {
+    try {
+      dirHandle = await window.showDirectoryPicker({ id: "ys4ko-image-dir", mode: "read" });
+    } catch (e) {
+      return; // user cancelled
+    }
+    const names = [];
+    const handles = new Map();
+    for await (const [name, handle] of dirHandle.entries()) {
+      if (handle.kind !== "file") continue;
+      const ext = name.slice(name.lastIndexOf(".")).toLowerCase();
+      if (ext === ".cue" || ext === ".img" || ext === ".bin") {
+        names.push(name);
+        handles.set(name, handle);
+      }
+    }
+    if (names.length === 0) {
+      setStatus(els.imageStatus, "이 폴더에서 .cue/.img/.bin 파일을 찾지 못했습니다.", "err");
+      return;
+    }
+    els.candidateSelect.innerHTML = "";
+    names.sort().forEach((n) => {
+      const opt = document.createElement("option");
+      opt.value = n; opt.textContent = n;
+      els.candidateSelect.appendChild(opt);
+    });
+    // prefer a .cue by default if present
+    const preferCue = names.find((n) => n.toLowerCase().endsWith(".cue"));
+    if (preferCue) els.candidateSelect.value = preferCue;
+    els.candidateSelect.hidden = false;
+    await pickPair(els.candidateSelect.value, names, handles);
+    els.candidateSelect.onchange = () => pickPair(els.candidateSelect.value, names, handles);
+  });
+
+  async function pickPair(chosenName, names, handles) {
+    let cueName, imgName;
+    try {
+      [cueName, imgName] = findCueBinPair(chosenName, names);
+    } catch (e) {
+      setStatus(els.imageStatus, String(e.message || e), "err");
+      return;
+    }
+    cueFileHandle = handles.get(cueName);
+    imgFileHandle = handles.get(imgName);
+    cueFile = await cueFileHandle.getFile();
+    imgFile = await imgFileHandle.getFile();
+    cueText = await cueFile.text();
+
+    // 파일을 읽기 시작하는 이 순간이 사용자가 "업로드되는 건가?" 하고 불안해하는
+    // 지점이다. 진행 표시만 두면 오히려 그렇게 읽힌다 — 아니라는 말을 같이 둔다.
+    setStatus(els.imageStatus,
+      `분석 중 — ${imgName} 을(를) 이 컴퓨터에서 읽고 있습니다. 서버로 보내지 않습니다.`, "busy");
+    const reader = new FileReaderRA(imgFile);
+    identifyResult = null;
+    try {
+      const manifest = await manifestPromise;
+      const result = await identifyImage(reader, imgFile.size, manifest, Sha256, (done, total) => {
+        const pct = (100 * done) / total;
+        setProgress(els.imageProgressBar, els.imageProgressWrap, pct);
+        setStatus(els.imageStatus,
+          `분석 중 ${pct.toFixed(0)}% — ${imgName} 을(를) 이 컴퓨터에서 읽고 있습니다. ` +
+          `서버로 보내지 않습니다.`, "busy");
+      });
+      identifyResult = result;
+      const [status, msg] = result;
+      const kind = status === "en" || status === "already" ? "ok" : status === "jp" ? "err" : "warn";
+      setStatus(els.imageStatus, `[${status}] ${msg}`, kind);
+    } catch (e) {
+      setStatus(els.imageStatus, `식별 중 오류: ${e.message || e}`, "err");
+    }
+    updateRunButton();
+  }
+
+  function updateRunButton() {
+    const ok = identifyResult && (identifyResult[0] === "en" || identifyResult[0] === "already");
+    els.btnRun.disabled = !ok;
+    els.btnRun.textContent = ok ? "출력 파일 선택하고 패치 시작" : "먼저 올바른 원본 이미지를 선택하세요";
+  }
+
+  // ---------------------------------------------------------------------
+  // Step 3 — run patch
+  // ---------------------------------------------------------------------
+  els.btnRun.addEventListener("click", async () => {
+    els.log.textContent = "";
+    els.btnRun.disabled = true;
+    setStatus(els.runStatus, "출력 파일 위치를 선택하세요 …", "warn");
+
+    let outHandle;
+    try {
+      outHandle = await window.showSaveFilePicker({
+        suggestedName: `YsIV_KO_${mode.toUpperCase()}${imgFileNameExt(imgFile.name)}`,
+        types: [{ description: "CD image", accept: { "application/octet-stream": [imgFileNameExt(imgFile.name)] } }],
+      });
+    } catch (e) {
+      setStatus(els.runStatus, "저장 위치 선택이 취소되었습니다.", "warn");
+      updateRunButton();
+      return;
+    }
+
+    // 가장 오래 걸리는 구간. 진행바만 있으면 "전송 중"으로 읽히기 쉽다.
+    setStatus(els.runStatus,
+      "패치 중 — 원본을 읽고 새 파일에 쓰는 작업이 전부 이 컴퓨터 안에서 일어납니다. "
+      + "서버로 보내지 않습니다.", "busy");
+    const t0 = performance.now();
+    try {
+      const manifest = await manifestPromise;
+      const writable = await outHandle.createWritable();
+      const writer = new WritableRA(writable);
+      const imgReader = new FileReaderRA(imgFile);
+
+      logLine(`원본: ${imgFile.name} (${imgFile.size.toLocaleString()} B)`);
+      logLine(`모드: ${mode}`);
+      logLine("복사 중 …");
+      await copyWithProgress(imgReader, writer, imgFile.size, (done, total) => {
+        setProgress(els.runProgressBar, els.runProgressWrap, (40 * done) / total);
+        updateEta(t0, done, total, 0, 40);
+      });
+
+      const result = await runPatchCore({
+        cueText, imgSize: imgFile.size, outWriter: writer, mode, manifest,
+        fetchAssetBlob, fetchTrackPcm, log: logLine,
+      });
+      setProgress(els.runProgressBar, els.runProgressWrap, 80);
+
+      await writable.close();
+
+      logLine("검증 중 …");
+      const outFile = await outHandle.getFile();
+      if (outFile.size !== imgFile.size) throw new Error("출력 파일 크기가 원본과 다릅니다 — 손상 가능성");
+      const outReader = new FileReaderRA(outFile);
+      await verifyPatchRegions(outReader, result.appliedRegions);
+      await verifyTracks(outReader, result.appliedTracks, Sha256);
+      logLine("  검증 통과: 기록분 일치, 파일 크기 불변");
+      setProgress(els.runProgressBar, els.runProgressWrap, 90);
+
+      logLine("출력 해시 계산 중 …");
+      const outSha = await sha256OfReader(outReader, outFile.size, Sha256, 4 * 1024 * 1024, (done, total) => {
+        setProgress(els.runProgressBar, els.runProgressWrap, 90 + (10 * done) / total);
+        updateEta(t0, done, total, 90, 100);
+      });
+      const expectedKey = mode === "both" ? "both_sha256" : `${mode}_only_sha256`;
+      const expectedSha = manifest.expected_output[expectedKey];
+      logLine(`  실제: ${outSha}`);
+      logLine(`  기대: ${expectedSha}`);
+
+      setProgress(els.runProgressBar, els.runProgressWrap, 100);
+      els.runEta.textContent = "";
+      if (outSha === expectedSha) {
+        setStatus(els.runStatus, "패치 완료 — 해시 일치. 정상적으로 적용되었습니다.", "ok");
+      } else {
+        setStatus(els.runStatus, "해시 불일치 — 자산/원본 이미지를 다시 확인해 주세요.", "err");
+      }
+    } catch (e) {
+      logLine(`오류: ${e.message || e}`);
+      setStatus(els.runStatus, `오류: ${e.message || e}`, "err");
+    } finally {
+      updateRunButton();
+    }
+  });
+
+  function imgFileNameExt(name) {
+    const dot = name.lastIndexOf(".");
+    return dot >= 0 ? name.slice(dot) : ".img";
+  }
+  function updateEta(t0, done, total, pctFrom, pctTo) {
+    const elapsed = (performance.now() - t0) / 1000;
+    const rate = done / Math.max(elapsed, 0.001);
+    const remain = (total - done) / Math.max(rate, 1);
+    els.runEta.textContent = `${(rate / 1e6).toFixed(1)} MB/s · 남은 시간 약 ${Math.ceil(remain)}초`;
+  }
+
+  // ---------------------------------------------------------------------
+  // Step 0 — syscard glyph card generation
+  // ---------------------------------------------------------------------
+  // 카드는 '글리프를 렌더'하는 게 아니라 '레시피를 적용'해서 만든다.
+  //
+  // 올바른 Ys 전용 카드에는 스태프롤 복구용으로 순정 BIOS 에서 뽑아다 옮겨 심은
+  // 한자 글리프가 들어 있다. 그 바이트는 허드슨 것이라 배포하면 안 된다. 그래서
+  // 레시피는 두 종류의 명령만 담는다:
+  //   COPY    — 사용자 '본인' 순정 카드에서 옮겨온다 (이식된 한자가 여기)
+  //   LITERAL — 우리가 만든 데이터만 (한글 글리프 · 복원 루틴 · 헤더)
+  // 이 파일에는 순정 BIOS 바이트가 한 개도 들어 있지 않다 (tools/make_card_recipe.py 가
+  // 슬라이딩 윈도로 감사한다).
+  //
+  // 이전 방식(글리프 렌더)은 '범용 카드'를 만들었는데, 거기엔 세이브를 직접 불러올 때
+  // 대화창이 얼어붙는 것을 막는 $13 꼬리 복원 데이터가 없다. 반드시 레시피를 써야 한다.
+  const RECIPE_MAGIC = "YS4CARD1";
+  const RECIPE_HEAD = 84;                  // 8 + 4 + 32 + 4 + 32 + 4
+
+  let recipePromise = null;
+  function getCardRecipe() {
+    if (!recipePromise) {
+      recipePromise = fetch("./assets/card.recipe.gz")
+        .then((r) => r.arrayBuffer())
+        .then((b) => gunzip(new Uint8Array(b)));
+    }
+    return recipePromise;
+  }
+
+  const hex = (buf) =>
+    [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+
+  function recipeHeader(recipe) {
+    const dv = new DataView(recipe.buffer, recipe.byteOffset, recipe.byteLength);
+    if (new TextDecoder().decode(recipe.subarray(0, 8)) !== RECIPE_MAGIC) {
+      throw new Error("카드 레시피 파일이 아닙니다");
+    }
+    return {
+      dv,
+      srcLen: dv.getUint32(8, true),
+      srcSha: hex(recipe.subarray(12, 44)),
+      dstLen: dv.getUint32(44, true),
+      dstSha: hex(recipe.subarray(48, 80)),
+      nOps: dv.getUint32(80, true),
+    };
+  }
+
+  async function buildCardFromRecipe(recipe, stock) {
+    const { dv, srcLen, srcSha, dstLen, dstSha, nOps } = recipeHeader(recipe);
+
+    if (stock.length !== srcLen) {
+      throw new Error(
+        `${stock.length.toLocaleString()} 바이트입니다 — 순정 syscard3.pce 는 ` +
+        `${srcLen.toLocaleString()} 바이트(256KB)여야 합니다`);
+    }
+    const gotSrc = hex(await crypto.subtle.digest("SHA-256", stock));
+    if (gotSrc !== srcSha) {
+      throw new Error(
+        "순정 Super System Card 3.0 이 아닙니다. 다른 버전이거나 이미 개조된 카드로 보입니다.\n" +
+        `이 파일: ${gotSrc.slice(0, 16)}…  /  필요한 파일: ${srcSha.slice(0, 16)}…`);
+    }
+
+    // COPY 를 먼저 전부 적용한 뒤 LITERAL 을 이어 붙인다 (생성기와 같은 순서).
+    const card = stock.slice();
+    let p = RECIPE_HEAD;
+    const lits = [];
+    for (let i = 0; i < nOps; i++) {
+      const kind = recipe[p]; p += 1;
+      const dst = dv.getUint32(p, true); p += 4;
+      const ln = dv.getUint32(p, true); p += 4;
+      if (kind === 0) {
+        const src = dv.getUint32(p, true); p += 4;
+        card.set(stock.subarray(src, src + ln), dst);
+      } else {
+        lits.push([dst, ln]);
+      }
+    }
+    for (const [dst, ln] of lits) {
+      card.set(recipe.subarray(p, p + ln), dst); p += ln;
+    }
+
+    if (card.length !== dstLen) throw new Error("결과 크기가 맞지 않습니다 (내부 오류)");
+    const gotDst = hex(await crypto.subtle.digest("SHA-256", card));
+    if (gotDst !== dstSha) {
+      throw new Error("생성 결과가 기대 해시와 다릅니다 — 이 카드는 쓰지 마세요 (내부 오류)");
+    }
+    return { card, sha: gotDst, expected: dstSha };
+  }
+
+  // 고른 파일이 정말 순정 카드인지는 '생성 버튼을 누르기 전에' 알려 준다.
+  // 256 KB 라 해시는 즉시 끝나므로, 굳이 사용자를 기다리게 할 이유가 없다.
+  // 그리고 검증했다는 사실이 화면에 보여야 한다 — 조용히 통과시키면 사용자는
+  // 확인이 이뤄졌는지 알 길이 없고, 해시를 보여주는 의미가 사라진다.
+  const scLog = (m) => {
+    els.syscardLog.hidden = false;
+    els.syscardLog.textContent += m + "\n";
+  };
+  let stockOk = false;
+
+  els.syscardInput.addEventListener("change", async () => {
+    els.btnSyscard.disabled = true;
+    stockOk = false;
+    els.syscardLog.hidden = true;
+    els.syscardLog.textContent = "";
+    const file = els.syscardInput.files[0];
+    if (!file) return;
+    try {
+      setStatus(els.syscardStatus,
+        "카드 확인 중 — 이 컴퓨터에서 읽고 있습니다. 서버로 보내지 않습니다.", "busy");
+      const recipe = await getCardRecipe();
+      const { srcSha, dstSha, srcLen } = recipeHeader(recipe);
+      const buf = new Uint8Array(await file.arrayBuffer());
+      const got = hex(await crypto.subtle.digest("SHA-256", buf));
+      scLog(`고른 파일: ${file.name} (${buf.length.toLocaleString()} B)`);
+      scLog(`  sha256 ${got}`);
+      scLog(`  기대값 ${srcSha}`);
+      if (buf.length !== srcLen) {
+        setStatus(els.syscardStatus,
+          `크기가 다릅니다 — 순정 Super System Card 3.0 은 ${srcLen.toLocaleString()} B 입니다.`, "err");
+        return;
+      }
+      if (got !== srcSha) {
+        setStatus(els.syscardStatus,
+          "순정 Super System Card 3.0 이 아닙니다. 다른 버전이거나 이미 개조된 카드로 보입니다.", "err");
+        return;
+      }
+      scLog(`  -> 일치. 만들어질 카드: ${dstSha}`);
+      stockOk = true;
+      els.btnSyscard.disabled = false;
+      setStatus(els.syscardStatus, "순정 시스템 카드 확인됨 — 해시 일치. 생성할 수 있습니다.", "ok");
+    } catch (e) {
+      setStatus(els.syscardStatus, `확인 실패: ${e.message || e}`, "err");
+    }
+  });
+
+  els.btnSyscard.addEventListener("click", async () => {
+    const file = els.syscardInput.files[0];
+    if (!file) return;
+    els.btnSyscard.disabled = true;
+    try {
+      const recipe = await getCardRecipe();
+      const stockBuf = new Uint8Array(await file.arrayBuffer());
+      const { card, sha, expected } = await buildCardFromRecipe(recipe, stockBuf);
+      scLog("생성 완료");
+      scLog(`  실제 ${sha}`);
+      scLog(`  기대 ${expected}`);
+      scLog(`  -> ${sha === expected ? "일치" : "불일치"}`);
+
+      if (hasSaveFilePicker) {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: "syscard3_ko.pce",
+          types: [{ description: "PC Engine System Card", accept: { "application/octet-stream": [".pce"] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(card);
+        await writable.close();
+      } else {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([card]));
+        a.download = "syscard3_ko.pce";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+      }
+      setStatus(els.syscardStatus,
+        `한글 시스템 카드를 만들었습니다 — 해시 일치 (${card.length.toLocaleString()} B). ` +
+        `에뮬레이터/실기의 syscard3.pce 자리에 이 파일을 넣어 주세요.`, "ok");
+    } catch (e) {
+      setStatus(els.syscardStatus, `오류: ${e.message || e}`, "err");
+    } finally {
+      els.btnSyscard.disabled = false;
+    }
+  });
+})();
+
+</script>
+</body>
+</html>

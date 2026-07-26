@@ -1,0 +1,87 @@
+{
+  "format": "ys4ko-patch-2",
+  "version": "v0.9",
+  "created": "2026-07-26",
+  "generated_at": "2026-07-25T17:39:05.521905+00:00",
+  "image": {
+    "size": 772624944,
+    "sha256": "5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7",
+    "cooked_iso_size": 67420160,
+    "cooked_iso_sha256": "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c",
+    "jp_cooked_iso_sha256": "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d"
+  },
+  "text_patch": {
+    "asset": "text.patch.gz",
+    "entries": 87,
+    "total_bytes": 358919,
+    "compressed_bytes": 175738
+  },
+  "voice_patch": {
+    "asset": "voice.patch.gz",
+    "entries": 10,
+    "total_bytes": 31313209,
+    "compressed_bytes": 19649404
+  },
+  "tracks": [
+    {
+      "no": 7,
+      "asset": "track_07.pcm.gz",
+      "byte_offset": 189180768,
+      "slot_len": 18347952,
+      "sha256": "1ce2eb6f0f9bc4f0199afdf314510d9d257d185f9e22e1864777d2e90a786eef",
+      "trim_bytes": 11760,
+      "pad_bytes": 0,
+      "trim_peak_pct": 0.177,
+      "gz_bytes": 14896329
+    },
+    {
+      "no": 24,
+      "asset": "track_24.pcm.gz",
+      "byte_offset": 562934736,
+      "slot_len": 14267232,
+      "sha256": "c34af6ce59cbb8df2fca0d75c5fba22d745d6697987fec03ef67640438f96774",
+      "trim_bytes": 21168,
+      "pad_bytes": 0,
+      "trim_peak_pct": 0.14,
+      "gz_bytes": 12143124
+    },
+    {
+      "no": 28,
+      "asset": "track_28.pcm.gz",
+      "byte_offset": 620048352,
+      "slot_len": 19265232,
+      "sha256": "dbbec93a716900df615977c343cca9a6752da6a506f23b862c8d179efa9dd48f",
+      "trim_bytes": 32928,
+      "pad_bytes": 0,
+      "trim_peak_pct": 0.101,
+      "gz_bytes": 15114231
+    },
+    {
+      "no": 29,
+      "asset": "track_29.pcm.gz",
+      "byte_offset": 639313584,
+      "slot_len": 28096992,
+      "sha256": "7151c8638ff6cc5f350822e5643f8035fca8d91c5b2cfaf0fd25e20b57bc2306",
+      "trim_bytes": 14112,
+      "pad_bytes": 0,
+      "trim_peak_pct": 0.043,
+      "gz_bytes": 22402712
+    },
+    {
+      "no": 30,
+      "asset": "track_30.pcm.gz",
+      "byte_offset": 667410576,
+      "slot_len": 55869408,
+      "sha256": "fec9ba0250d591d3ef9dccafa466f60585da6858226bb744fc792ed203ae9b52",
+      "trim_bytes": 14112,
+      "pad_bytes": 0,
+      "trim_peak_pct": 0.079,
+      "gz_bytes": 43886353
+    }
+  ],
+  "expected_output": {
+    "text_only_sha256": "84d7fedea64e6313959c067d41a49a3dcdf8556e2fa4cdae291dacd237ace7eb",
+    "voice_only_sha256": "943891fce46f9673a6327e3d70ba1b080190fb98526153714c71286b49e5c912",
+    "both_sha256": "c783b02795a819a45de5a3f606733ec69c272c08063512882cdb0d37649f63fb"
+  }
+}
