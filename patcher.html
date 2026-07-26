@@ -947,7 +947,13 @@ class Sha256 {
       setProgress(els.runProgressBar, els.runProgressWrap, 100);
       els.runEta.textContent = "";
       if (outSha === expectedSha) {
-        setStatus(els.runStatus, "패치 완료 — 해시 일치. 정상적으로 적용되었습니다.", "ok");
+        // .img 만 주면 쓸 수 없다 — 원본 .cue 의 FILE 줄은 아직 '원래' 파일명을
+        // 가리키고 있어서, 그대로 두면 에뮬레이터가 패치된 이미지를 못 찾는다.
+        // 그래서 FILE 줄만 새 파일명으로 바꾼 .cue 를 같이 내려준다
+        // (파이썬 패처가 하는 일과 동일하다).
+        offerCue(outFile.name);
+        setStatus(els.runStatus,
+          "패치 완료 — 해시 일치. 아래 .cue 파일도 같은 폴더에 저장해 주세요.", "ok");
       } else {
         setStatus(els.runStatus, "해시 불일치 — 자산/원본 이미지를 다시 확인해 주세요.", "err");
       }
@@ -968,6 +974,30 @@ class Sha256 {
     const rate = done / Math.max(elapsed, 0.001);
     const remain = (total - done) / Math.max(rate, 1);
     els.runEta.textContent = `${(rate / 1e6).toFixed(1)} MB/s · 남은 시간 약 ${Math.ceil(remain)}초`;
+  }
+
+  /** 패치된 .img 에 맞춰 FILE 줄만 고친 .cue 를 내려받게 한다.
+   *  트랙 레이아웃(INDEX 등)은 패치로 바뀌지 않으므로 그대로 둔다. */
+  function offerCue(imgName){
+    var cueName = imgName.replace(/\.[^.]+$/, "") + ".cue";
+    var lines = cueText.split(/(\r?\n)/);
+    var done = false;
+    for (var i = 0; i < lines.length; i++){
+      if (!done && /^\s*FILE\s+/i.test(lines[i])){
+        lines[i] = lines[i].replace(/"[^"]+"/, '"' + imgName + '"');
+        done = true;
+      }
+    }
+    if (!done){ logLine("  주의: .cue 에서 FILE 줄을 찾지 못했습니다 — 직접 확인해 주세요."); return; }
+    var blob = new Blob([lines.join("")], {type: "application/octet-stream"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = cueName;
+    a.className = "cta";
+    a.textContent = cueName + " 내려받기";
+    a.style.marginTop = ".8rem";
+    els.runStatus.after(a);
+    logLine("  .cue 생성: FILE -> \"" + imgName + "\"");
   }
 
   // ---------------------------------------------------------------------
