@@ -8,20 +8,35 @@
     "패처가 쓰는 assets/ 는 사이트와 같은 곳에 있어야 하며, 그래서 CORS 설정이 필요 없습니다.",
     "assets/ 를 외부로 옮기면 브라우저가 fetch 를 막아 음성 모드가 동작하지 않습니다."
   ],
-
   "version": "v0.9",
-
   "patches": {
-    "text":    { "url": "", "size": "163 KB" },
-    "voice":   { "url": "", "size": "116.6 MB" },
-    "both":    { "url": "", "size": "116.7 MB" },
-    "syscard": { "url": "", "size": "18 KB" }
+    "text": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-text.xdelta",
+      "size": "163 KB"
+    },
+    "voice": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-voice.xdelta",
+      "size": "116.6 MB"
+    },
+    "both": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-both.xdelta",
+      "size": "116.7 MB"
+    },
+    "syscard": {
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/ys4ko-v0.9-syscard.xdelta",
+      "size": "18 KB"
+    }
   },
-
-  "checksums": { "url": "" },
-  "readme":    { "url": "" },
-
-  "video": { "youtube_id": "" },
-
-  "board": { "url": "" }
+  "checksums": {
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/CHECKSUMS.txt"
+  },
+  "readme": {
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9/README.txt"
+  },
+  "video": {
+    "youtube_id": ""
+  },
+  "board": {
+    "url": ""
+  }
 }
