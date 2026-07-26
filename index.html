@@ -518,6 +518,17 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 .csrow.copied .cp{opacity:1;color:#5ad18a}
 .modal-box>footer{padding:.7rem 1.3rem;border-top:1px solid var(--edge);font-size:.78rem;color:var(--faint)}
 .modal-box>footer kbd{border:1px solid var(--edge);border-radius:4px;padding:0 .3rem;font-size:.72rem}
+.tools{display:grid;gap:1.2rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin:1.2rem 0}
+.tool{border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02);
+  display:flex;flex-direction:column}
+.tool figure{margin:0;border-bottom:1px solid var(--edge);background:#0a0d12}
+.tool figure[hidden]{display:none}
+.tool figure img{display:block;width:100%;height:auto}
+.tool h4{margin:1rem 1.1rem .2rem;font-size:1.05rem}
+.tool .meta{margin:0 1.1rem .6rem;font-family:var(--mono);font-size:.72rem;color:var(--amber);letter-spacing:.02em}
+.tool p{margin:0 1.1rem 1.1rem;font-size:.9rem;line-height:1.75;color:var(--mute)}
+table.toolist td.mono{font-family:var(--mono);font-size:.8rem;color:var(--phos);white-space:normal}
+table.toolist td.n{text-align:right;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kpis{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin:1.2rem 0}
 .kpi{border:1px solid var(--edge);border-radius:10px;padding:1rem;background:rgba(255,255,255,.02)}
 .kpi b{display:block;font-size:1.7rem;line-height:1.15;font-variant-numeric:tabular-nums}
@@ -654,6 +665,7 @@ ol.chain li{margin:.15rem 0}
     <button class="tab" role="tab" id="t-credit" aria-controls="p-credit" aria-selected="false"><span class="n">05</span>계보</button>
     <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">06</span>버그 신고</button>
     <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">07</span>집계</button>
+    <button class="tab" role="tab" id="t-tools"  aria-controls="p-tools"  aria-selected="false"><span class="n">08</span>만든 도구</button>
   </div>
 </nav>
 
@@ -1182,7 +1194,155 @@ ol.chain li{margin:.15rem 0}
       <button type="button" class="x" data-cs-close aria-label="닫기">✕</button>
     </header>
     <div id="cs-body"></div>
-    <footer>줄을 클릭하면 복사됩니다 · <kbd>Esc</kbd> 로 닫기</footer>
+    <!-- ─────────── 08 만든 도구 ─────────── -->
+<section class="panel" id="p-tools" role="tabpanel" aria-labelledby="t-tools" tabindex="0" hidden data-chapter="08">
+  <h2>먼저 만들어야 했던 것들</h2>
+  <p class="sub">번역을 시작하려면 스크립트를 꺼낼 수 있어야 하고, 한글을 넣으려면 렌더러가 있어야 하고,
+    음성을 갈아 끼우려면 원본 음성이 어디 있는지부터 알아야 했습니다.
+    그래서 <b>패치보다 도구를 먼저 만들었습니다.</b></p>
+
+  <div class="kpis" style="margin:1.4rem 0 2rem">
+    <div class="kpi"><b>78</b><span>도구</span></div>
+    <div class="kpi q"><b>15,512</b><span>줄</span></div>
+    <div class="kpi"><b>5</b><span>UI 도구</span></div>
+    <div class="kpi q"><b>3</b><span>직접 만든 코덱·어셈블러</span></div>
+  </div>
+
+  <h3>화면이 있는 것들</h3>
+  <div class="tools">
+    <div class="tool">
+      <figure><img src="img/tool-transtool.png" alt="번역 감수기 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>번역 감수기</h4>
+      <div class="meta">transtool.py · 1,127줄 · localhost:8765</div>
+      <p>대사 8천여 줄을 스프레드시트처럼 훑는 웹 UI. <b>같은 문장은 한 줄로 묶여서</b> 한 번 고치면 나오는 곳 전부에 반영됩니다. 블록·카테고리·용어집으로 걸러 보고, 찾아바꾸기와 박스 폭 미리보기가 들어 있습니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-dubstudio.png" alt="더빙 스튜디오 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>더빙 스튜디오</h4>
+      <div class="meta">server.py · 904줄 + UI 3종 · localhost:8790</div>
+      <p>캐릭터마다 목소리를 지정하고, <b>대사별로 감정과 속도를 따로</b> 조절해 한 번에 생성·시청하는 도구. 그 자리에서 들어보고 마음에 안 들면 다시 뽑습니다. 결과는 PCE 에 넣을 16kHz 모노 WAV.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-fontedit.png" alt="한글 폰트 에디터 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>한글 폰트 에디터</h4>
+      <div class="meta">hangul_font.py · 228줄</div>
+      <p>881자를 격자 PNG 한 장으로 내보내 <b>손으로 픽셀을 찍고</b> 다시 읽어들이는 왕복 도구. 16×12 글리프라 자동 렌더링만으로는 안 되는 글자가 꽤 있어서, 결국 눈으로 보고 고쳐야 했습니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-patcher.png" alt="웹 패처 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>웹 패처</h4>
+      <div class="meta">core.mjs + driver.js · 브라우저 전용</div>
+      <p>이 사이트의 그 패처입니다. 데이터트랙 위치 자동 탐지, EDC/ECC 재계산, 영문 패치(.ppf) 직접 적용, 한글 시스템 카드 생성까지 <b>전부 브라우저 안에서</b> — 파일이 서버로 가지 않습니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-voicegui.png" alt="음성 패치 GUI 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>음성 패치 GUI</h4>
+      <div class="meta">ys4_patcher.py · 426줄</div>
+      <p>웹 패처 이전에 만든 데스크톱 패처. 드래그 앤 드롭으로 이미지를 받아 음성 트랙을 갈아 끼웁니다.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2.4rem">그 뒤에서 돌아간 것들</h3>
+  <p class="sub">대부분 한 번 쓰고 끝나는 도구입니다. 그래도 그때는 이게 없으면 한 발도 못 나갔습니다.</p>
+
+  <h3>스크립트를 꺼내고 되넣기</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">decompress.py / compress.py</td><td class="n">318</td><td>게임의 압축 스크립트를 풀고 다시 압축. 되넣을 수 있어야 번역이 시작됩니다</td></tr>
+        <tr><td class="mono">lz_search.py</td><td class="n">94</td><td>압축 포맷을 모르던 시절, 이스케이프 바이트를 고정해 놓고 조합을 훑었습니다</td></tr>
+        <tr><td class="mono">comp_probe.py</td><td class="n">46</td><td>블록들의 공통 접두사와 갈라지는 지점을 찍어 포맷을 좁혔습니다</td></tr>
+        <tr><td class="mono">extract_script.py</td><td class="n">140</td><td>79개 스크립트 블록에서 번역 대상 문장만 골라냅니다</td></tr>
+        <tr><td class="mono">dump_script_blocks.py</td><td class="n">112</td><td>블록 전체를 원본·가독 텍스트 두 벌로 덤프</td></tr>
+        <tr><td class="mono">find_plaintext.py</td><td class="n">91</td><td>Mesen RAM 덤프를 뒤져 압축이 풀린 메뉴·상태창 문자열을 찾습니다</td></tr>
+        <tr><td class="mono">make_recompress_poc.py</td><td class="n">169</td><td>재압축한 블록이 실기에서 안 멈추는지 먼저 증명</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>번역 데이터 관리</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">apply_ko_batch.py</td><td class="n">147</td><td>번역 묶음을 master.tsv 에 안전하게 반영 (충돌·되돌리기 고려)</td></tr>
+        <tr><td class="mono">apply_translation.py / apply_dialogue.py</td><td class="n">199</td><td>매핑 파일에서 번역을 채워 넣기</td></tr>
+        <tr><td class="mono">seed_translation.py</td><td class="n">111</td><td>초기 번역 씨앗 넣기</td></tr>
+        <tr><td class="mono">widen_boxes.py</td><td class="n">167</td><td>대사 상자 폭을 넓히고 한국어 기준으로 줄바꿈을 다시 계산</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>폰트와 렌더러</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">make_korean_render.py</td><td class="n">675</td><td>881자 전체 렌더 빌드 — 한글화의 본체</td></tr>
+        <tr><td class="mono">reload_cave.py</td><td class="n">441</td><td>글리프 재적재 + ADPCM 우회 그리기 루틴 (HuC6280 어셈블리)</td></tr>
+        <tr><td class="mono">plan_2byte_slots.py</td><td class="n">154</td><td>2바이트 렌더러의 글자 슬롯 압력 계산</td></tr>
+        <tr><td class="mono">syscard_kanji_map.py</td><td class="n">136</td><td>System Card 의 한자 폰트 주소 지도 — BIOS 를 뜯어 복원</td></tr>
+        <tr><td class="mono">font_codec.py / font_dump.py</td><td class="n">150</td><td>PCE 1bpp 타일 코덱, 원본 폰트 추출</td></tr>
+        <tr><td class="mono">PoC · 실험 11종</td><td class="n">1,900</td><td>make_2byte / make_hangul / make_render_test / make_reload_poc / make_star_splitbank / make_adwrite_probe / make_capacity_test / make_fontload_test 등 — 본 빌드에 손대기 전에 하나씩 증명한 것들</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>어셈블리와 리버싱</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">huc6280_dis.py</td><td class="n">153</td><td>PC Engine CPU 디스어셈블러. System Card 의 CD_READ 도 이걸로 뜯었습니다</td></tr>
+        <tr><td class="mono">huc_asm.py</td><td class="n">165</td><td>짝이 되는 어셈블러 — 라벨 지원, 케이브에 필요한 만큼만</td></tr>
+        <tr><td class="mono">boot_guard.py</td><td class="n">1,340</td><td>순정 카드로 부팅하면 막아서는 가드 + 인트로 스플래시. 2048바이트 안에 전부</td></tr>
+        <tr><td class="mono">staffroll_patch.py</td><td class="n">306</td><td>엔딩 스태프롤의 깨진 한자 138자 복구 (ASM 손대지 않고 데이터만)</td></tr>
+        <tr><td class="mono">staffroll_header_patch.py</td><td class="n">532</td><td>스태프롤 헤더·배역명·크레딧 페이지 한국어화</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>음성 — 원본 해부부터 주입까지</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">scan_adpcm.py</td><td class="n">156</td><td>디스크를 훑어 ADPCM 음성 구간을 찾아냅니다</td></tr>
+        <tr><td class="mono">find_index.py</td><td class="n">125</td><td>게임이 클립을 찾는 인덱스 표를 정적으로 추적</td></tr>
+        <tr><td class="mono">diff_clips.py</td><td class="n">101</td><td>일본판과 영문 더빙판을 비교해 클립 위치를 역산</td></tr>
+        <tr><td class="mono">segment_clips.py / recluster_coarse.py / autosplit_clip.py</td><td class="n">282</td><td>무음 간격으로 클립을 쪼개고, 게임의 실제 단위로 다시 묶기</td></tr>
+        <tr><td class="mono">cluster_voices.py</td><td class="n">151</td><td>목소리 지문으로 화자를 자동 분류</td></tr>
+        <tr><td class="mono">stt_originals.py</td><td class="n">120</td><td>원본 클립을 whisper 로 받아 적기 — 누가 무슨 말을 하는지부터</td></tr>
+        <tr><td class="mono">match_english_script.py / match_semantic.py</td><td class="n">234</td><td>영문 더빙 대본과 의미 기반으로 클립↔대사 짝짓기</td></tr>
+        <tr><td class="mono">build_mapping.py</td><td class="n">224</td><td>한국어 대사와 교체 대상 일본어 클립을 최종 연결</td></tr>
+        <tr><td class="mono">llm_translate.py / suggest_ko.py</td><td class="n">207</td><td>더빙 대본 번역, 이미 번역한 대사에서 미리 채우기</td></tr>
+        <tr><td class="mono">tts_elevenlabs.py / tts_gptsovits.py / typecast_api.py</td><td class="n">405</td><td>TTS 엔진 3종 어댑터 — 캐릭터별 목소리로 일괄 생성</td></tr>
+        <tr><td class="mono">analyze_lengths.py</td><td class="n">408</td><td>생성한 WAV 가 원래 슬롯에 들어가는 길이인지 전수 검사</td></tr>
+        <tr><td class="mono">pce_adpcm.py / pce_adpcm_enc.py</td><td class="n">369</td><td>PCE ADPCM 코덱 — 디코더를 먼저 만들고 인코더를 붙였습니다</td></tr>
+        <tr><td class="mono">inject_voice.py / inject_cdda.py</td><td class="n">396</td><td>완성된 음성을 데이터트랙과 CD 오디오 트랙에 제자리 주입</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>디스크와 배포</h3>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">cd_ecc.py</td><td class="n">138</td><td>MODE1 섹터의 EDC/ECC 재계산 — v0.9.1 의 그 수정</td></tr>
+        <tr><td class="mono">make_card_recipe.py</td><td class="n">214</td><td>BIOS 를 재배포하지 않으려고 만든 '레시피' 형식. 복사할 구간 + 우리 데이터만</td></tr>
+        <tr><td class="mono">ppf_parse.py</td><td class="n">68</td><td>영문 패치(.ppf) 파서 — 웹 패처가 직접 적용할 수 있게</td></tr>
+        <tr><td class="mono">build_text_patch.py / build_patch_assets.py</td><td class="n">366</td><td>배포용 패치 자산 생성</td></tr>
+        <tr><td class="mono">merge_text_voice.py</td><td class="n">100</td><td>텍스트 패치와 음성 패치를 충돌 없이 한 이미지로</td></tr>
+        <tr><td class="mono">ccd2cue.py / inject_iso_to_img.py / extract_iso.py</td><td class="n">113</td><td>CloneCD·ISO·CUE 사이를 오가는 잡일들</td></tr>
+        <tr><td class="mono">repackage.py</td><td class="n">107</td><td>한 번에 다시 포장하는 진입점</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>줄을 클릭하면 복사됩니다 · <kbd>Esc</kbd> 로 닫기</footer>
   </div>
 </div>
 
