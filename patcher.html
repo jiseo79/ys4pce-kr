@@ -245,16 +245,115 @@ const SECTOR = 2352;
 const MODES = ["text", "voice", "both"];
 
 // ---------------------------------------------------------------------------
+// Where does the data track actually START in this file?
+//
+// DATA_LBA = 3590 is where it sits on the *disc*, and it is also where our two
+// reference rips put it in the file — but that is a property of those rips, not
+// of the game. A ripper that leaves the 2-second pregaps out of the file shifts
+// every following track earlier, and 3590 then points into the middle of the
+// pregap. The data read back is garbage, the hash matches nothing, and the user
+// is told their image is unknown — when the disc content is byte-identical.
+//
+// So never assume 3590. Two independent signals give the real position, and we
+// cross-check them:
+//
+//   1. the .cue — in a single-FILE cue, INDEX times ARE file positions, so the
+//      MODE1 track's INDEX 01 is the answer by construction.
+//   2. the sector headers — every MODE1/2352 sector carries its own absolute
+//      disc address (BCD min:sec:frame, 2 s lead-in offset), so any one data
+//      sector reveals the file-vs-disc shift.
+//
+// Signal 2 also validates signal 1: we read the candidate sector and require its
+// header to say exactly DATA_LBA.
+// ---------------------------------------------------------------------------
+const MODE1_SYNC = [0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00];
+
+function hasSync(b) {
+  for (let i = 0; i < 12; i++) if (b[i] !== MODE1_SYNC[i]) return false;
+  return true;
+}
+
+const fromBcd = (x) => (x >> 4) * 10 + (x & 0x0f);
+
+// Absolute disc LBA written into a raw sector's header, or null if not MODE1.
+function sectorHeaderLba(b) {
+  if (b.length < 16 || !hasSync(b)) return null;
+  const mm = fromBcd(b[12]), ss = fromBcd(b[13]), ff = fromBcd(b[14]);
+  if (mm > 99 || ss > 59 || ff > 74) return null;   // not valid BCD MSF
+  return (mm * 60 + ss) * 75 + ff - 150;            // 150 = 2 s lead-in
+}
+
+function dataTrackLbaFromCue(cueText) {
+  if (!cueText) return null;
+  for (const [, mode, lba] of parseCue(cueText)) {
+    if (/^MODE1/i.test(mode)) return lba;
+  }
+  return null;
+}
+
+// Read the sector at file position `fileLba` and ask whether it claims to be
+// disc sector DATA_LBA.
+async function headerAgrees(reader, size, fileLba) {
+  if (fileLba < 0 || (fileLba + 1) * RAW_SECTOR > size) return false;
+  try {
+    return sectorHeaderLba(await reader.read(fileLba * RAW_SECTOR, 16)) === DATA_LBA;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Returns { lba, source, shift }. Throws PatchAborted when the file holds no
+// recognisable MODE1 data track at all.
+async function locateDataTrack(reader, size, cueText, log) {
+  const fromCue = dataTrackLbaFromCue(cueText);
+  if (fromCue !== null && await headerAgrees(reader, size, fromCue)) {
+    const shift = fromCue - DATA_LBA;
+    if (shift !== 0 && log) {
+      log(`  데이터트랙이 LBA ${fromCue} 에 있습니다 (표준 ${DATA_LBA} 에서 ${shift > 0 ? "+" : ""}${shift}) — 프리갭 처리가 다른 립입니다. 자동 보정합니다.`);
+    }
+    return { lba: fromCue, source: "cue", shift };
+  }
+  if (fromCue !== null && log) {
+    log(`  ⚠ .cue 는 데이터트랙을 LBA ${fromCue} 이라 하는데 그 자리 섹터 헤더가 맞지 않습니다 — 이미지에서 직접 찾습니다.`);
+  }
+
+  // The cue was absent, unparseable, or disagreed with the file. Find any MODE1
+  // sector near the front and derive the shift from its own address.
+  for (let s = 0; s < 8000; s++) {
+    let head;
+    try {
+      head = await reader.read(s * RAW_SECTOR, 16);
+    } catch (e) {
+      break;
+    }
+    const lba = sectorHeaderLba(head);
+    if (lba === null) continue;
+    const cand = s - lba + DATA_LBA;             // file sector holding disc LBA 3590
+    if (await headerAgrees(reader, size, cand)) {
+      const shift = cand - DATA_LBA;
+      if (log) {
+        log(`  데이터트랙을 이미지에서 직접 찾았습니다 — LBA ${cand}` +
+            (shift ? ` (표준에서 ${shift > 0 ? "+" : ""}${shift}, 자동 보정)` : ""));
+      }
+      return { lba: cand, source: "headers", shift };
+    }
+    break;   // first data sector found but it did not lead anywhere; stop probing
+  }
+  throw new PatchAborted(
+    "이 파일에서 PC Engine 데이터트랙을 찾지 못했습니다 — CloneCD/BIN 형식의 raw 이미지(섹터 2352 B)가 맞는지 확인해 주세요.");
+}
+
+// ---------------------------------------------------------------------------
 // ISO(2048/sector) <-> raw CloneCD image offset conversion
 // ---------------------------------------------------------------------------
-function* isoToImgWrites(off, length) {
+function* isoToImgWrites(off, length, dataLba = DATA_LBA) {
   let pos = off;
   let remaining = length;
   while (remaining > 0) {
     const sector = Math.floor(pos / USER_SIZE);
     const inSec = pos % USER_SIZE;
     const chunk = Math.min(remaining, USER_SIZE - inSec);
-    const imgPos = (DATA_LBA + sector) * RAW_SECTOR + USER_OFFSET + inSec;
+    const imgPos = (dataLba + sector) * RAW_SECTOR + USER_OFFSET + inSec;
     yield [imgPos, chunk];
     pos += chunk;
     remaining -= chunk;
@@ -337,7 +436,7 @@ function parsePatchBlob(blob) {
 //   writer.write(pos: number, bytes: Uint8Array) -> Promise<void>
 //   reader.read(pos: number, len: number) -> Promise<Uint8Array>
 // ---------------------------------------------------------------------------
-async function applyPatchEntries(header, data, writer, log) {
+async function applyPatchEntries(header, data, writer, log, dataLba = DATA_LBA) {
   const applied = [];
   let pos = 0;
   for (const entry of header.entries) {
@@ -345,7 +444,7 @@ async function applyPatchEntries(header, data, writer, log) {
     const chunk = data.subarray(pos, pos + length);
     pos += length;
     let cpos = 0;
-    for (const [imgPos, clen] of isoToImgWrites(off, length)) {
+    for (const [imgPos, clen] of isoToImgWrites(off, length, dataLba)) {
       await writer.write(imgPos, chunk.subarray(cpos, cpos + clen));
       cpos += clen;
     }
@@ -379,11 +478,11 @@ function bytesEqual(a, b) {
   return true;
 }
 
-async function verifyPatchRegions(reader, appliedRegions) {
+async function verifyPatchRegions(reader, appliedRegions, dataLba = DATA_LBA) {
   for (const [off, length, chunk] of appliedRegions) {
     const rebuilt = new Uint8Array(length);
     let rpos = 0;
-    for (const [imgPos, clen] of isoToImgWrites(off, length)) {
+    for (const [imgPos, clen] of isoToImgWrites(off, length, dataLba)) {
       const piece = await reader.read(imgPos, clen);
       rebuilt.set(piece, rpos);
       rpos += clen;
@@ -424,10 +523,10 @@ async function sha256OfReader(reader, size, Sha256Ctor, chunkSize = 4 * 1024 * 1
   return h.hexDigest();
 }
 
-async function extractCookedIsoSha256(reader, Sha256Ctor, progress) {
+async function extractCookedIsoSha256(reader, Sha256Ctor, progress, dataLba = DATA_LBA) {
   const h = new Sha256Ctor();
   for (let sector = 0; sector < DATA_SECTORS; sector++) {
-    const pos = (DATA_LBA + sector) * RAW_SECTOR + USER_OFFSET;
+    const pos = (dataLba + sector) * RAW_SECTOR + USER_OFFSET;
     const buf = await reader.read(pos, USER_SIZE);
     h.update(buf);
     if (progress && (sector & 0x3ff) === 0) progress(sector, DATA_SECTORS);
@@ -435,41 +534,79 @@ async function extractCookedIsoSha256(reader, Sha256Ctor, progress) {
   return h.hexDigest();
 }
 
-// status: "en" | "jp" | "size_mismatch" | "unknown"
-async function identifyImage(reader, size, manifest, Sha256Ctor, progress) {
+// Returns [status, message, fullSha, info] where info = { dataLba, shift, cookedSha }.
+// status: "en" | "en_jpvoice" | "jp" | "already" | "not_raw" | "unknown"
+//
+// Note there is no "size_mismatch" status any more. Size alone never decides:
+// a rip that leaves pregaps out of the file is smaller and completely valid.
+async function identifyImage(reader, size, manifest, Sha256Ctor, progress, cueText) {
   const expectSize = manifest.image.size;
-  if (size !== expectSize) {
-    return ["size_mismatch",
-      `크기가 예상과 다릅니다 (예상 ${expectSize.toLocaleString()} B, 실제 ${size.toLocaleString()} B) — 다른 파일일 수 있습니다.`];
+  const sizeNote = size === expectSize ? ""
+    : ` (파일 크기 ${size.toLocaleString()} B — 기준 ${expectSize.toLocaleString()} B 와 다르지만 립 방식 차이일 수 있습니다)`;
+
+  let loc;
+  try {
+    loc = await locateDataTrack(reader, size, cueText);
+  } catch (e) {
+    return ["not_raw",
+      "PC Engine 데이터트랙을 찾지 못했습니다 — CloneCD/BIN 형식의 raw 이미지(섹터 2352 B)가 맞는지 확인해 주세요. " +
+      ".iso / .chd / .nrg / .mdf 나 트랙별로 쪼개진 .bin 은 먼저 단일 .bin+.cue 로 변환하셔야 합니다.",
+      null, null];
   }
-  const fullSha = await sha256OfReader(reader, size, Sha256Ctor, 4 * 1024 * 1024, progress);
-  if (fullSha === manifest.image.sha256) {
-    return ["en", "영문패치본 — 알려진 base 이미지와 완전히 일치합니다.", fullSha];
+  const info = { dataLba: loc.lba, shift: loc.shift, source: loc.source };
+  const shiftNote = loc.shift
+    ? ` 데이터트랙이 표준보다 ${loc.shift > 0 ? "+" : ""}${loc.shift} 섹터 어긋나 있어 자동 보정했습니다 (프리갭 처리가 다른 립).`
+    : "";
+
+  let fullSha = null;
+  if (size === expectSize) {
+    fullSha = await sha256OfReader(reader, size, Sha256Ctor, 4 * 1024 * 1024, progress);
+    if (fullSha === manifest.image.sha256) {
+      return ["en", "영문패치본 — 알려진 base 이미지와 완전히 일치합니다.", fullSha, info];
+    }
+    if (manifest.expected_output) {
+      if (fullSha === manifest.expected_output.text_only_sha256) return ["already", "이미 텍스트만 패치된 이미지입니다.", fullSha, info];
+      if (fullSha === manifest.expected_output.voice_only_sha256) return ["already", "이미 음성만 패치된 이미지입니다.", fullSha, info];
+      if (fullSha === manifest.expected_output.both_sha256) return ["already", "이미 텍스트+음성 패치된 이미지입니다.", fullSha, info];
+    }
+  } else if (progress) {
+    progress(size, size);
   }
-  if (manifest.expected_output) {
-    if (fullSha === manifest.expected_output.text_only_sha256) return ["already", "이미 텍스트만 패치된 이미지입니다.", fullSha];
-    if (fullSha === manifest.expected_output.voice_only_sha256) return ["already", "이미 음성만 패치된 이미지입니다.", fullSha];
-    if (fullSha === manifest.expected_output.both_sha256) return ["already", "이미 텍스트+음성 패치된 이미지입니다.", fullSha];
-  }
+
   let cookedSha;
   try {
-    cookedSha = await extractCookedIsoSha256(reader, Sha256Ctor);
+    cookedSha = await extractCookedIsoSha256(reader, Sha256Ctor, null, loc.lba);
   } catch (e) {
-    return ["unknown", "미상 — 데이터트랙을 읽는 중 오류가 발생했습니다.", fullSha];
+    return ["unknown", "데이터트랙을 읽는 중 오류가 발생했습니다 — 파일이 잘렸을 수 있습니다.", fullSha, info];
   }
+  info.cookedSha = cookedSha;
+
   if (cookedSha === manifest.image.cooked_iso_sha256) {
-    return ["en", "영문패치본 — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름).", fullSha];
+    return ["en", "영문패치본 — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름)." + shiftNote + sizeNote, fullSha, info];
   }
   if (cookedSha === manifest.image.en_textonly_cooked_iso_sha256) {
     // 영문 텍스트 패치만 적용하고 더빙은 안 한 이미지. 우리 text.patch 는 음성
     // 영역을 건드리지 않으므로 "한글 자막 + 일본어 음성" 이 된다.
     return ["en_jpvoice",
-      "영문 텍스트 패치본 (음성 더빙 없음) — 한글 자막 + 일본어 음성이 됩니다.", fullSha];
+      "영문 텍스트 패치본 (음성 더빙 없음) — 한글 자막 + 일본어 음성이 됩니다." + shiftNote + sizeNote, fullSha, info];
   }
   if (cookedSha === manifest.image.jp_cooked_iso_sha256) {
-    return ["jp", "순정 일본판 — 먼저 영문패치를 적용한 이미지가 필요합니다.", fullSha];
+    return ["jp", "순정 일본판 — 먼저 영문패치를 적용한 이미지가 필요합니다." + shiftNote, fullSha, info];
   }
-  return ["unknown", "미상 — 알려진 base/일본판 어느 쪽과도 일치하지 않습니다.", fullSha];
+  if (manifest.expected_output) {
+    const eo = manifest.expected_output;
+    for (const [k, label] of [["text_cooked_sha256", "텍스트만"], ["voice_cooked_sha256", "음성만"],
+                              ["both_cooked_sha256", "텍스트+음성"],
+                              ["text_jpvoice_cooked_sha256", "텍스트만 (일본어 음성)"]]) {
+      if (cookedSha === eo[k]) {
+        return ["already", `이미 한국어화된 이미지입니다 (${label}).`, fullSha, info];
+      }
+    }
+  }
+  return ["unknown",
+    "알려진 어느 이미지와도 일치하지 않습니다. 데이터트랙은 정상적으로 읽혔으므로 형식 문제는 아니고, " +
+    "디스크 내용 자체가 다릅니다 — 다른 버전/다른 패치가 적용된 이미지일 가능성이 큽니다.",
+    fullSha, info];
 }
 
 // ---------------------------------------------------------------------------
@@ -498,15 +635,21 @@ async function copyWithProgress(reader, writer, size, progress, chunkSize = 4 * 
 //   fetchTrackPcm(trackMeta) -> Promise<Uint8Array>   (already gunzip-applied raw PCM)
 // Returns { appliedRegions, appliedTracks, ranges }.
 // ---------------------------------------------------------------------------
-async function runPatchCore({ cueText, imgSize, outWriter, mode, manifest,
-  fetchAssetBlob, fetchTrackPcm, log = () => {} }) {
+async function runPatchCore({ cueText, imgSize, outWriter, outReader, dataLba: dataLbaIn,
+  mode, manifest, fetchAssetBlob, fetchTrackPcm, log = () => {} }) {
   if (!MODES.includes(mode)) throw new Error(`알 수 없는 모드: ${mode}`);
 
+  // 크기가 다르다고 곧바로 막지 않는다. 프리갭을 파일에 넣지 않는 립은 내용이
+  // 같아도 파일이 작다 — 예전엔 그런 사용자를 여기서 되돌려 보냈다.
   const expectSize = manifest.image.size;
   if (imgSize !== expectSize) {
-    throw new PatchAborted(
-      `이미지 크기가 예상과 다릅니다 (예상 ${expectSize.toLocaleString()} B, 실제 ${imgSize.toLocaleString()} B)`);
+    log(`⚠ 이미지 크기가 기준과 다릅니다 (기준 ${expectSize.toLocaleString()} B, 이 파일 ${imgSize.toLocaleString()} B) — 립 방식 차이일 수 있어 계속 진행합니다.`);
   }
+
+  // 호출자가 식별 단계에서 이미 구한 값이 있으면 그걸 쓰고, 없으면 여기서 찾는다.
+  const dataLba = dataLbaIn !== undefined && dataLbaIn !== null
+    ? dataLbaIn
+    : (await locateDataTrack(outReader, imgSize, cueText, log)).lba;
 
   const needsTracks = mode === "voice" || mode === "both";
   let ranges = {};
@@ -530,13 +673,13 @@ async function runPatchCore({ cueText, imgSize, outWriter, mode, manifest,
     log("텍스트 패치 적용 중 …");
     const blob = await fetchAssetBlob(manifest.text_patch.asset);
     const { header, data } = parsePatchBlob(blob);
-    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log));
+    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log, dataLba));
   }
   if (mode === "voice" || mode === "both") {
     log("음성 패치 적용 중 …");
     const blob = await fetchAssetBlob(manifest.voice_patch.asset);
     const { header, data } = parsePatchBlob(blob);
-    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log));
+    appliedRegions = appliedRegions.concat(await applyPatchEntries(header, data, outWriter, log, dataLba));
   }
 
   let appliedTracks = [];
@@ -545,7 +688,7 @@ async function runPatchCore({ cueText, imgSize, outWriter, mode, manifest,
     appliedTracks = await applyTracks(manifest.tracks, ranges, outWriter, fetchTrackPcm, log);
   }
 
-  return { appliedRegions, appliedTracks, ranges };
+  return { appliedRegions, appliedTracks, ranges, dataLba };
 }
 
 </script>
@@ -927,10 +1070,14 @@ class Sha256 {
         setStatus(els.imageStatus,
           `분석 중 ${pct.toFixed(0)}% — ${imgName} 을(를) 이 컴퓨터에서 읽고 있습니다. ` +
           `서버로 보내지 않습니다.`, "busy");
-      });
+      }, cueText);
       identifyResult = result;
-      const [status, msg] = result;
-      const kind = status === "en" || status === "already" ? "ok" : status === "jp" ? "err" : "warn";
+      const [status, msg, , info] = result;
+      if (info && info.shift) {
+        logLine(`데이터트랙 위치 자동 보정: LBA ${info.dataLba} (표준에서 ${info.shift > 0 ? "+" : ""}${info.shift}) — 프리갭 처리가 다른 립입니다.`);
+      }
+      const kind = (status === "en" || status === "en_jpvoice" || status === "already")
+                 ? "ok" : (status === "jp" || status === "not_raw") ? "err" : "warn";
       setStatus(els.imageStatus, `[${status}] ${msg}`, kind);
     } catch (e) {
       setStatus(els.imageStatus, `식별 중 오류: ${e.message || e}`, "err");
@@ -939,7 +1086,8 @@ class Sha256 {
   }
 
   function updateRunButton() {
-    const ok = identifyResult && (identifyResult[0] === "en" || identifyResult[0] === "already");
+    const st = identifyResult && identifyResult[0];
+    const ok = st === "en" || st === "en_jpvoice" || st === "already";
     els.btnRun.disabled = !ok;
     els.btnRun.textContent = ok ? "출력 파일 선택하고 패치 시작" : "먼저 올바른 원본 이미지를 선택하세요";
   }
@@ -989,9 +1137,10 @@ class Sha256 {
         updateEta(t0, done, total, 0, 40);
       });
 
+      const idInfo = (identifyResult && identifyResult[3]) || {};
       const result = await runPatchCore({
         cueText, imgSize: imgFile.size, outWriter: writer, mode, manifest,
-        fetchAssetBlob, fetchTrackPcm, log: logLine,
+        dataLba: idInfo.dataLba, fetchAssetBlob, fetchTrackPcm, log: logLine,
       });
       setProgress(els.runProgressBar, els.runProgressWrap, 80);
 
@@ -1001,7 +1150,7 @@ class Sha256 {
       const outFile = await outHandle.getFile();
       if (outFile.size !== imgFile.size) throw new Error("출력 파일 크기가 원본과 다릅니다 — 손상 가능성");
       const outReader = new FileReaderRA(outFile);
-      await verifyPatchRegions(outReader, result.appliedRegions);
+      await verifyPatchRegions(outReader, result.appliedRegions, result.dataLba);
       await verifyTracks(outReader, result.appliedTracks, Sha256);
       logLine("  검증 통과: 기록분 일치, 파일 크기 불변");
       setProgress(els.runProgressBar, els.runProgressWrap, 90);
@@ -1019,7 +1168,7 @@ class Sha256 {
       //
       //   판정은 우리가 실제로 쓴 것으로 한다: 데이터트랙 해시 (+ 위에서 이미
       //   끝낸 기록분·트랙 읽기검증). 전체 해시는 참고로만 남긴다.
-      const cookedSha = await extractCookedIsoSha256(outReader, Sha256);
+      const cookedSha = await extractCookedIsoSha256(outReader, Sha256, null, result.dataLba);
       // 베이스가 '더빙 없는 영문 텍스트 패치본'이면 음성이 일본어로 남으므로
       // 결과 데이터트랙도 달라진다. 베이스에 맞는 기대값을 골라야 한다.
       const jpv = identifyResult && identifyResult[0] === "en_jpvoice";
