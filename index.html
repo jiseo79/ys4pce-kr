@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>이스 IV: 이스의 여명 — 한국어 패치</title>
 <meta name="description" content="PC Engine Super CD-ROM² 『Ys IV: The Dawn of Ys』 한국어 패치. 한글이 시스템 카드 ROM에서 렌더링됩니다. 브라우저에서 바로 패치하며 파일은 서버로 전송되지 않습니다.">
-<meta property="og:title" content="이스 IV: 이스의 여명 — 한국어 패치 v0.9">
+<meta property="og:title" content="이스 IV: 이스의 여명 — 한국어 패치 v0.9.1">
 <meta property="og:description" content="브라우저에서 바로 패치. 파일은 서버로 전송되지 않습니다.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="img/og.jpg">
@@ -592,7 +592,7 @@ ol.chain li{margin:.15rem 0}
         <span class="en">Ys IV: The Dawn of Ys — Korean Patch</span>
       </h1>
       <div class="edition-row">
-        <div class="ver">v0.9 · 2026</div>
+        <div class="ver">v0.9.1 · 2026</div>
         <div class="maker-sign">LOCALIZED BY TOPPERJI<br>MARS–DRIVE</div>
       </div>
       <p class="lede">33년 전 PC Engine CD로 떠났던 모험을, 이제 한국어로 다시 만납니다.
@@ -600,6 +600,7 @@ ol.chain li{margin:.15rem 0}
       <div class="hero-actions">
         <a class="cta primary" href="#patch" data-go="t-patch">지금 패치하기</a>
         <a class="cta ghost" href="#about" data-go="t-about">작업 이야기 보기</a>
+        <a class="cta ghost" href="patcher.html" target="_blank" rel="noopener">웹 패처 바로 가기 ↗</a>
       </div>
       <div class="hero-proof" aria-label="패치 주요 특징">
         <span><b>브라우저 패치</b>파일 외부 전송 없음</span>
@@ -1173,7 +1174,7 @@ ol.chain li{margin:.15rem 0}
       <div class="brand">
         <img src="img/mars-drive-logo.png" alt="Mars-Drive 로고">
         <div class="mark">MARS<i>–</i>DRIVE</div>
-        <small>TopperJI · 이스 IV 한국어 패치 · v0.9 · 2026</small>
+        <small>TopperJI · 이스 IV 한국어 패치 · v0.9.1 · 2026</small>
       </div>
       <ul class="flinks">
         <li><button data-go="t-need">준비물</button></li>
@@ -1675,7 +1676,7 @@ ol.chain li{margin:.15rem 0}
         var beacon = function(params){
           try {
             navigator.sendBeacon(API, new Blob(
-              [new URLSearchParams(Object.assign({ver:"v0.9"}, params)).toString()],
+              [new URLSearchParams(Object.assign({ver:"v0.9.1"}, params)).toString()],
               {type:"application/x-www-form-urlencoded"}));
           } catch (e) { /* 집계 실패가 페이지를 방해해서는 안 된다 */ }
         };

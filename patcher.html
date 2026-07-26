@@ -177,7 +177,7 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
 <body>
 <header class="topbar">
   <a href="index.html#patch">← 배포 페이지로 돌아가기</a>
-  <span class="catalog">HCD3051 / KO v0.9</span>
+  <span class="catalog">HCD3051 / KO v0.9.1</span>
 </header>
 <main class="wrap">
   <section class="masthead">
@@ -322,7 +322,7 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
     <img src="img/mars-drive-logo.png" alt="Mars-Drive 로고">
     <span><b>MARS–DRIVE</b><small>TopperJI · Korean localization</small></span>
   </div>
-  <small>YS IV: THE DAWN OF YS / FAN PATCH v0.9 / 2026</small>
+  <small>YS IV: THE DAWN OF YS / FAN PATCH v0.9.1 / 2026</small>
 </footer>
 
 <!-- ══════════ core.mjs (verbatim, export-stripped) — canonical source: dist/web/tools/core.mjs ══════════ -->
@@ -1275,7 +1275,7 @@ class Sha256 {
   function track(type, extra) {
     if (!statsApi) return;
     try {
-      var b = new URLSearchParams(Object.assign({ type: type, ver: "v0.9" }, extra || {}));
+      var b = new URLSearchParams(Object.assign({ type: type, ver: "v0.9.1" }, extra || {}));
       navigator.sendBeacon(
         statsApi,
         new Blob([b.toString()], { type: "application/x-www-form-urlencoded" }));
