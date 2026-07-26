@@ -198,7 +198,11 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
   <div id="app" hidden>
     <h2>1 — 원본 이미지 선택</h2>
     <div class="card">
-      <p>영문 패치가 적용된 <code>.cue</code>/<code>.img</code>(또는 <code>.bin</code>) 파일이 있는 폴더를 선택하세요.</p>
+      <p><b>일본어 원판</b> 또는 <b>영문 패치가 적용된 이미지</b>, 어느 쪽이든 됩니다.
+        <code>.cue</code> 와 <code>.img</code>(또는 <code>.bin</code>) 가 있는 폴더를 선택하세요.</p>
+      <p style="color:var(--faint);font-size:.86rem;margin:.4rem 0 0">
+        일본어 원판을 넣으시면 <b>영문 텍스트 패치 넣는 칸이 아래에 열립니다</b> —
+        따로 패치해 두실 필요가 없습니다. 덤프 방식이 달라도 트랙 위치를 알아서 찾습니다.</p>
       <p style="color:var(--faint);font-size:.86rem;margin:.5rem 0 0">홈 폴더 맨 위나 시스템 폴더는 브라우저가 열지 못하게 막습니다. 그럴 때는 <b>파일 직접 선택</b>으로 <code>.cue</code> 와 <code>.img</code> 를 함께 고르세요.</p>
       <div class="row">
         <button id="btn-pick-dir">이미지 폴더 선택</button>
@@ -239,9 +243,10 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
             <tr class="fine"><td>데이터트랙 위치를 자동 보정했습니다</td>
                 <td><b>정상입니다. 그대로 진행하세요.</b> 프리갭을 파일에 넣지 않는 방식으로
                     떠진 립이라 트랙 위치가 밀려 있을 뿐입니다.</td></tr>
-            <tr><td>순정 일본판</td>
-                <td>영문 <b>텍스트</b> 번역 패치를 먼저 적용하셔야 합니다
-                    (<code>YsIV(US)v95.zip</code>). 더빙 패치는 필요 없습니다.</td></tr>
+            <tr class="fine"><td>순정 일본판</td>
+                <td><b>그대로 진행하시면 됩니다.</b> 위에 열린 칸에
+                    <code>YsIV-ISO.ppf</code> 를 넣으시면 영문 패치까지 여기서 처리합니다.
+                    (<code>YsIV(US)v95.zip</code> 안에 있습니다. 더빙 패치는 필요 없습니다.)</td></tr>
             <tr><td>데이터트랙을 찾지 못했습니다</td>
                 <td><b>형식 문제입니다.</b> <code>.iso</code> · <code>.chd</code> · <code>.nrg</code> ·
                     <code>.mdf</code> 이거나 트랙별로 쪼개진 <code>.bin</code> 입니다.
@@ -271,9 +276,9 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
       </div>
       <p class="mono" id="mode-size" style="font-size:.82rem"></p>
       <p style="color:var(--faint);font-size:.86rem;margin:.5rem 0 0">
-        <b>일본어 음성으로 즐기시려면</b> — 영문 <b>텍스트 패치만</b> 적용한 이미지(더빙 패치 생략)를
-        1단계에 넣고 여기서 <b>텍스트만</b> 을 고르세요. 나머지 두 모드는 한국어 더빙을 올리므로
-        일본어 음성이 남지 않습니다.</p>
+        <b>텍스트만</b> 을 고르면 음성은 원본 그대로 남습니다 — 일본어 원판에서 시작하셨다면
+        <b>일본어 음성</b>, 영문 더빙판에서 시작하셨다면 영어 음성입니다.
+        <b>음성</b> 이 들어간 모드는 그 자리를 한국어로 덮어씁니다.</p>
     </div>
 
     <h2>3 — 패치 실행</h2>
@@ -882,7 +887,7 @@ async function identifyImage(reader, size, manifest, Sha256Ctor, progress, cueTe
   if (size === expectSize) {
     fullSha = await sha256OfReader(reader, size, Sha256Ctor, 4 * 1024 * 1024, progress);
     if (fullSha === manifest.image.sha256) {
-      return ["en", "영문패치본 — 알려진 base 이미지와 완전히 일치합니다.", fullSha, info];
+      return ["en", "영문 패치본 (더빙 포함) — 알려진 base 이미지와 완전히 일치합니다.", fullSha, info];
     }
     if (manifest.expected_output) {
       if (fullSha === manifest.expected_output.text_only_sha256) return ["already", "이미 텍스트만 패치된 이미지입니다.", fullSha, info];
@@ -902,7 +907,7 @@ async function identifyImage(reader, size, manifest, Sha256Ctor, progress, cueTe
   info.cookedSha = cookedSha;
 
   if (cookedSha === manifest.image.cooked_iso_sha256) {
-    return ["en", "영문패치본 — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름)." + shiftNote + sizeNote, fullSha, info];
+    return ["en", "영문 패치본 (더빙 포함) — 데이터트랙이 알려진 base 와 일치합니다 (CD 오디오 트랙만 다름)." + shiftNote + sizeNote, fullSha, info];
   }
   if (cookedSha === manifest.image.en_textonly_cooked_iso_sha256) {
     // 영문 텍스트 패치만 적용하고 더빙은 안 한 이미지. 우리 text.patch 는 음성
@@ -911,7 +916,7 @@ async function identifyImage(reader, size, manifest, Sha256Ctor, progress, cueTe
       "영문 텍스트 패치본 (음성 더빙 없음) — 한글 자막 + 일본어 음성이 됩니다." + shiftNote + sizeNote, fullSha, info];
   }
   if (cookedSha === manifest.image.jp_cooked_iso_sha256) {
-    return ["jp", "순정 일본판 — 먼저 영문패치를 적용한 이미지가 필요합니다." + shiftNote, fullSha, info];
+    return ["jp", "순정 일본판 — 아래에서 영문 텍스트 패치(.ppf)를 넣으시면 여기서 함께 처리합니다." + shiftNote, fullSha, info];
   }
   if (manifest.expected_output) {
     const eo = manifest.expected_output;
