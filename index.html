@@ -720,9 +720,12 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 
   <div class="callout">
     <span class="lab">파일은 서버로 전송되지 않습니다</span>
-    <p>약속이 아니라 구조입니다 — 이 페이지에는 업로드 코드가 존재하지 않습니다.
+    <p>브라우저 안에서만 읽고 씁니다 — 게임 파일을 올리는 코드가 없습니다.
       개발자도구(<code>F12</code>)의 네트워크 탭을 켜 두고 패치해 보시면
       <b>직접 확인하실 수 있습니다.</b></p>
+    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+      방문 수와 패치 종류만 익명으로 집계합니다. 파일 이름도, 내용도, 해시도,
+      쿠키도 보내지 않습니다.</p>
   </div>
 
   <p>
@@ -1215,6 +1218,15 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
       if (v && cfg.video && cfg.video.youtube_id){
         v.dataset.yt = cfg.video.youtube_id;
         if (window.__initVideo) window.__initVideo();   // 초기화는 이미 끝났으니 다시 건다
+      }
+
+      /* 익명 방문 집계. stats_api 가 비어 있으면 호출하지 않는다.
+         보내는 것은 "방문했다" 뿐 — 어떤 페이지를 봤는지도, 식별자도 보내지 않는다. */
+      if (cfg.stats_api){
+        try {
+          navigator.sendBeacon(cfg.stats_api,
+            new Blob(["type=visit&ver=v0.9"], {type:"application/x-www-form-urlencoded"}));
+        } catch (e) { /* 집계 실패는 무시한다 */ }
       }
 
       if (cfg.board && cfg.board.url){

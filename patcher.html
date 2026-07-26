@@ -133,10 +133,10 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
     <div>
       <span class="lab">Ys IV KO Patch · Web Patcher</span>
       <h1>브라우저 안에서<br>바로 패치</h1>
-      <p class="intro">파일은 이 페이지 밖으로 전송되지 않습니다. <code>./assets/*</code> 정적 자산만 이 페이지가 직접 불러옵니다 — 업로드 코드는 존재하지 않습니다.</p>
+      <p class="intro"><b>게임 파일은 서버로 전송되지 않습니다.</b> 브라우저 안에서만 읽고 씁니다 — 파일을 올리는 코드가 없습니다. 패치 종류와 성공 여부만 익명으로 집계합니다 (파일 이름·내용·해시는 보내지 않습니다).</p>
     </div>
   </section>
-  <div class="privacy-line"><b>LOCAL PROCESS</b> 선택한 게임 파일은 브라우저 안에서만 읽고 씁니다.</div>
+  <div class="privacy-line"><b>LOCAL PROCESS</b> 선택한 게임 파일은 브라우저 안에서만 읽고 씁니다. 서버로 가지 않습니다.</div>
 
   <div id="unsupported" class="notice" hidden>
     <span class="lab">이 브라우저에서는 실행할 수 없습니다</span>
@@ -736,6 +736,30 @@ class Sha256 {
   }
   els.app.hidden = false;
 
+  /* ── 익명 집계 ─────────────────────────────────────────────────────────
+     GitHub Pages 는 정적이라 아무것도 기록할 수 없어서, 방문·패치 횟수만
+     외부 API 로 보낸다. links.json 의 stats_api 가 비어 있으면 **호출 자체를
+     하지 않는다** — 그 경우 이 페이지의 외부 요청은 0 이다.
+
+     보내는 것 : 이벤트 종류 · 패치 모드 · 성공 여부 · 버전
+     안 보내는 것: 파일 이름 · 파일 내용 · 파일 해시 · 쿠키 · 식별자
+     게임 파일은 어떤 경우에도 이 경로를 타지 않는다. */
+  let statsApi = null;
+  fetch("links.json", { cache: "no-cache" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (c) { if (c && c.stats_api) statsApi = c.stats_api; })
+    .catch(function () { /* 없으면 집계 안 함 */ });
+
+  function track(type, extra) {
+    if (!statsApi) return;
+    try {
+      var b = new URLSearchParams(Object.assign({ type: type, ver: "v0.9" }, extra || {}));
+      navigator.sendBeacon(
+        statsApi,
+        new Blob([b.toString()], { type: "application/x-www-form-urlencoded" }));
+    } catch (e) { /* 집계 실패가 패치를 방해해서는 안 된다 */ }
+  }
+
   // ---- gzip decompression (browser: DecompressionStream) ----
   async function gunzip(bytes) {
     const ds = new DecompressionStream("gzip");
@@ -982,10 +1006,12 @@ class Sha256 {
         // 가리키고 있어서, 그대로 두면 에뮬레이터가 패치된 이미지를 못 찾는다.
         // 그래서 FILE 줄만 새 파일명으로 바꾼 .cue 를 같이 내려준다
         // (파이썬 패처가 하는 일과 동일하다).
+        track("patch", { mode: mode, ok: "1" });
         offerCue(outFile.name);
         setStatus(els.runStatus,
           `패치 완료 — 해시 일치. 아래 .cue 도 꼭 받아서 ${outFile.name} 와 같은 폴더에 두세요.`, "ok");
       } else {
+        track("patch", { mode: mode, ok: "0" });
         setStatus(els.runStatus, "해시 불일치 — 자산/원본 이미지를 다시 확인해 주세요.", "err");
       }
     } catch (e) {
@@ -1233,6 +1259,7 @@ class Sha256 {
         a.click();
         setTimeout(() => URL.revokeObjectURL(a.href), 30000);
       }
+      track("card", { ok: "1" });
       setStatus(els.syscardStatus,
         `한글 시스템 카드를 만들었습니다 — 해시 일치 (${card.length.toLocaleString()} B). ` +
         `에뮬레이터/실기의 syscard3.pce 자리에 이 파일을 넣어 주세요.`, "ok");
