@@ -560,13 +560,14 @@ ol.chain{margin:0;padding-left:1.15rem;font-size:.92rem;line-height:1.75;color:v
 ol.chain li{margin:.15rem 0}
 /* .brand 는 2열 그리드(로고 | 글). 로고가 1~2행만 차지해서 3번째 자식인 연락처가
    1열(로고 아래)로 떨어졌다. 로고 span 을 늘리고 열을 못박아 TopperJI 줄에 맞춘다. */
-.fthanks{min-width:min(100%,17rem)}
+.fthanks{min-width:min(100%,19rem)}
 .fthanks .lab{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--amber);margin-bottom:.35rem}
-.fthanks a{display:inline-block;color:var(--phos);text-decoration:none;font-size:.92rem;
+  text-transform:uppercase;color:var(--amber);margin-bottom:.5rem}
+.fthanks ul{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}
+.fthanks a{display:inline-block;color:var(--phos);text-decoration:none;font-size:.9rem;
   border-bottom:1px solid var(--edge)}
 .fthanks a:hover{color:var(--amber);border-bottom-color:var(--amber)}
-.fthanks small{display:block;margin-top:.3rem;color:var(--faint);font-size:.74rem;line-height:1.6}
+.fthanks small{display:block;margin-top:.15rem;color:var(--faint);font-size:.72rem;line-height:1.55}
 .callout.thanks .lab{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
 .brand img{grid-row:1/4}
 .brand .contact{grid-column:2;margin-top:.15rem}
@@ -1202,9 +1203,14 @@ ol.chain li{margin:.15rem 0}
       </ul>
       <div class="fthanks">
         <span class="lab">Special Thanks</span>
-        <a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">
-          ysutopia.net</a>
-        <small>NightWolve 님의 영문 번역 패치 · Burnt Lasagna 님의 영문 더빙 패치</small>
+        <ul>
+          <li><a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">ysutopia.net</a>
+            <small>NightWolve 님의 영문 번역 패치 · Burnt Lasagna 님의 영문 더빙 패치</small></li>
+          <li><a href="https://cafe.naver.com/msx/" rel="noopener noreferrer" target="_blank">MSX천국동</a>
+            <small>네이버 카페</small></li>
+          <li><a href="https://cafe.naver.com/hansicgu" rel="noopener noreferrer" target="_blank">한식구</a>
+            <small>네이버 카페</small></li>
+        </ul>
       </div>
     </div>
     <p class="legal">
