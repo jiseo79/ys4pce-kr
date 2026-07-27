@@ -541,6 +541,25 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 .subpanel .lead{font-size:1rem;line-height:1.85;margin:0 0 1.2rem}
 ol.steps{margin:1.2rem 0;padding-left:1.3rem;line-height:2}
 ol.steps li{margin:.2rem 0;color:var(--mute)}
+.prepbox{border:1px solid #3a5f7a;border-left:4px solid #5aa9d6;border-radius:12px;
+  padding:1.1rem 1.2rem 1.3rem;margin:1.4rem 0 2rem;background:rgba(90,169,214,.06)}
+.prepbox .chainhead .tag{background:#5aa9d6;color:#08131a}
+.prepbox .chainhead .flow i{color:#5aa9d6}
+.prepbox h4{margin:1.1rem 0 .3rem;font-size:.92rem;color:#8fc9e8}
+.prepbox .pline{margin:.2rem 0 .6rem;font-size:.9rem;line-height:1.8;color:var(--mute)}
+.prepbox .pline.sm{font-size:.82rem;color:var(--faint)}
+.prepbox .warnline{border:1px solid var(--amber);border-radius:8px;background:rgba(255,178,0,.08);
+  padding:.7rem .85rem;font-size:.86rem;line-height:1.75;color:var(--mute);margin:.5rem 0 .2rem}
+.cmds{display:grid;gap:.4rem;margin:.5rem 0 .9rem}
+.cmds div{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.cmds .os{flex:none;width:7.5rem;font-size:.74rem;color:var(--faint);letter-spacing:.03em}
+.cmds code{flex:1;min-width:0;background:#0a0f15;border:1px solid var(--edge);border-radius:6px;
+  padding:.4rem .6rem;font-size:.78rem;overflow-wrap:anywhere}
+table.prep{width:100%;border-collapse:collapse;font-size:.86rem;margin:.3rem 0 .6rem}
+table.prep td{padding:.55rem .5rem;border-bottom:1px solid var(--edge);vertical-align:top;color:var(--mute)}
+table.prep td:first-child{white-space:nowrap;color:var(--phos)}
+table.prep td.h{font-family:var(--mono);font-size:.78rem;color:#8fc9e8;white-space:nowrap}
+table.prep .sm{font-size:.76rem;color:var(--faint)}
 .chainbox{border:1px solid var(--edge);border-radius:12px;padding:1.1rem 1.2rem;margin:1.1rem 0;
   background:rgba(255,255,255,.02)}
 .chainhead{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.4rem}
@@ -986,6 +1005,57 @@ ol.chain li{margin:.15rem 0}
     <p class="lead"><b>원본이 바이트 단위로 정확히 일치해야</b> 적용됩니다.
       립이 다르거나 순서가 다르면 xdelta3 가 거부합니다 — 그때는 웹 패처를 쓰세요.</p>
     <p class="hint">적용: <code>xdelta3 -d -s &lt;원본&gt; &lt;패치.xdelta&gt; &lt;출력&gt;</code></p>
+
+    <div class="prepbox">
+      <div class="chainhead">
+        <span class="tag">0단계</span>
+        <span class="flow"><b>일본판</b> <i>→</i> <b>영문 패치본</b> 만들기</span>
+      </div>
+      <p class="chainnote">아래 A·B 의 <b>원본</b>이 되는 이미지입니다. 이미 가지고 계시면 건너뛰세요.</p>
+
+      <h4>1. ysutopia 에서 받기</h4>
+      <p class="pline"><a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">ysutopia.net</a>
+        에서 <code>YsIV(US)v95.zip</code> — <b>텍스트 번역 패치</b>입니다.<br>
+        영어 음성까지 원하시면 <code>Ys IV English Dub v1.1.zip</code> 도 받으세요.
+        <b>한국어 음성을 쓰실 거면 더빙 패치는 필요 없습니다.</b></p>
+
+      <h4>2. 적용</h4>
+      <p class="pline">압축을 풀고 <code>PATCH.BAT</code> 을 실행하면 알아서 찾아 적용합니다.
+        더빙 패치는 그 안의 <code>Patcher.cmd</code> 를 따로 돌립니다.</p>
+      <div class="warnline">
+        <b>“wasn't found” 라고 나오면</b> — 그 배치 파일은 덤프 크기가
+        <code>771,213,744</code> · <code>772,634,352</code> · <code>67,420,160</code>
+        셋 중 하나일 때만 동작합니다. 조금만 달라도 거부합니다.
+        이 경우 <b>웹 패처를 쓰세요</b> — 이 0단계를 대신해 드립니다.
+      </div>
+
+      <h4>3. 해시 확인</h4>
+      <p class="pline">만들어진 이미지가 맞는지 확인합니다.</p>
+      <div class="cmds">
+        <div><span class="os">Windows</span><code>certutil -hashfile "YsIV_EN.img" SHA256</code></div>
+        <div><span class="os">macOS · Linux</span><code>shasum -a 256 YsIV_EN.img</code></div>
+      </div>
+      <table class="prep">
+        <tbody>
+          <tr>
+            <td><b>텍스트 + 영어 더빙</b><br><span class="sm">B 의 원본</span></td>
+            <td class="h">5cfc2982…</td>
+            <td>전체 파일 해시로 확인됩니다 —
+              <b>오래 돌아다닌 이미지</b>라 값이 하나로 굳어 있습니다.
+              <button type="button" class="cslink" data-cs="base_a">체크섬 보기</button></td>
+          </tr>
+          <tr>
+            <td><b>텍스트만</b><br><span class="sm">A 의 원본</span></td>
+            <td class="h">0470f265…</td>
+            <td><b>데이터 트랙</b> 해시로 확인하세요. 이건 각자 자기 립에서 만드는 것이라
+              전체 파일 해시가 사람마다 다릅니다.
+              <button type="button" class="cslink" data-cs="base_b">체크섬 보기</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="pline sm">데이터 트랙 해시는 명령어로 뽑기 번거롭습니다 —
+        <b>웹 패처에 파일을 넣으면 화면에 바로 나옵니다.</b> 패치까지 안 하셔도 됩니다.</p>
+    </div>
 
     <div class="chainbox">
       <div class="chainhead">
