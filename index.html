@@ -523,11 +523,20 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 .cslink:hover{border-color:var(--amber);color:var(--amber)}
 .modal-box>footer{padding:.7rem 1.3rem;border-top:1px solid var(--edge);font-size:.78rem;color:var(--faint)}
 .modal-box>footer kbd{border:1px solid var(--edge);border-radius:4px;padding:0 .3rem;font-size:.72rem}
-.subtabs{display:flex;gap:.4rem;margin:1.4rem 0 1.6rem;border-bottom:1px solid var(--edge)}
-.subtab{background:none;border:none;border-bottom:2px solid transparent;color:var(--faint);
-  font:600 .95rem/1 var(--sans);padding:.7rem 1rem;cursor:pointer;margin-bottom:-1px}
-.subtab:hover{color:var(--mute)}
-.subtab[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.subtabs{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  margin:1.4rem 0 1.8rem}
+.subtab{display:flex;align-items:center;gap:.9rem;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.02);border:1px solid var(--edge);border-radius:12px;
+  padding:1rem 1.1rem;color:var(--mute);font:inherit;transition:border-color .15s,background .15s}
+.subtab:hover{border-color:var(--mute);background:rgba(255,255,255,.04)}
+.subtab .ic{flex:none;width:38px;height:38px;border-radius:9px;display:grid;place-items:center;
+  background:rgba(255,255,255,.05);font-size:1.15rem;color:var(--faint)}
+.subtab .tx{display:block;min-width:0}
+.subtab .tx b{display:block;font-size:1rem;color:var(--phos);line-height:1.35}
+.subtab .tx small{display:block;margin-top:.15rem;font-size:.78rem;color:var(--faint);line-height:1.5}
+.subtab[aria-selected=true]{border-color:var(--amber);background:rgba(255,178,0,.08)}
+.subtab[aria-selected=true] .ic{background:var(--amber);color:#171109}
+.subtab[aria-selected=true] .tx b{color:var(--amber)}
 .subpanel[hidden]{display:none}
 .subpanel .lead{font-size:1rem;line-height:1.85;margin:0 0 1.2rem}
 ol.steps{margin:1.2rem 0;padding-left:1.3rem;line-height:2}
@@ -939,8 +948,14 @@ ol.chain li{margin:.15rem 0}
   <p class="sub">둘 중 편한 쪽으로 하시면 됩니다. 결과물은 같습니다.</p>
 
   <div class="subtabs" role="tablist" aria-label="패치 방법">
-    <button class="subtab" role="tab" id="st-web" aria-controls="sp-web" aria-selected="true">웹 패처로 바로 패치</button>
-    <button class="subtab" role="tab" id="st-xd" aria-controls="sp-xd" aria-selected="false">xdelta 파일 받기</button>
+    <button class="subtab" role="tab" id="st-web" aria-controls="sp-web" aria-selected="true">
+      <span class="ic">⚡</span>
+      <span class="tx"><b>웹 패처로 바로 패치</b><small>설치 없이 브라우저에서 · 일본판도 됩니다</small></span>
+    </button>
+    <button class="subtab" role="tab" id="st-xd" aria-controls="sp-xd" aria-selected="false">
+      <span class="ic">⤓</span>
+      <span class="tx"><b>xdelta 파일 받기</b><small>직접 적용하실 분 · 원본이 정확히 일치해야 합니다</small></span>
+    </button>
   </div>
 
   <!-- 웹 패처 -->
@@ -1482,6 +1497,17 @@ ol.chain li{margin:.15rem 0}
     });
     addEventListener('keydown', function(e){ if(!done && e.key !== 'Tab') handover(true); }, {once:false});
   }
+
+  /* ── 웹 패처는 별도 창으로 띄운다 ──
+     탭으로 열면 원본 페이지와 섞여 왔다 갔다 하기 번거롭다. 도구는 도구 창에서.
+     팝업이 막히면 링크의 기본 동작(target=_blank)이 그대로 살아난다. */
+  document.querySelectorAll('a[href="patcher.html"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var w = window.open(a.href, 'ys4patcher',
+        'width=1000,height=900,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes');
+      if (w) { e.preventDefault(); w.focus(); }
+    });
+  });
 
   /* ── 03 패치하기 안쪽 탭 ── */
   (function(){
