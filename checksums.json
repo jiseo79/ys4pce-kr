@@ -7,15 +7,18 @@
    "rows": [
     [
      "일본어 원판",
-     "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d"
+     "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d",
+     "jp"
     ],
     [
      "텍스트 패치 적용본 ★",
-     "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d"
+     "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
+     "base_b"
     ],
     [
      "텍스트 + 더빙 적용본",
-     "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c"
+     "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c",
+     "base_a"
     ]
    ]
   },
@@ -25,23 +28,28 @@
    "rows": [
     [
      "텍스트만 · 일본어 음성",
-     "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9"
+     "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9",
+     "out_text_jpv"
     ],
     [
      "텍스트+음성 · 일본어 베이스",
-     "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56"
+     "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56",
+     "out_both_jpv"
     ],
     [
      "텍스트만 · 더빙 베이스",
-     "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165"
+     "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165",
+     "out_text"
     ],
     [
      "음성만 · 더빙 베이스",
-     "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a"
+     "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
+     "out_voice"
     ],
     [
      "텍스트+음성 · 더빙 베이스",
-     "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3"
+     "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3",
+     "out_both"
     ]
    ]
   },
@@ -81,11 +89,13 @@
    "rows": [
     [
      "순정 syscard3.pce (262,144 B)",
-     "e11527b3b96ce112a037138988ca72fd117a6b0779c2480d9e03eaebece3d9ce"
+     "e11527b3b96ce112a037138988ca72fd117a6b0779c2480d9e03eaebece3d9ce",
+     "syscard_src"
     ],
     [
      "만들어지는 한글 카드",
-     "9d0eb52b2abfade9a71752b3bf0208f67f7c6368532c6385467c6ee8f09a2af9"
+     "9d0eb52b2abfade9a71752b3bf0208f67f7c6368532c6385467c6ee8f09a2af9",
+     "syscard_out"
     ]
    ]
   }

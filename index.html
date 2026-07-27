@@ -516,6 +516,11 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
 .csrow:hover .cp{opacity:1}
 .csrow.copied{border-color:#5ad18a}
 .csrow.copied .cp{opacity:1;color:#5ad18a}
+.csrow.hit{background:rgba(255,178,0,.14);border-color:var(--amber)}
+.cslink{background:none;border:1px solid var(--edge);border-radius:5px;color:var(--faint);
+  font:600 .68rem/1 var(--sans);padding:.24rem .45rem;cursor:pointer;white-space:nowrap;
+  vertical-align:middle}
+.cslink:hover{border-color:var(--amber);color:var(--amber)}
 .modal-box>footer{padding:.7rem 1.3rem;border-top:1px solid var(--edge);font-size:.78rem;color:var(--faint)}
 .modal-box>footer kbd{border:1px solid var(--edge);border-radius:4px;padding:0 .3rem;font-size:.72rem}
 .subtabs{display:flex;gap:.4rem;margin:1.4rem 0 1.6rem;border-bottom:1px solid var(--edge)}
@@ -970,21 +975,24 @@ ol.chain li{margin:.15rem 0}
     <div class="chainbox">
       <div class="chainhead">
         <span class="tag">A</span>
-        <span class="flow"><b>일본판</b> <i>→</i> 영어 <b>텍스트</b> 패치</span>
+        <span class="flow"><b>일본판</b> <button type="button" class="cslink" data-cs="jp">체크섬 보기</button> <i>→</i>
+          <b>영어 텍스트 패치 이미지</b> <button type="button" class="cslink" data-cs="base_b">체크섬 보기</button> 를 준비</span>
       </div>
-      <p class="chainnote">YsIV(US)v95.zip 의 YsIV-ISO.ppf</p>
+      <p class="chainnote">일본판 덤프에 <b>ysutopia 의 영문 텍스트 번역 패치</b>
+        (<code>YsIV(US)v95.zip</code> 안의 <code>YsIV-ISO.ppf</code>)를 적용한 이미지입니다.
+        <b>영어 음성 더빙 패치는 적용하지 않은</b> 상태라 음성이 일본어로 남아 있습니다.</p>
       <div class="scroll">
         <table>
           <thead><tr><th>결과</th><th>받을 파일</th><th>크기</th></tr></thead>
           <tbody>
         <tr>
           <td>한국어 자막 + <b>일본어</b> 음성</td>
-          <td class="mono"><a data-dl="text_jpvoice" href="#" aria-disabled="true">text-jpvoice</a></td>
+          <td class="mono"><a data-dl="text_jpvoice" href="#" aria-disabled="true">text-jpvoice</a> <button type="button" class="cslink" data-cs="out_text_jpv">체크섬 보기</button></td>
           <td class="n">9.5 MB</td>
         </tr>
         <tr>
           <td>한국어 자막 + <b>한국어</b> 음성</td>
-          <td class="mono"><a data-dl="both_jpvoice" href="#" aria-disabled="true">both-jpvoice</a></td>
+          <td class="mono"><a data-dl="both_jpvoice" href="#" aria-disabled="true">both-jpvoice</a> <button type="button" class="cslink" data-cs="out_both_jpv">체크섬 보기</button></td>
           <td class="n">141.1 MB</td>
         </tr>
           </tbody>
@@ -995,26 +1003,28 @@ ol.chain li{margin:.15rem 0}
     <div class="chainbox">
       <div class="chainhead">
         <span class="tag">B</span>
-        <span class="flow"><b>일본판</b> <i>→</i> 영어 텍스트 패치 <b>+ 영어 더빙 패치</b></span>
+        <span class="flow"><b>일본판</b> <button type="button" class="cslink" data-cs="jp">체크섬 보기</button> <i>→</i>
+          <b>영어 텍스트 + 영어 더빙 이미지</b> <button type="button" class="cslink" data-cs="base_a">체크섬 보기</button> 를 준비</span>
       </div>
-      <p class="chainnote">ysutopia 의 두 패치를 모두 적용</p>
+      <p class="chainnote">위에 더해 <b>영어 음성 더빙 패치</b>까지 적용한 이미지입니다.
+        예전부터 돌던 “영문판”이 대개 이것입니다. 음성이 영어로 바뀌어 있습니다.</p>
       <div class="scroll">
         <table>
           <thead><tr><th>결과</th><th>받을 파일</th><th>크기</th></tr></thead>
           <tbody>
         <tr>
           <td>한국어 자막 + 영어 음성</td>
-          <td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a></td>
+          <td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a> <button type="button" class="cslink" data-cs="out_text">체크섬 보기</button></td>
           <td class="n">253 KB</td>
         </tr>
         <tr>
           <td>영어 자막 + 한국어 음성</td>
-          <td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a></td>
+          <td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a> <button type="button" class="cslink" data-cs="out_voice">체크섬 보기</button></td>
           <td class="n">135.9 MB</td>
         </tr>
         <tr>
           <td>한국어 자막 + 한국어 음성</td>
-          <td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a></td>
+          <td class="mono"><a data-dl="both" href="#" aria-disabled="true">both</a> <button type="button" class="cslink" data-cs="out_both">체크섬 보기</button></td>
           <td class="n">136.2 MB</td>
         </tr>
           </tbody>
@@ -1025,7 +1035,8 @@ ol.chain li{margin:.15rem 0}
     <div class="chainbox">
       <div class="chainhead">
         <span class="tag">필수</span>
-        <span class="flow"><b>순정 <code>syscard3.pce</code></b> <i>→</i> 한글 시스템 카드</span>
+        <span class="flow"><b>순정 <code>syscard3.pce</code></b> <button type="button" class="cslink" data-cs="syscard_src">체크섬 보기</button> <i>→</i>
+          <b>한글 시스템 카드</b> <button type="button" class="cslink" data-cs="syscard_out">체크섬 보기</button></span>
       </div>
       <p class="chainnote">이미지만 패치하고 순정 카드로 실행하면 한글이 보이지 않습니다.
         한글 글꼴이 CD 가 아니라 시스템 카드 쪽에 들어갑니다.</p>
@@ -1496,13 +1507,22 @@ ol.chain li{margin:.15rem 0}
     var loaded = false, lastFocus = null;
 
     function esc(e){ if (e.key === 'Escape') close(); }
-    function open(){
+    function open(key){
       lastFocus = document.activeElement;
       modal.hidden = false;
       document.body.style.overflow = 'hidden';
       addEventListener('keydown', esc);
       modal.querySelector('.modal-box').focus();
-      fill();
+      fill(key);
+    }
+    /** 특정 항목으로 열렸으면 그 줄로 스크롤하고 잠깐 짚어 준다. */
+    function focusRow(key){
+      if (!key) return;
+      var row = body.querySelector('.csrow[data-key="' + key + '"]');
+      if (!row) return;
+      row.scrollIntoView({block:'center', behavior: reduce ? 'auto' : 'smooth'});
+      row.classList.add('hit');
+      setTimeout(function(){ row.classList.remove('hit'); }, 2200);
     }
     function close(){
       modal.hidden = true;
@@ -1511,10 +1531,17 @@ ol.chain li{margin:.15rem 0}
       if (lastFocus) lastFocus.focus();
     }
     modal.addEventListener('click', function(e){ if (e.target.closest('[data-cs-close]')) close(); });
-    btn.addEventListener('click', open);
+    btn.addEventListener('click', function(){ open(); });
+    // 페이지 곳곳의 '체크섬 보기' — 해당 항목으로 바로 열린다.
+    document.addEventListener('click', function(e){
+      var el = e.target.closest('[data-cs]');
+      if (!el) return;
+      e.preventDefault();
+      open(el.dataset.cs);
+    });
 
-    function fill(){
-      if (loaded) return;
+    function fill(key){
+      if (loaded) { focusRow(key); return; }
       loaded = true;
       fetch('checksums.json', {cache:'no-cache'}).then(function(r){ return r.json(); })
         .then(function(d){
@@ -1532,6 +1559,7 @@ ol.chain li{margin:.15rem 0}
               var l = document.createElement('span'); l.className = 'lab'; l.textContent = r[0];
               var v = document.createElement('span'); v.className = 'val'; v.textContent = r[1];
               var c = document.createElement('span'); c.className = 'cp'; c.textContent = '복사';
+              if (r[2]) b.dataset.key = r[2];
               b.appendChild(l); b.appendChild(v); b.appendChild(c);
               b.addEventListener('click', function(){
                 var done = function(){
@@ -1550,6 +1578,7 @@ ol.chain li{margin:.15rem 0}
               body.appendChild(b);
             });
           });
+          focusRow(key);
         })
         .catch(function(e){
           body.textContent = '체크섬을 불러오지 못했습니다. (' + (e.message || e) + ')';
