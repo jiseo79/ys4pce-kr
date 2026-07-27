@@ -761,6 +761,32 @@ ol.chain li{margin:.15rem 0}
     </div>
   </div>
 
+  <h3>내 CD 로 직접 뜨시려면</h3>
+  <p class="sub">어떤 도구로 어떤 설정으로 떠야 하는지 고민하지 않으셔도 됩니다 —
+    패처가 트랙 위치를 스스로 찾고, 맞는지 화면에 알려 드립니다.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>환경</th><th>도구</th><th>나오는 파일</th></tr></thead>
+      <tbody>
+        <tr><td>Windows</td><td><b>ImgBurn</b> — Create image file from disc</td>
+            <td><code>.bin</code> + <code>.cue</code></td></tr>
+        <tr><td>Windows</td><td><b>CloneCD</b></td>
+            <td><code>.img</code> + <code>.ccd</code> — <b>.cue 없어도 됩니다</b></td></tr>
+        <tr><td>macOS</td><td>별도 도구 없이 (내장 기능)</td>
+            <td><code>.img</code> + <code>.cue</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">트랙이 <code>Track01.bin</code> · <code>Track02.bin</code> 처럼 쪼개져 나오면 받지 못합니다 —
+    <b>한 파일로 묶이도록</b> 설정하세요. 트랙 정보가 아예 없어도 <b>텍스트 패치는 됩니다</b>(음성 모드만 막힙니다).</p>
+  <div class="callout">
+    <span class="lab">확인은 패처가 해 드립니다</span>
+    <p>뜨신 이미지를 웹 패처에 넣으면 <b>데이터 트랙 SHA-256</b> 이 나옵니다.
+      일본어 원판이면 <code class="h">a4ef37a7…</code> 입니다.</p>
+    <p style="margin-top:.6rem">전체 파일 해시는 보실 필요 없습니다 — CD 음악 트랙은 도구마다
+      미세하게 달라지는데, 이 패치는 <b>음악을 건드리지 않습니다.</b></p>
+  </div>
+
   <h3>영문 <b>더빙</b> 패치는 받지 않으셔도 됩니다</h3>
   <p class="sub">예전 안내에서는 두 패치를 모두 적용하라고 했지만, 확인해 보니 필요 없었습니다.</p>
   <div class="callout">
