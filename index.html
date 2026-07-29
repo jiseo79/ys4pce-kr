@@ -378,6 +378,43 @@ body::after{
 #p-story>h3:first-of-type{border-top:0;padding-top:0;margin-top:2.2rem}
 /* 번호 없는 '여담' — 본편 절과 구분되게 색과 테두리를 달리한다. */
 #p-story>h3.aside{color:#9db4d8;border-top-style:dashed;font-style:normal}
+/* 탭 배지 — 미해결/총신고. 선택된 탭(앰버 배경) 위에서도 읽혀야 한다. */
+.tbadge{display:inline-flex;align-items:center;gap:.1em;margin-left:.15rem;
+  padding:.12em .45em;border-radius:999px;font:700 .68rem/1.5 var(--mono);letter-spacing:.02em;
+  background:rgba(255,178,0,.16);color:var(--amber);border:1px solid rgba(255,178,0,.35)}
+.tbadge[hidden]{display:none}
+.tbadge.zero{background:rgba(94,194,122,.14);color:var(--ok);border-color:rgba(94,194,122,.35)}
+.tab[aria-selected=true] .tbadge{background:rgba(0,0,0,.22);color:#12100a;border-color:rgba(0,0,0,.25)}
+
+/* 게시판 — 세이브 첨부 안내, 해결 상태, 관리자 */
+.bf-savenote{margin:.45rem 0 0;padding:.7rem .9rem;border-left:2px solid var(--amber);
+  background:rgba(255,178,0,.06);font-size:.86rem;line-height:1.75;color:var(--mute)}
+.bf-savenote b{color:var(--phos)}
+.bf-savenote .dim{color:var(--faint)}
+.bf-tally{margin:.2rem 0 1rem;font:600 .86rem var(--sans);color:var(--mute)}
+.bf-tally b{color:var(--phos)}
+.rstate{display:inline-flex;align-items:center;gap:.35em;margin-left:.4rem;
+  padding:.16em .55em;border-radius:6px;font:700 .72rem/1.6 var(--sans);vertical-align:.08em}
+.rstate.open{background:rgba(255,178,0,.13);color:var(--amber);border:1px solid rgba(255,178,0,.3)}
+.rstate.done{background:rgba(94,194,122,.13);color:var(--ok);border:1px solid rgba(94,194,122,.3)}
+.post.done{opacity:.72}
+.post.done:hover{opacity:1}
+.bf-adminbar{margin:1.6rem 0 0;text-align:right}
+.bf-adminlink{background:none;border:0;color:var(--faint);font:600 .78rem var(--sans);
+  cursor:pointer;padding:.2rem .1rem;border-bottom:1px dotted var(--edge)}
+.bf-adminlink:hover{color:var(--amber);border-bottom-color:var(--amber)}
+.bf-admin{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.7rem;
+  padding-top:.7rem;border-top:1px dashed var(--edge)}
+.bf-admin select{padding:.35rem .5rem;font-size:.82rem}
+.bf-admin button{padding:.38rem .8rem;font:700 .8rem var(--sans);cursor:pointer;
+  background:none;border:1px solid var(--edge);border-radius:7px;color:var(--mute)}
+.bf-admin button:hover{border-color:var(--amber);color:var(--amber)}
+.bf-saves{margin:.6rem 0 0;display:flex;flex-wrap:wrap;gap:.5rem}
+.bf-saves a{display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;
+  padding:.4rem .7rem;border:1px solid var(--edge);border-radius:8px;
+  font:600 .82rem var(--sans);color:var(--mute);background:var(--panel)}
+.bf-saves a:hover{border-color:var(--amber);color:var(--amber)}
+.bf-saves .sz{color:var(--faint);font-family:var(--mono);font-size:.74rem;font-weight:400}
 /* 도와주신 분들의 아이디·동호회 이름. .callout p b 를 이겨야 해서 id 로 특정도를 올린다. */
 #p-story .who, .fthanks .who{color:#a8e05f;font-weight:700}
 /* 제작과정 안의 화면 캡쳐. 파일이 없으면 통째로 사라진다(onerror). */
@@ -786,7 +823,7 @@ ol.chain li{margin:.15rem 0}
     <button class="tab" role="tab" id="t-credit"  aria-controls="p-credit"  aria-selected="false"><span class="n">05</span>계보</button>
     <button class="tab" role="tab" id="t-tools"  aria-controls="p-tools"  aria-selected="false"><span class="n">06</span>제작방식 · 도구</button>
     <button class="tab" role="tab" id="t-story"  aria-controls="p-story"  aria-selected="false"><span class="n">07</span>제작과정/비화</button>
-    <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">08</span>버그 신고</button>
+    <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">08</span>버그 신고<span class="tbadge" id="t-board-badge" hidden></span></button>
     <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">09</span>집계</button>
   </div>
 </nav>
@@ -1398,6 +1435,15 @@ ol.chain li{margin:.15rem 0}
       placeholder="어느 장면인지, 어떻게 하면 다시 나타나는지 적어 주시면 큰 도움이 됩니다."></textarea></label>
     <label class="bf-full">화면 사진 <span class="bf-hint" id="bf-imghint">PNG · JPEG · GIF · WebP, 최대 3장, 장당 5MB</span>
       <input type="file" name="images" id="bf-files" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
+    <label class="bf-full">세이브 파일 <span class="bf-hint" id="bf-savehint">선택 — 있으면 훨씬 빨리 고칩니다</span>
+      <input type="file" name="save" id="bf-save"></label>
+    <p class="bf-savenote">
+      <b>그 자리로 바로 갈 수 있으면 원인 찾는 시간이 완전히 달라집니다.</b>
+      글만 있으면 그 장면까지 직접 플레이해서 가야 하는데, 세이브가 있으면 <b>바로 그 지점부터</b>
+      확인할 수 있습니다. 가능하면 <b>문제가 나기 직전에 저장한 것</b>으로 올려 주세요.<br>
+      <span class="dim">Mesen 은 <code>Saves</code> 폴더의 <code>.sav</code>,
+        실기·EverDrive 는 백업램 파일입니다. 보통 몇 KB 밖에 안 됩니다.
+        세이브에는 게임 진행 정보만 들어 있고 개인 정보는 없습니다.</span></p>
     <!-- 봇 함정: 사람에게는 보이지 않는다 -->
     <div class="bf-hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1"></label></div>
     <div class="bf-actions">
@@ -1407,8 +1453,10 @@ ol.chain li{margin:.15rem 0}
   </form>
 
   <h3>올라온 신고</h3>
+  <p class="bf-tally" id="bf-tally" hidden></p>
   <div id="bf-list" class="posts"><p class="sub" id="bf-empty">불러오는 중 …</p></div>
   <div id="bf-pager" class="pager" hidden></div>
+  <p class="bf-adminbar"><button type="button" id="bf-adminbtn" class="bf-adminlink">관리자</button></p>
 </section>
 
 <!-- ─────────── 07 집계 ─────────── -->
@@ -2825,6 +2873,30 @@ ol.chain li{margin:.15rem 0}
   var $ = function(id){ return document.getElementById(id); };
   var listEl = $("bf-list"), pagerEl = $("bf-pager"), statusEl = $("bf-status");
   var page = 1, meta = null;
+  // 관리자 키는 브라우저에만 둔다. 서버로는 해결 처리할 때만 보낸다.
+  var ADMKEY = "ys4-board-admin";
+  function adminKey(){ try { return localStorage.getItem(ADMKEY) || ""; } catch(_) { return ""; } }
+  function setAdminKey(v){ try { v ? localStorage.setItem(ADMKEY, v) : localStorage.removeItem(ADMKEY); } catch(_) {} }
+  function isAdmin(){ return !!adminKey() && !!(meta && meta.admin_enabled); }
+
+  /** 탭 배지: 미해결/전체. 목록을 안 불러도 보여야 해서 counts 만 따로 부른다. */
+  function paintBadge(open, total){
+    var b = $("t-board-badge");
+    if (!b) return;
+    if (!total){ b.hidden = true; return; }
+    b.hidden = false;
+    b.textContent = open + "/" + total;
+    b.classList.toggle("zero", open === 0);
+    b.title = open === 0
+      ? "올라온 신고 " + total + "건 — 미해결 없음"
+      : "미해결 " + open + "건 / 전체 " + total + "건";
+  }
+  window.__boardBadge = function(url){
+    fetch(url + "?action=counts", {cache:"no-cache"})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if (j && j.ok) paintBadge(j.open, j.total); })
+      .catch(function(){ /* 서버가 없으면 배지도 없다 */ });
+  };
 
   function say(msg, kind){
     statusEl.hidden = false;
@@ -2856,6 +2928,14 @@ ol.chain li{margin:.15rem 0}
     fillSelect($("bf-mode"), m.modes);
     $("bf-imghint").textContent =
       "PNG · JPEG · GIF · WebP, 최대 " + m.max_images + "장, 장당 " + m.max_image_mb + "MB";
+    if (m.max_save_kb){
+      $("bf-savehint").textContent =
+        "선택 — " + (m.save_ext || []).join(" · ") + ", " + m.max_save_kb + "KB 이하";
+      var si = $("bf-save");
+      if (si && m.save_ext) si.accept = m.save_ext.map(function(e){ return "." + e; }).join(",");
+    }
+    // 관리자 키가 이미 저장돼 있으면 바로 관리 버튼이 보이도록 다시 그린다.
+    if (isAdmin()) load(page);
   }).catch(function(){ /* 목록 쪽에서 한 번만 알린다 */ });
   }
 
@@ -2873,8 +2953,16 @@ ol.chain li{margin:.15rem 0}
       var art = document.createElement("article");
       art.className = "post";
 
+      if (p.resolved) art.className = "post done";
+
       var head = document.createElement("div"); head.className = "post-head";
       var ti = document.createElement("div"); ti.className = "post-title"; ti.textContent = p.title;
+      var rs = document.createElement("span");
+      rs.className = "rstate " + (p.resolved ? "done" : "open");
+      rs.textContent = p.resolved
+        ? "해결됨" + (p.resolved_ver ? " · " + p.resolved_ver : "")
+        : "미해결";
+      ti.appendChild(rs);
       var me = document.createElement("div"); me.className = "post-meta";
       me.textContent = p.nick + " · " + when(p.created_at) + " · #" + p.id;
       head.appendChild(ti); head.appendChild(me); art.appendChild(head);
@@ -2902,6 +2990,45 @@ ol.chain li{margin:.15rem 0}
           a.appendChild(img); box.appendChild(a);
         });
         art.appendChild(box);
+      }
+
+      if (p.saves && p.saves.length){
+        var sbox = document.createElement("div"); sbox.className = "bf-saves";
+        p.saves.forEach(function(sv){
+          var a = document.createElement("a");
+          a.href = sv.url; a.rel = "noopener noreferrer"; a.download = sv.name;
+          a.appendChild(document.createTextNode("⤓  " + sv.name));
+          var sz = document.createElement("span"); sz.className = "sz";
+          sz.textContent = sv.bytes < 1024
+            ? sv.bytes + " B"
+            : (sv.bytes / 1024).toFixed(sv.bytes < 10240 ? 1 : 0) + " KB";
+          a.appendChild(sz);
+          sbox.appendChild(a);
+        });
+        art.appendChild(sbox);
+      }
+
+      if (isAdmin()){
+        var adm = document.createElement("div"); adm.className = "bf-admin";
+        var sel = document.createElement("select");
+        (meta.versions || []).forEach(function(v){
+          var o = document.createElement("option");
+          o.value = v; o.textContent = v;
+          if (p.resolved_ver === v) o.selected = true;
+          sel.appendChild(o);
+        });
+        var mark = document.createElement("button");
+        mark.type = "button";
+        mark.textContent = p.resolved ? "해결 버전 바꾸기" : "이 버전에서 해결됨으로";
+        mark.addEventListener("click", function(){ resolve(p.id, true, sel.value); });
+        adm.appendChild(sel); adm.appendChild(mark);
+        if (p.resolved){
+          var undo = document.createElement("button");
+          undo.type = "button"; undo.textContent = "미해결로 되돌리기";
+          undo.addEventListener("click", function(){ resolve(p.id, false, ""); });
+          adm.appendChild(undo);
+        }
+        art.appendChild(adm);
       }
 
       var del = document.createElement("button");
@@ -2936,6 +3063,25 @@ ol.chain li{margin:.15rem 0}
     }
   }
 
+  /** 해결 처리 — 관리자 키가 맞아야 서버가 받아 준다. */
+  function resolve(id, on, version){
+    var key = adminKey();
+    if (!key) return;
+    var fd = new FormData();
+    fd.append("action", "resolve");
+    fd.append("id", id);
+    fd.append("resolved", on ? "1" : "0");
+    fd.append("version", version || "");
+    fd.append("key", key);
+    fetch(API, { method: "POST", body: fd })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (!j.ok) throw new Error(j.error || "처리하지 못했습니다.");
+        load(page);
+      })
+      .catch(function(e){ alert(e.message || "처리하지 못했습니다."); });
+  }
+
   function load(n){
     page = n;
     fetch(API + "?action=list&page=" + n)
@@ -2943,6 +3089,18 @@ ol.chain li{margin:.15rem 0}
       .then(function(d){
         if (!d.ok) throw new Error(d.error || "목록을 불러오지 못했습니다.");
         render(d);
+        var t = $("bf-tally");
+        if (t && typeof d.total === "number"){
+          t.hidden = d.total === 0;
+          t.textContent = "";
+          t.appendChild(document.createTextNode("미해결 "));
+          var b1 = document.createElement("b"); b1.textContent = d.open + "건";
+          t.appendChild(b1);
+          t.appendChild(document.createTextNode("  ·  전체 "));
+          var b2 = document.createElement("b"); b2.textContent = d.total + "건";
+          t.appendChild(b2);
+        }
+        paintBadge(d.open, d.total);
       })
       .catch(function(){
         listEl.textContent = "";
@@ -2960,6 +3118,14 @@ ol.chain li{margin:.15rem 0}
     var files = $("bf-files").files;
     if (meta && files.length > meta.max_images){
       say("이미지는 최대 " + meta.max_images + "장까지 올릴 수 있습니다.", "err");
+      return;
+    }
+    // 세이브는 원래 몇 KB 다. 큰 파일이면 십중팔구 CD 이미지를 잘못 고른 것이라
+    // 서버까지 보내기 전에 여기서 잡는다.
+    var sf = $("bf-save").files[0];
+    if (sf && meta && meta.max_save_kb && sf.size > meta.max_save_kb * 1024){
+      say("세이브 파일은 " + meta.max_save_kb + "KB 이하만 올릴 수 있습니다. " +
+          "(고르신 파일은 " + Math.round(sf.size / 1048576) + "MB 입니다 — CD 이미지를 고르신 건 아닌가요?)", "err");
       return;
     }
     var btn = $("bf-submit");
@@ -3003,6 +3169,24 @@ ol.chain li{margin:.15rem 0}
       })
       .catch(function(){ loaded = false; });
   }
+
+  // 관리자 — 키를 한 번 넣어 두면 브라우저에 남는다. 다시 누르면 해제.
+  var admBtn = $("bf-adminbtn");
+  if (admBtn) admBtn.addEventListener("click", function(){
+    if (!meta || !meta.admin_enabled){
+      alert("서버에서 해결 처리 기능이 꺼져 있습니다.\n" +
+            "board/lib.php 의 ADMIN_KEY 를 채우고 그 파일만 다시 올리시면 켜집니다.");
+      return;
+    }
+    if (adminKey()){
+      if (confirm("관리자 모드를 끌까요?")){ setAdminKey(""); load(page); }
+      return;
+    }
+    var k = prompt("관리자 키를 넣어 주세요.");
+    if (!k) return;
+    setAdminKey(k);
+    load(page);   // 키가 틀리면 해결 처리할 때 서버가 거절한다
+  });
   var tab = document.getElementById("t-board");
   if (tab) tab.addEventListener("click", start);
   if (location.hash === "#board") start();
@@ -3033,6 +3217,10 @@ ol.chain li{margin:.15rem 0}
         a.setAttribute("rel", "noopener noreferrer");
         if (e.size) a.title = e.size;
       });
+
+      // 탭 배지(미해결/전체)는 게시판 탭을 열기 전에도 보여야 하므로 여기서 한 번 부른다.
+      // counts 는 숫자 두 개뿐이라 아주 가볍다.
+      if (cfg.board && cfg.board.url && window.__boardBadge) window.__boardBadge(cfg.board.url);
 
       var v = document.querySelector(".video[data-yt]");
       if (v && cfg.video && cfg.video.youtube_id){
