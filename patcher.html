@@ -83,6 +83,13 @@ button.ghost{background:none;border:1px solid var(--edge);color:var(--phos)}
 button:disabled{opacity:.4;cursor:not-allowed}
 button.mode{background:#0c1219;border:1px solid var(--edge);color:var(--mute);box-shadow:none}
 button.mode.sel{border-color:var(--amber);color:#171109;background:var(--amber)}
+/* 못 누르는 이유가 화면에 안 보이면 "고장났다" 로 읽힌다. 잠긴 티를 내고 이유를 아래에 적는다. */
+button.mode:disabled{opacity:.4;cursor:not-allowed;border-style:dashed;background:#0c1219;color:var(--faint)}
+button.mode:disabled::before{content:"🔒 ";font-size:.9em}
+#mode-note{margin:.7rem 0 0;padding:.75rem .95rem;border-left:2px solid var(--amber);
+  background:rgba(255,178,0,.07);font-size:.88rem;line-height:1.75;color:var(--mute)}
+#mode-note[hidden]{display:none}
+#mode-note b{color:var(--phos)}
 .status{font-family:var(--mono);font-size:.85rem;padding:.7em .9em;border-radius:2px;margin-top:.8rem;
   border:1px solid var(--edge);white-space:pre-wrap;word-break:break-all}
 .status.ok{border-color:var(--ok);color:var(--ok)}
@@ -280,6 +287,7 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
         <button class="mode" data-mode="voice">음성만</button>
         <button class="mode sel" data-mode="both">텍스트 + 음성</button>
       </div>
+      <p id="mode-note" hidden></p>
       <p class="mono" id="mode-size" style="font-size:.82rem"></p>
       <p style="color:var(--faint);font-size:.86rem;margin:.5rem 0 0">
         <b>텍스트만</b> 을 고르면 음성은 원본 그대로 남습니다 — 일본어 원판에서 시작하셨다면
@@ -1622,6 +1630,22 @@ class Sha256 {
       b.disabled = needsTracks && !has;
       b.title = b.disabled ? "트랙 정보(.cue 또는 .ccd)가 있어야 음성을 넣을 수 있습니다" : "";
     });
+    // 잠긴 이유를 화면에 적는다. 예전에는 감춰진 로그에만 있어서
+    // "음성 모드가 눌리지 않는다" 는 신고가 들어왔다.
+    const note = document.getElementById("mode-note");
+    if (note) {
+      note.hidden = has;
+      if (!has) {
+        note.innerHTML =
+          "<b>음성이 들어간 모드는 트랙 정보 파일이 있어야 열립니다.</b> " +
+          "한국어 음성은 CD 오디오 트랙에 들어가는데, 그 트랙이 파일 어디서 시작하는지를 " +
+          "<code>.cue</code>(또는 CloneCD 의 <code>.ccd</code>)가 알려 줍니다.<br>" +
+          "지금은 <b>이미지 파일만</b> 골라져 있습니다 — 위 <b>1단계</b>에서 " +
+          "<b><code>.cue</code> 와 이미지를 같이</b> 골라 주세요. " +
+          "‘이미지 폴더 선택’ 으로 폴더째 고르시면 알아서 짝을 찾습니다.<br>" +
+          "<b>트랙 정보가 없어도 텍스트 패치는 그대로 됩니다</b> — 음성은 원본(일본어 또는 영어) 그대로 남습니다.";
+      }
+    }
     if (!has) {
       const textBtn = els.modeButtons.find((b) => b.dataset.mode === "text");
       if (textBtn && !textBtn.classList.contains("sel")) textBtn.click();
