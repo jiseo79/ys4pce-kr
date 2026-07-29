@@ -368,6 +368,12 @@ body::after{
   .tab{padding:.6rem .8rem;font-size:.84rem;gap:.35rem}
   .tab .n{font-size:.62rem}
 }
+/* 제작과정 안의 화면 캡쳐. 파일이 없으면 통째로 사라진다(onerror). */
+.shot{margin:1.4rem 0 1.8rem}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--edge);border-radius:12px;
+  background:var(--deep);box-shadow:0 18px 48px -24px rgba(0,0,0,.9)}
+.shot figcaption{margin-top:.7rem;font-size:.85rem;color:var(--faint);line-height:1.7}
+.shot figcaption b{color:var(--mute)}
 /* 판은 화면을 다 쓰되(표·카드·탭이 넓어진다) 줄글만 읽기 좋은 폭으로 잡는다.
    안 잡으면 1920px 에서 한 줄이 130자가 넘어가 눈이 줄을 놓친다. */
 .panel>p, .panel>ul, .panel>ol, .panel>.callout{max-width:96ch}
@@ -1873,6 +1879,25 @@ ol.chain li{margin:.15rem 0}
     <li>그다음부터가 자동입니다 — 캐릭터 목소리로 일괄 생성, 길이 검사, 슬롯 주입</li>
   </ul>
 
+  <figure class="shot">
+    <img src="img/shot-dubstudio.png" alt="더빙 스튜디오 — 캐릭터별 목소리 지정 화면"
+      onerror="this.closest('figure').hidden=true">
+    <figcaption><b>1단계 — 사람이 정하는 부분.</b> 인물마다 목소리·기본 감정·속도를 손으로
+      지정합니다. 다름은 “위압적 저음”, 리리아는 “청초·다정”, 레오는 “거만한 로몬 장군, 큰 웃음” …
+      597개 후보 목소리에서 골라 그 자리에서 들어 보고 정합니다.
+      <b>이 표가 있어야 뒤가 전부 자동이 됩니다.</b></figcaption>
+  </figure>
+
+  <figure class="shot">
+    <img src="img/shot-clipdub.png" alt="클립더빙 — 여러 화자 대사를 한 클립으로 합성하는 화면"
+      onerror="this.closest('figure').hidden=true">
+    <figcaption><b>2단계 — 여러 명이 섞인 클립.</b> 원본 음성을 STT 로 받아 적고(영어·일본어
+      양쪽), 화자를 자동으로 갈라 <b>줄 단위로 늘어놓습니다.</b> 각 줄마다 화자·감정·속도·간격을
+      따로 잡고 <b>전체 생성+합치기</b>. 아래 막대가 핵심입니다 —
+      <b>원본 48.9초 / 생성 36.2초 / 여유 12.7초.</b> 이 여유가 마이너스가 되면
+      뒤 클립을 밀어내므로 들어갈 수 없습니다. <b>배경/효과음 추가</b>도 여기서 합니다.</figcaption>
+  </figure>
+
   <p><b>그리고 위 표의 3·4번은 자동화로 끝나지 않습니다.</b> 목소리를 새로 만들어 놓아도,
     그 목소리가 놓일 <b>장면 자체를 다시 지어야</b> 합니다.</p>
   <div class="callout">
@@ -1897,6 +1922,16 @@ ol.chain li{margin:.15rem 0}
     <li>맞춰 놓은 결과가 <b>정해진 슬롯 길이 안에 들어가는지</b> 그 자리에서 확인합니다 —
       한 프레임만 넘쳐도 뒤 클립을 밀어냅니다</li>
   </ul>
+
+  <figure class="shot">
+    <img src="img/shot-filmora.png" alt="필모라에서 음성·음악·대사·효과음을 층으로 쌓아 합성하는 화면"
+      onerror="this.closest('figure').hidden=true">
+    <figcaption><b>3단계 — 결국 손으로.</b> 도구로 안 되는 장면은 필모라에 트랙을 쌓아
+      직접 맞춥니다. 화면의 오디오 1~5 가 각각 <b>조각난 대사 · 원본 클립 · 새 음성 ·
+      배경음 · 효과음</b> 입니다. 파형을 보며 한 줄씩 밀고 당겨 <b>말이 겹치지 않게, 빈 데가
+      생기지 않게</b> 맞춥니다. 이 한 장면(2분 47초)에 트랙 다섯 겹이 들어갔습니다.
+      <b>여기서부터는 자동화가 아니라 편집입니다.</b></figcaption>
+  </figure>
   <div class="callout">
     <span class="lab">정직하게 — 그래서 남은 흠</span>
     <p>화자를 <b>자동으로</b> 붙이다 보니, <b>중간중간 목소리가 인물과 안 맞는 곳이 있습니다.</b>
@@ -1906,7 +1941,55 @@ ol.chain li{margin:.15rem 0}
   <p class="hint">음성은 AI 로 생성했습니다. 사람 성우가 아닙니다.</p>
 
   <!-- 8 ─────────────────────────────────────────────────────────── -->
-  <h3 style="margin-top:2.4rem">12. 글자 순서가 두 번 발목을 잡았다</h3>
+  <h3 style="margin-top:2.4rem">12. 대사창 크기를 정하는 값이 어디에도 적혀 있지 않았다</h3>
+  <p>한국어는 한 글자가 영문 <b>두 칸</b>을 먹습니다. 그러니 같은 뜻을 옮겨도 대사가
+    창 밖으로 넘칩니다. 창을 키우면 되는데 — <b>창 크기를 정하는 값이 무엇인지
+    아무 데도 적혀 있지 않았습니다.</b></p>
+  <p>대사 앞에 붙은 <b>4바이트</b>가 수상하긴 했습니다. 처음엔 그걸
+    "화자 · 초상화 · 알파 · 베타"로 읽고 있었습니다. <b>틀렸습니다.</b></p>
+  <p>그래서 게임 안에서 <b>값을 하나씩 바꿔 가며 눈으로 확인</b>했습니다 —
+    두 번째 바이트를 줄이니 <b>창이 좁아졌고</b>, 네 번째를 <code>04</code>→<code>06</code>
+    하니 <b>줄이 하나 늘었습니다.</b> 그렇게 정체가 나왔습니다.</p>
+  <div class="scroll">
+    <table class="toolist">
+      <tbody>
+        <tr><td class="mono">byte 0 = X</td><td>창의 왼쪽 열 위치</td></tr>
+        <tr><td class="mono">byte 1 = W</td><td>창의 폭 (열 수)</td></tr>
+        <tr><td class="mono">byte 2 = Y</td><td>창의 위쪽 행 위치</td></tr>
+        <tr><td class="mono">byte 3 = H</td><td>창의 높이 (행 수)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>확인은 전수 검사로 했습니다.</b> 9,926 페이지를 훑었더니 98%가
+    <code>2X+W = 28</code>, <code>2Y+H = 16</code> 이었습니다 —
+    <b>원본이 창을 화면 가운데에 맞추고 있었던 것</b>입니다. 화면의 글자 영역이
+    <b>28열 × 16행</b>이라는 것도 이때 같이 나왔습니다.</p>
+  <div class="callout">
+    <span class="lab">그리고 여기에 함정이 하나 더</span>
+    <p>W 의 단위가 <b>영문 열 기준</b>입니다. 한글은 한 글자에 두 칸이니
+      같은 W 라도 들어가는 글자 수가 절반입니다. 지금까지 났던 오버플로는
+      전부 <b>"줄바꿈 폭 &gt; 창 폭"</b> 이었습니다.</p>
+  </div>
+
+  <p>이 값들은 <b>데이터에만 들어 있어서 어셈블리를 안 건드려도 됩니다.</b>
+    코드를 손대는 순간 프리즈·스프라이트 위험이 따라오는데, 창 크기는 그 위험 없이
+    고칠 수 있다는 뜻입니다. 그래서 <b>위지윅 도구</b>를 만들었습니다.</p>
+
+  <figure class="shot">
+    <img src="img/shot-transtool-box.png" alt="한글 감수 도구의 대사창 편집 화면"
+      onerror="this.closest('figure').hidden=true">
+    <figcaption><b>한글 감수 — 대사창 위지윅 편집.</b> 실제 게임과 같은 격자에 지금 대사를
+      그려 보여 주고, <code>X · W · Y · H</code> 를 <b>+/−</b> 로 바꾸면 그 자리에서 다시 그립니다.
+      아래에 <code>2X+W</code> · <code>2Y+H</code> 를 같이 띄워서 가운데 정렬이 깨졌는지,
+      <code>줄 4/5</code> · <code>최대폭 21/22</code> 로 넘치는지 바로 압니다.
+      이번 판올림의 <b>창 크기 481곳</b>이 이 화면에서 나왔습니다.</figcaption>
+  </figure>
+
+  <p class="hint">한 번은 <b>일괄로 처리하려다 크게 물렸습니다.</b> 대화 박스 1,364개에
+    "X를 2 줄이고 W를 4 늘린다"를 한 번에 먹였더니, <b>다른 메시지의 글자가
+    장비·아이템·상태 메뉴로 새어 나왔습니다.</b> 그 뒤로는 한 번에 한 곳씩 합니다.</p>
+
+  <h3 style="margin-top:2.4rem">13. 글자 순서가 두 번 발목을 잡았다</h3>
   <p>한글 글꼴은 <b>많이 쓰는 글자부터</b> 순서대로 굽습니다. 자주 나오는 글자를
     짧은 코드로 넣어야 대사가 원래 자리에 들어가기 때문입니다. 그런데 <b>번역을 고치면
     그 순서가 바뀝니다.</b> 이게 두 번 물었습니다.</p>
@@ -1925,7 +2008,7 @@ ol.chain li{margin:.15rem 0}
     지금은 판올림마다 글자 순서가 바뀌었는지 <b>빌드 직후에 기계로 대조</b>합니다.</p>
 
   <!-- 9 ─────────────────────────────────────────────────────────── -->
-  <h3 style="margin-top:2.4rem">13. 그리고 저희가 실제로 잘못 내보낸 것 두 가지</h3>
+  <h3 style="margin-top:2.4rem">14. 그리고 저희가 실제로 잘못 내보낸 것 두 가지</h3>
   <p>이건 변명 없이 적어 둡니다.</p>
   <ul class="tick no">
     <li><b>v0.9 — 오류정정 데이터를 안 고쳤습니다.</b> 내용만 바꾸고 CD 섹터 뒤에 붙는
@@ -1942,13 +2025,25 @@ ol.chain li{margin:.15rem 0}
     <b>되살린 대사가 이미지 안에 정말 들어갔는지</b> 빌드마다 확인합니다.</p>
 
   <!-- 10 ────────────────────────────────────────────────────────── -->
-  <h3 style="margin-top:2.4rem">14. 마지막으로 — 실기에서 돌았습니다</h3>
-  <p><b>2026-06-30</b>, 테스터분들이 <b>Turbo EverDrive + 실제 PC Engine</b> 에서
-    개조한 시스템 카드와 구운 CD-R 로 돌려 확인해 주셨습니다.
+  <h3 style="margin-top:2.4rem">15. 마지막으로 — 실기에서 돌았습니다</h3>
+  <p><b>2026-06-30</b>, <b>Turbo EverDrive + 실제 PC Engine</b> 에서
+    개조한 시스템 카드와 구운 CD-R 로 돌아가는 것을 확인했습니다.
     에뮬레이터가 아니라 <b>진짜 칩 위에서</b>입니다.</p>
   <p>이걸로 남아 있던 큰 물음표가 전부 지워졌습니다 — 개조한 카드가 실기에서 부팅되는가,
     렌더러가 카드 ROM 을 실시간으로 읽을 수 있는가, 한글이 실제로 화면에 나오는가.
     <b>전부 예</b>였습니다.</p>
+
+  <div class="callout">
+    <span class="lab">그 확인을 해 주신 분들</span>
+    <p>저에게는 실기가 없습니다. 그런데 <b>MSX천국동</b>의
+      <b>마리오동키콩</b> 님과 <b>yanwenli</b> 님이 <b>빛의 속도로</b> 돌려 보고
+      결과를 보내 주셨습니다. 개발 초반이었고, 그때는
+      <b>"이 방식이 실기에서 되기는 하는가"</b> 가 전부 미지수였습니다.</p>
+    <p style="margin-top:.6rem">되는지 안 되는지 모르는 채로 몇 주를 더 갈 수도 있었는데,
+      두 분 덕분에 <b>그 자리에서 답이 나왔고 탄력을 받았습니다.</b>
+      이 방향으로 끝까지 갈 수 있었던 건 그 확인 덕분입니다.</p>
+    <p style="margin-top:.6rem"><b>이 자리를 빌어 다시 한번 감사드립니다.</b></p>
+  </div>
 
   <div class="callout" style="margin-top:2rem">
     <span class="lab">기록에 대하여</span>
@@ -2033,7 +2128,7 @@ ol.chain li{margin:.15rem 0}
           <li><a href="https://www.ysutopia.net/projects/ys4/" rel="noopener noreferrer" target="_blank">ysutopia.net</a>
             <small>NightWolve 님의 영문 번역 패치 · Burnt Lasagna 님의 영문 더빙 패치</small></li>
           <li><a href="https://cafe.naver.com/msx/" rel="noopener noreferrer" target="_blank">MSX천국동</a>
-            <small>네이버 카페</small></li>
+            <small>네이버 카페 · <b>마리오동키콩</b> 님, <b>yanwenli</b> 님 — 개발 초반 실기 검증</small></li>
           <li><a href="https://cafe.naver.com/hansicgu" rel="noopener noreferrer" target="_blank">한식구</a>
             <small>네이버 카페</small></li>
         </ul>
