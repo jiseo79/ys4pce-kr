@@ -2230,6 +2230,14 @@ ol.chain li{margin:.15rem 0}
     <p>한글 글꼴을 넣느라 <b>시스템 카드의 한자 ROM 을 덮어썼는데</b>,
       엔딩 스태프롤이 하필 <b>그 한자를 쓰고 있었습니다.</b>
       1993년에 이 게임을 만든 사람들의 이름이 <b>제 손에 뭉개져 있었습니다.</b></p>
+    <div class="video" data-yt="o69hRVHUQrA" data-start="283"
+      data-label="▶  깨진 그대로 남아 있는 증거 영상" style="margin:.9rem 0 .4rem">
+      <span class="ph">영상 준비 중</span>
+    </div>
+    <p style="color:var(--faint);font-size:.86rem;margin:0">
+      그 시절 빌드로 엔딩까지 가신 분이 올려 두신 영상입니다.
+      <b>4분 43초부터</b> 스태프 이름이 어떻게 나오는지 그대로 보입니다.
+      (누르기 전에는 유튜브로 아무 요청도 가지 않습니다.)</p>
   </div>
 
   <p><b>제 이름 하나 넣겠다고 시작한 일이, 진짜 제작진의 이름을 전부 지우는 일이 돼 있었습니다.</b>
@@ -2764,11 +2772,14 @@ ol.chain li{margin:.15rem 0}
       var id = v.dataset.yt;
       if (!id || v.dataset.wired) return;
       v.dataset.wired = "1";
-      v.querySelector('.ph').textContent = '▶  재생';
+      v.querySelector('.ph').textContent = v.dataset.label || '▶  재생';
       v.style.cursor = 'pointer';
+      // data-start 가 있으면 그 초부터 (스태프롤 깨진 장면처럼 지점이 정해진 영상용)
+      var at = parseInt(v.dataset.start, 10);
+      var q = '?autoplay=1&rel=0' + (at > 0 ? '&start=' + at : '');
       v.addEventListener('click', function(){
-        v.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-          '?autoplay=1&rel=0" title="플레이 영상" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+        v.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + q +
+          '" title="플레이 영상" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
       }, {once:true});
     });
   };
