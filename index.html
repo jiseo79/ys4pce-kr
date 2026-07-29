@@ -352,7 +352,8 @@ body::after{
   padding-top:.6rem;padding-bottom:.6rem}
 .tab{
   display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
-  margin:0;padding:.7rem 1.05rem;font:700 .92rem/1 var(--sans);letter-spacing:.02em;
+  /* 좌우 여백은 화면 폭을 따라간다 — 탭 이름이 길어져도 한 줄에 들어가게 */
+  margin:0;padding:.7rem clamp(.6rem,1.1vw,1.05rem);font:700 .92rem/1 var(--sans);letter-spacing:.02em;
   background:var(--panel);border:1px solid var(--edge);border-bottom:1px solid var(--edge);
   border-radius:10px;color:var(--mute);
   transition:color .18s,background .18s,border-color .18s,transform .18s,box-shadow .18s;
@@ -784,7 +785,7 @@ ol.chain li{margin:.15rem 0}
     <button class="tab" role="tab" id="t-notes"  aria-controls="p-notes"  aria-selected="false"><span class="n">04</span>릴리스</button>
     <button class="tab" role="tab" id="t-credit"  aria-controls="p-credit"  aria-selected="false"><span class="n">05</span>계보</button>
     <button class="tab" role="tab" id="t-tools"  aria-controls="p-tools"  aria-selected="false"><span class="n">06</span>제작방식 · 도구</button>
-    <button class="tab" role="tab" id="t-story"  aria-controls="p-story"  aria-selected="false"><span class="n">07</span>제작과정</button>
+    <button class="tab" role="tab" id="t-story"  aria-controls="p-story"  aria-selected="false"><span class="n">07</span>제작과정/비화</button>
     <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">08</span>버그 신고</button>
     <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">09</span>집계</button>
   </div>
@@ -2409,7 +2410,7 @@ ol.chain li{margin:.15rem 0}
         <li><button data-go="t-patch">패치하기</button></li>
         <li><button data-go="t-notes">릴리스</button></li>
         <li><button data-go="t-credit">계보</button></li>
-        <li><button data-go="t-story">제작과정</button></li>
+        <li><button data-go="t-story">제작과정/비화</button></li>
       </ul>
       <div class="fthanks">
         <span class="lab">Special Thanks</span>
