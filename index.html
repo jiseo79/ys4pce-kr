@@ -368,12 +368,37 @@ body::after{
   .tab{padding:.6rem .8rem;font-size:.84rem;gap:.35rem}
   .tab .n{font-size:.62rem}
 }
+/* 제작과정은 길다. 절 제목을 키우고 색을 달리해서 눈이 쉬어 갈 데를 만든다. */
+#p-story>h3{
+  font-size:clamp(1.3rem,2.1vw,1.6rem);line-height:1.35;letter-spacing:-.022em;
+  color:var(--amber);margin:3.6rem 0 1rem;padding-top:1.7rem;
+  border-top:1px solid var(--edge);
+}
+#p-story>h3:first-of-type{border-top:0;padding-top:0;margin-top:2.2rem}
 /* 제작과정 안의 화면 캡쳐. 파일이 없으면 통째로 사라진다(onerror). */
-.shot{margin:1.4rem 0 1.8rem}
-.shot img{display:block;width:100%;height:auto;border:1px solid var(--edge);border-radius:12px;
-  background:var(--deep);box-shadow:0 18px 48px -24px rgba(0,0,0,.9)}
+.shot{margin:1.4rem 0 1.8rem;max-width:560px}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--edge);border-radius:10px;
+  background:var(--deep);box-shadow:0 14px 38px -22px rgba(0,0,0,.9);
+  cursor:zoom-in;transition:border-color .18s,transform .18s}
+.shot img:hover{border-color:var(--amber);transform:translateY(-2px)}
 .shot figcaption{margin-top:.7rem;font-size:.85rem;color:var(--faint);line-height:1.7}
 .shot figcaption b{color:var(--mute)}
+.shot figcaption::after{content:" (눌러서 크게 보기)";color:var(--amber);opacity:.75}
+/* 확대 보기 */
+#lb{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+  padding:2.2rem 1.2rem;background:rgba(0,0,0,.88);cursor:zoom-out}
+#lb[hidden]{display:none}
+#lb img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
+  border:1px solid var(--edge);border-radius:8px;background:var(--deep)}
+#lb .x{position:absolute;top:.9rem;right:1.1rem;background:none;border:1px solid var(--edge);
+  color:var(--mute);border-radius:8px;padding:.4rem .7rem;font:600 .85rem var(--sans);cursor:pointer}
+#lb .x:hover{border-color:var(--amber);color:var(--amber)}
+#lb .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:1rem;
+  max-width:min(900px,calc(100% - 2.4rem));padding:.7rem 1.1rem;
+  background:rgba(9,13,19,.94);border:1px solid var(--edge);border-radius:9px;
+  font-size:.82rem;line-height:1.65;color:var(--mute);text-align:left;pointer-events:none}
+#lb .cap:empty{display:none}
+@media(max-width:700px){.shot{max-width:none}}
 /* 판은 화면을 다 쓰되(표·카드·탭이 넓어진다) 줄글만 읽기 좋은 폭으로 잡는다.
    안 잡으면 1920px 에서 한 줄이 130자가 넘어가 눈이 줄을 놓친다. */
 .panel>p, .panel>ul, .panel>ol, .panel>.callout{max-width:96ch}
@@ -1827,10 +1852,22 @@ ol.chain li{margin:.15rem 0}
     <span class="lab">그런데 — 왜 PC Engine 게임은 음성이 나올 때 자막이 없을까?</span>
     <p>작업하면서 계속 걸렸던 질문입니다. 이 시절 CD 게임들은 <b>목소리는 나오는데
       글자는 안 나옵니다.</b> 성우를 쓸 돈은 있었는데 자막 한 줄이 없습니다.
-      <b>제 추측은 — 글자와 목소리가 같은 칩을 놓고 싸우기 때문</b>입니다.</p>
-    <p style="margin-top:.6rem">제가 <b>실제로 겪은 것</b>은 이렇습니다.
-      이 게임의 글꼴은 ADPCM RAM 에 있고, 음성도 같은 ADPCM RAM 을 씁니다.
-      그래서 글자를 그때그때 실어 나르는 방식으로 만들었더니 —</p>
+      <b>이 게임을 뜯어 보고 나서 든 생각은 — 메모리가 없어서였다</b> 입니다.</p>
+
+    <p style="margin-top:.6rem">순서대로 보면 이렇습니다.</p>
+    <ul class="tick" style="margin:.6rem 0">
+      <li>본체 메인 메모리가 <b>빠듯합니다.</b> 그래서 <b>ADPCM 메모리까지 끌어다 씁니다</b> —
+        효과음은 대부분 FM 음원이 내니까, ADPCM 쪽은 평소에 <b>놀고 있는 공간</b>입니다</li>
+      <li>그래서 <b>음성이 없는 동안 그 자리에는 글꼴이 올라가 있습니다.</b>
+        이 게임이 실제로 그렇습니다</li>
+      <li>그런데 <b>음성이 본격적으로 나오기 시작하면 그 자리를 음성이 가져갑니다.</b>
+        글꼴이 있을 데가 없어집니다</li>
+      <li>글꼴이 없으면 글자를 못 그립니다 →
+        <b>음성이 나오는 동안에는 자막을 올릴 메모리 여유가 없습니다</b></li>
+    </ul>
+
+    <p style="margin-top:.6rem">제가 <b>실제로 겪은 것</b>이 정확히 그것이었습니다.
+      글자를 그때그때 실어 나르는 방식으로 만들었더니 —</p>
     <div class="scroll" style="margin:.7rem 0">
       <table class="toolist">
         <tbody>
@@ -1839,17 +1876,17 @@ ol.chain li{margin:.15rem 0}
         </tbody>
       </table>
     </div>
-    <p>ADPCM 이 음성을 흘리는 동안에는 <b>글자를 넣을 틈이 없었습니다.</b>
-      1990년대 초에 이 위에서 자막을 얹으려면, 글꼴을 다른 곳에 두고 그리기 경로를
-      따로 만들어야 합니다 — <b>당시로선 남는 자리도, 남는 시간도 없었을 것</b>입니다.
-      "음성이 있으면 자막은 포기한다"가 가장 싼 선택이었을 겁니다.</p>
+    <p>그러니까 <b>"자막을 안 넣은" 게 아니라 "넣을 자리가 없었던"</b> 쪽에 가깝습니다.
+      하나를 얻으려면 하나를 내놓아야 하는 하드웨어였고, 음성을 택한 순간
+      글꼴이 앉아 있던 자리를 비워 줘야 했습니다.
+      <b>"음성이 나올 땐 글자를 포기한다"</b> — 주어진 판에서 고를 수 있는
+      답이 그것뿐이었을 겁니다.</p>
+    <p style="margin-top:.6rem">지금 기준으로 보면 거칠지만,
+      <b>그 시절 하드웨어에서는 이런 상남자식 해결이 정답이었습니다.</b>
+      남는 게 없으니 뭘 얹는 게 아니라 <b>뭘 뺄지를 고르는 것</b>이 설계였습니다.</p>
     <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
-      ⚠️ <b>다만 이건 가설입니다.</b> 제가 측정한 것은 <b>이스 IV 한 편</b>이고,
-      "글꼴이 ADPCM 에 있으면 음성과 부딪힌다"까지가 확인된 사실입니다.
-      다른 게임은 글꼴을 <b>시스템 카드 한자 ROM</b>에서 읽었을 수도 있고 —
-      그러면 ADPCM 과 안 부딪힙니다. 그 경우엔 화면·VRAM 여유나 제작 비용이
-      더 큰 이유였을 겁니다. <b>확인하려면</b> 다른 PC Engine CD 게임에서
-      음성 재생 중 글꼴이 어디서 오는지 같은 방식으로 추적해 보면 됩니다.
+      ⚠️ <b>다만 이건 이 게임 이야기입니다.</b> 제가 뜯어 본 것은
+      <b>이스 IV 한 편</b>뿐이고, 다른 게임이 어땠는지는 모릅니다.
       아시는 분 계시면 알려 주세요.</p>
   </div>
 
@@ -2076,6 +2113,13 @@ ol.chain li{margin:.15rem 0}
 </section>
 
 <!-- ─────────── 판올림 알림 (버전당 한 번) ─────────── -->
+<!-- ─────────── 캡쳐 확대 보기 ─────────── -->
+<div id="lb" hidden role="dialog" aria-modal="true" aria-label="확대 보기">
+  <button type="button" class="x" aria-label="닫기">✕ 닫기</button>
+  <img alt="">
+  <div class="cap"></div>
+</div>
+
 <div id="up-modal" class="modal" hidden>
   <div class="modal-back" data-up-close></div>
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="up-title" tabindex="-1">
@@ -2236,6 +2280,44 @@ ol.chain li{margin:.15rem 0}
           x.setAttribute('aria-selected', on ? 'true' : 'false');
           pane.hidden = !on; pane.classList.toggle('on', on);
         });
+      });
+    });
+  })();
+
+  /* ── 캡쳐 확대 보기 ── */
+  (function(){
+    var lb = document.getElementById('lb');
+    if (!lb) return;
+    var img = lb.querySelector('img'), cap = lb.querySelector('.cap'), last = null;
+    function esc(e){ if (e.key === 'Escape') close(); }
+    function open(src, alt, caption){
+      last = document.activeElement;
+      img.src = src; img.alt = alt || '';
+      cap.textContent = caption || '';
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+      addEventListener('keydown', esc);
+      lb.querySelector('.x').focus();
+    }
+    function close(){
+      lb.hidden = true; img.src = '';
+      document.body.style.overflow = '';
+      removeEventListener('keydown', esc);
+      if (last) last.focus();
+    }
+    lb.addEventListener('click', close);          /* 배경·이미지 아무 데나 눌러도 닫힌다 */
+    document.addEventListener('click', function(e){
+      var t = e.target.closest('.shot img');
+      if (!t) return;
+      var fc = t.closest('figure').querySelector('figcaption');
+      /* 캡션의 '(눌러서 크게 보기)'는 ::after 라 textContent 에 안 들어온다 */
+      open(t.currentSrc || t.src, t.alt, fc ? fc.textContent.trim() : '');
+    });
+    /* 키보드로도 열 수 있게 */
+    document.querySelectorAll('.shot img').forEach(function(el){
+      el.tabIndex = 0;
+      el.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
       });
     });
   })();
