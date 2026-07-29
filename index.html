@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>이스 IV: 이스의 여명 — 한국어 패치</title>
 <meta name="description" content="PC Engine Super CD-ROM² 『Ys IV: The Dawn of Ys』 한국어 패치. 한글이 시스템 카드 ROM에서 렌더링됩니다. 브라우저에서 바로 패치하며 파일은 서버로 전송되지 않습니다.">
-<meta property="og:title" content="이스 IV: 이스의 여명 — 한국어 패치 v0.9.1">
+<meta property="og:title" content="이스 IV: 이스의 여명 — 한국어 패치 v0.9.2">
 <meta property="og:description" content="브라우저에서 바로 패치. 파일은 서버로 전송되지 않습니다.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="img/og.jpg">
@@ -346,10 +346,32 @@ body::after{
 
 /* 내비게이션과 본문을 게임 매뉴얼처럼 편집한다. */
 .tabs{margin-top:0;background:rgba(9,13,19,.93);border-top:0;box-shadow:0 14px 40px rgba(0,0,0,.24)}
-.tabs .wrap{max-width:1120px}
-.tab{padding:1.25rem .25rem;margin-right:clamp(1.1rem,4vw,3.3rem);font-size:.88rem;letter-spacing:.03em}
-.tab[aria-selected=true]{color:var(--phos)}
-.tab .n{color:var(--rust)}
+/* 폭 고정을 풀어 화면을 다 쓴다 — 탭이 줄바꿈되므로 가로 스크롤이 없다. */
+.wrap{max-width:none}
+.tabs .wrap{max-width:none;flex-wrap:wrap;overflow-x:visible;gap:.45rem;
+  padding-top:.6rem;padding-bottom:.6rem}
+.tab{
+  display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
+  margin:0;padding:.7rem 1.05rem;font:700 .92rem/1 var(--sans);letter-spacing:.02em;
+  background:var(--panel);border:1px solid var(--edge);border-bottom:1px solid var(--edge);
+  border-radius:10px;color:var(--mute);
+  transition:color .18s,background .18s,border-color .18s,transform .18s,box-shadow .18s;
+}
+.tab:hover{color:var(--phos);border-color:var(--mute);transform:translateY(-1px)}
+.tab[aria-selected=true]{
+  color:#12100a;background:var(--amber);border-color:var(--amber);
+  box-shadow:0 9px 24px -11px rgba(255,178,0,.75);
+}
+.tab .n{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--faint);margin:0}
+.tab[aria-selected=true] .n{color:rgba(0,0,0,.5)}
+@media(max-width:560px){
+  .tab{padding:.6rem .8rem;font-size:.84rem;gap:.35rem}
+  .tab .n{font-size:.62rem}
+}
+/* 판은 화면을 다 쓰되(표·카드·탭이 넓어진다) 줄글만 읽기 좋은 폭으로 잡는다.
+   안 잡으면 1920px 에서 한 줄이 130자가 넘어가 눈이 줄을 놓친다. */
+.panel>p, .panel>ul, .panel>ol, .panel>.callout{max-width:96ch}
+.panel>h2, .panel>h3{max-width:96ch}
 .panel{
   position:relative;margin:0 auto 4rem;padding:clamp(3rem,6vw,5.5rem) clamp(0px,3vw,2.5rem) 5rem;
   animation:fade .35s ease both;
@@ -522,6 +544,15 @@ footer .wrap{position:relative;z-index:1;max-width:1120px;padding-top:4rem;paddi
   vertical-align:middle}
 .cslink:hover{border-color:var(--amber);color:var(--amber)}
 .modal-box>footer{padding:.7rem 1.3rem;border-top:1px solid var(--edge);font-size:.78rem;color:var(--faint)}
+/* 판올림 알림 팝업 */
+.up-body{padding:1.1rem 1.3rem;overflow:auto}
+.up-tab{width:100%;border-collapse:collapse;margin:1rem 0 0;font-size:.9rem}
+.up-tab td{padding:.55rem .2rem;border-bottom:1px solid var(--edge);color:var(--mute);vertical-align:top}
+.up-tab td:first-child{width:42%;color:var(--phos)}
+.up-tab tr:last-child td{border-bottom:none}
+.up-hint{margin:.9rem 0 0;font-size:.84rem;color:var(--faint)}
+.up-foot{padding:.9rem 1.3rem;border-top:1px solid var(--edge);display:flex;gap:.7rem;flex-wrap:wrap}
+.up-foot .cta{padding:.6rem 1.1rem;font-size:.88rem}
 .modal-box>footer kbd{border:1px solid var(--edge);border-radius:4px;padding:0 .3rem;font-size:.72rem}
 .subtabs{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   margin:1.4rem 0 1.8rem}
@@ -672,7 +703,7 @@ ol.chain li{margin:.15rem 0}
         <span class="en">Ys IV: The Dawn of Ys — Korean Patch</span>
       </h1>
       <div class="edition-row">
-        <div class="ver">v0.9.1 · 2026</div>
+        <div class="ver">v0.9.2 · 2026</div>
         <div class="maker-sign">LOCALIZED BY TOPPERJI<br>MARS–DRIVE</div>
       </div>
       <p class="lede">33년 전 PC Engine CD로 떠났던 모험을, 이제 한국어로 다시 만납니다.
@@ -713,13 +744,14 @@ ol.chain li{margin:.15rem 0}
 <nav class="tabs">
   <div class="wrap" role="tablist" aria-label="섹션">
     <button class="tab" role="tab" id="t-about"  aria-controls="p-about"  aria-selected="true"><span class="n">01</span>소개</button>
-    <button class="tab" role="tab" id="t-need"   aria-controls="p-need"   aria-selected="false"><span class="n">02</span>준비물</button>
+    <button class="tab" role="tab" id="t-need"  aria-controls="p-need"  aria-selected="false"><span class="n">02</span>준비물</button>
     <button class="tab" role="tab" id="t-patch"  aria-controls="p-patch"  aria-selected="false"><span class="n">03</span>패치하기</button>
     <button class="tab" role="tab" id="t-notes"  aria-controls="p-notes"  aria-selected="false"><span class="n">04</span>릴리스</button>
-    <button class="tab" role="tab" id="t-credit" aria-controls="p-credit" aria-selected="false"><span class="n">05</span>계보</button>
-    <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">06</span>버그 신고</button>
-    <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">07</span>집계</button>
-    <button class="tab" role="tab" id="t-tools"  aria-controls="p-tools"  aria-selected="false"><span class="n">08</span>만든 도구</button>
+    <button class="tab" role="tab" id="t-credit"  aria-controls="p-credit"  aria-selected="false"><span class="n">05</span>계보</button>
+    <button class="tab" role="tab" id="t-tools"  aria-controls="p-tools"  aria-selected="false"><span class="n">06</span>제작방식 · 도구</button>
+    <button class="tab" role="tab" id="t-story"  aria-controls="p-story"  aria-selected="false"><span class="n">07</span>제작과정</button>
+    <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">08</span>버그 신고</button>
+    <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">09</span>집계</button>
   </div>
 </nav>
 
@@ -1102,12 +1134,12 @@ ol.chain li{margin:.15rem 0}
         <tr>
           <td>한국어 자막 + 영어 음성</td>
           <td class="mono"><a data-dl="text" href="#" aria-disabled="true">text</a> <button type="button" class="cslink" data-cs="out_text">체크섬 보기</button></td>
-          <td class="n">253 KB</td>
+          <td class="n">252 KB</td>
         </tr>
         <tr>
           <td>영어 자막 + 한국어 음성</td>
           <td class="mono"><a data-dl="voice" href="#" aria-disabled="true">voice</a> <button type="button" class="cslink" data-cs="out_voice">체크섬 보기</button></td>
-          <td class="n">135.9 MB</td>
+          <td class="n">122.2 MB</td>
         </tr>
         <tr>
           <td>한국어 자막 + 한국어 음성</td>
@@ -1139,6 +1171,18 @@ ol.chain li{margin:.15rem 0}
       </div>
     </div>
 
+    <div class="callout" style="margin-top:1.4rem">
+      <span class="lab">⚠️ 이미지와 카드는 <b>같은 판올림끼리</b> 써야 합니다</span>
+      <p>한글 글꼴표는 시스템 카드 안에 있고, 이미지는 <b>글자 번호</b>로 글꼴을 찾습니다.
+        판올림에서 대사가 늘거나 줄면 <b>번호가 밀립니다</b> — v0.9.2 에서는 45개가 밀렸습니다.</p>
+      <p style="margin-top:.6rem"><b>이미지 패치만 새로 받고 카드를 그대로 두시면
+        오류 없이 일부 글자가 엉뚱한 글자로 나옵니다.</b> 그 반대도 마찬가지입니다.
+        위 표의 <b>이미지 패치와 <code>syscard</code> 패치를 둘 다</b> 같은 버전으로 받아 적용해 주세요.</p>
+      <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+        헷갈리시면 <b>웹 패처</b>를 쓰세요 — 이미지와 카드를 한 번에 만들어 드리므로
+        짝이 어긋날 일이 없습니다.</p>
+    </div>
+
     <p style="margin-top:1.4rem">
       <button class="cta ghost" id="btn-checksums" type="button">체크섬 보기</button>
     </p>
@@ -1149,7 +1193,37 @@ ol.chain li{margin:.15rem 0}
 
 <!-- ─────────── 04 릴리스 ─────────── -->
 <section class="panel" id="p-notes" role="tabpanel" aria-labelledby="t-notes" tabindex="0" hidden data-chapter="04">
-  <h2>v0.9.1</h2>
+  <h2>v0.9.2</h2>
+  <p class="sub">2026년 7월 29일 · <b>프리징 수정</b></p>
+
+  <div class="callout">
+    <span class="lab">⚠️ 이미지와 <b>한글 시스템 카드</b>를 반드시 같이 새로 만들어 주세요</span>
+    <p>되살린 대사 12개가 음절 빈도를 바꾸면서 <b>글자 45개의 내부 번호가 밀렸습니다.</b>
+      글자 자체는 그대로지만 자리가 달라졌습니다. 이미지는 그 번호로 글자를 찾고,
+      번호표는 시스템 카드 안에 들어 있습니다.</p>
+    <p style="margin-top:.6rem"><b>새 이미지에 옛 카드를 쓰면 오류 없이 45개 글자가 엉뚱한
+      글자로 나옵니다.</b> 반대도 마찬가지입니다.</p>
+    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+      웹 패처를 쓰시면 둘을 한 번에 만들어 드리므로 신경 쓰지 않으셔도 됩니다.
+      xdelta 로 직접 하시는 분만 <b>이미지 패치와 syscard 패치를 둘 다</b> 새로 받으시면 됩니다.</p>
+  </div>
+
+  <ul class="tick">
+    <li><b>상점에서 물건을 사면 화면이 깨지며 멈추던 문제</b> — 프로마록 쿠프 교역소.
+      구매 완료 대사가 통째로 빠져 있었고, 그 자리에 남은 영문 압축 찌꺼기를 게임이
+      <b>“세로 130칸짜리 대화창”</b>으로 읽어 32칸짜리 창 관리 표를 넘어 자기 작업 메모리를
+      뭉갰습니다. 파는 것은 그 앞 대사에서 끝나 멀쩡했습니다</li>
+    <li>같은 원인으로 <b>7개 블록에서 잘려 있던 대사 12개</b>를 되살려 번역 —
+      <b>레오의 장비 획득</b> · <b>로다 열매 획득</b> · 셀세타 숲 · 엔딩 대사 포함</li>
+    <li>“구매는 됐는데 <b>영어가 나온다</b>” 도 같은 원인이었습니다 —
+      번역 목록에 아예 올라오지 않아 감수 화면에도 보이지 않았습니다</li>
+    <li>대사창 밖으로 글자가 넘쳐 화면이 지저분해지던 곳 정리 —
+      <b>창 크기 481곳</b>, <b>문구 147곳</b></li>
+  </ul>
+
+  <p class="hint">한국어 음성은 v0.9.1 과 동일합니다. 세이브 파일은 그대로 쓰실 수 있습니다.</p>
+
+  <h2 style="margin-top:2rem">v0.9.1</h2>
   <p class="sub">2026년 7월 26일 · <b>중요 수정</b></p>
 
   <div class="callout">
@@ -1215,7 +1289,7 @@ ol.chain li{margin:.15rem 0}
 
 <!-- ─────────── 05 계보 ─────────── -->
 <section class="panel" id="p-credit" role="tabpanel" aria-labelledby="t-credit" tabindex="0" hidden data-chapter="05">
-  <h2>이 패치가 서 있는 자리</h2>
+  <h2>이 패치가 나오기까지</h2>
   <p class="sub">33년에 걸친 다른 사람들의 작업 위에 올라가 있습니다.
     게임을 켜면 가장 먼저 보이는 화면이 이 순서인 이유입니다.</p>
 
@@ -1260,7 +1334,7 @@ ol.chain li{margin:.15rem 0}
 </section>
 
 <!-- ─────────── 06 버그 신고 ─────────── -->
-<section class="panel" id="p-board" role="tabpanel" aria-labelledby="t-board" tabindex="0" hidden data-chapter="06">
+<section class="panel" id="p-board" role="tabpanel" aria-labelledby="t-board" tabindex="0" hidden data-chapter="08">
   <h2>버그 신고</h2>
   <p class="sub">글자가 깨지거나, 상자 밖으로 넘치거나, 게임이 멈추는 곳을 알려 주세요.
     <b>화면 사진</b>을 함께 올려 주시면 원인을 찾는 시간이 크게 줄어듭니다.</p>
@@ -1302,7 +1376,7 @@ ol.chain li{margin:.15rem 0}
 </section>
 
 <!-- ─────────── 07 집계 ─────────── -->
-<section class="panel" id="p-stats" role="tabpanel" aria-labelledby="t-stats" tabindex="0" hidden data-chapter="07">
+<section class="panel" id="p-stats" role="tabpanel" aria-labelledby="t-stats" tabindex="0" hidden data-chapter="09">
   <h2>얼마나 쓰이고 있나</h2>
   <p class="sub">방문 수와 패치 종류만 익명으로 셉니다.
     <b>게임 파일은 어떤 경우에도 서버로 가지 않습니다</b> — 이름도, 내용도, 해시도, 쿠키도요.</p>
@@ -1320,19 +1394,8 @@ ol.chain li{margin:.15rem 0}
 
 </div>
 
-<div id="cs-modal" class="modal" hidden>
-  <div class="modal-back" data-cs-close></div>
-  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="cs-title" tabindex="-1">
-    <header>
-      <div>
-        <h3 id="cs-title">체크섬</h3>
-        <p id="cs-ver"></p>
-      </div>
-      <button type="button" class="x" data-cs-close aria-label="닫기">✕</button>
-    </header>
-    <div id="cs-body"></div>
     <!-- ─────────── 08 만든 도구 ─────────── -->
-<section class="panel" id="p-tools" role="tabpanel" aria-labelledby="t-tools" tabindex="0" hidden data-chapter="08">
+<section class="panel" id="p-tools" role="tabpanel" aria-labelledby="t-tools" tabindex="0" hidden data-chapter="06">
   <h2>먼저 만들어야 했던 것들</h2>
   <p class="sub">번역을 시작하려면 스크립트를 꺼낼 수 있어야 하고, 한글을 넣으려면 렌더러가 있어야 하고,
     음성을 갈아 끼우려면 원본 음성이 어디 있는지부터 알아야 했습니다.
@@ -1340,7 +1403,7 @@ ol.chain li{margin:.15rem 0}
 
   <div class="kpis" style="margin:1.4rem 0 2rem">
     <div class="kpi"><b>78</b><span>도구</span></div>
-    <div class="kpi q"><b>15,512</b><span>줄</span></div>
+    <div class="kpi q"><b>29</b><span>Mesen 진단 스크립트</span></div>
     <div class="kpi"><b>5</b><span>UI 도구</span></div>
     <div class="kpi q"><b>3</b><span>직접 만든 코덱·어셈블러</span></div>
   </div>
@@ -1351,21 +1414,21 @@ ol.chain li{margin:.15rem 0}
       <figure><img src="img/tool-transtool.png" alt="번역 감수기 화면"
         onerror="this.closest('figure').hidden=true"></figure>
       <h4>번역 감수기</h4>
-      <div class="meta">transtool.py · 1,127줄 · localhost:8765</div>
+      <div class="meta">transtool.py · localhost:8765</div>
       <p>대사 8천여 줄을 스프레드시트처럼 훑는 웹 UI. <b>같은 문장은 한 줄로 묶여서</b> 한 번 고치면 나오는 곳 전부에 반영됩니다. 블록·카테고리·용어집으로 걸러 보고, 찾아바꾸기와 박스 폭 미리보기가 들어 있습니다.</p>
     </div>
     <div class="tool">
       <figure><img src="img/tool-dubstudio.png" alt="더빙 스튜디오 화면"
         onerror="this.closest('figure').hidden=true"></figure>
       <h4>더빙 스튜디오</h4>
-      <div class="meta">server.py · 904줄 + UI 3종 · localhost:8790</div>
+      <div class="meta">server.py + UI 3종 · localhost:8790</div>
       <p>캐릭터마다 목소리를 지정하고, <b>대사별로 감정과 속도를 따로</b> 조절해 한 번에 생성·시청하는 도구. 그 자리에서 들어보고 마음에 안 들면 다시 뽑습니다. 결과는 PCE 에 넣을 16kHz 모노 WAV.</p>
     </div>
     <div class="tool">
       <figure><img src="img/tool-fontedit.png" alt="한글 폰트 에디터 화면"
         onerror="this.closest('figure').hidden=true"></figure>
       <h4>한글 폰트 에디터</h4>
-      <div class="meta">hangul_font.py · 228줄</div>
+      <div class="meta">hangul_font.py</div>
       <p>881자를 격자 PNG 한 장으로 내보내 <b>손으로 픽셀을 찍고</b> 다시 읽어들이는 왕복 도구. 16×12 글리프라 자동 렌더링만으로는 안 되는 글자가 꽤 있어서, 결국 눈으로 보고 고쳐야 했습니다.</p>
     </div>
     <div class="tool">
@@ -1379,8 +1442,50 @@ ol.chain li{margin:.15rem 0}
       <figure><img src="img/tool-voicegui.png" alt="음성 패치 GUI 화면"
         onerror="this.closest('figure').hidden=true"></figure>
       <h4>음성 패치 GUI</h4>
-      <div class="meta">ys4_patcher.py · 426줄</div>
+      <div class="meta">ys4_patcher.py</div>
       <p>웹 패처 이전에 만든 데스크톱 패처. 드래그 앤 드롭으로 이미지를 받아 음성 트랙을 갈아 끼웁니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-voicelayer.png" alt="음성 레이어 편집기 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>음성 레이어 편집기</h4>
+      <div class="meta">음악 · 효과음 · 목소리 · 간격</div>
+      <p>원본은 목소리·BGM·효과음이 <b>한 트랙에 섞여</b> 있어서, 목소리만 걷어내면 갈매기도 파도도 같이 사라집니다. 그래서 <b>직접 만든 음성을 레이어로 등록</b>하고 음악·효과음을 따로 깔아 놓은 뒤, <b>간격과 화자, 대사를 넣으면 도구가 그 자리에서 합성</b>합니다. 결과가 <b>정해진 슬롯 길이 안에 들어가는지</b>도 바로 확인합니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-voicegen.png" alt="음성 생성기 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>음성 생성기</h4>
+      <div class="meta">TypeScript · Typecast API</div>
+      <p>Typecast 의 <b>API 토큰을 구매해</b> 붙인 TypeScript 생성기. 대사 목록을 넣으면 캐릭터별 목소리로 한 번에 뽑아냅니다. 웹 화면에서 한 줄씩 눌러 받던 일이 <b>일괄 처리</b>가 됐고, 다시 뽑을 때도 같은 설정이 그대로 재현됩니다.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2.4rem">도구로 안 되는 것은 손으로</h3>
+  <p class="sub">생성한 음성을 그대로 쓸 수 있는 경우는 거의 없었습니다. 길이가 슬롯에 안 맞고,
+    원본 클립에는 배경음이 같이 깔려 있고, CD 음악 트랙은 통째로 다시 잡아야 했습니다.
+    <b>여기서부터는 자동화가 안 됩니다.</b></p>
+  <div class="tools">
+    <div class="tool">
+      <figure><img src="img/tool-filmora.png" alt="필모라 음성 편집 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>음성 직접 편집</h4>
+      <div class="meta">Wondershare Filmora</div>
+      <p>파형을 눈으로 보면서 <b>앞뒤 여백을 자르고, 호흡을 넣고, 길이를 슬롯에 맞추는</b> 작업. 게임의 음성 슬롯은 길이가 정해져 있어서 한 프레임만 넘쳐도 뒤 클립을 밀어냅니다. 결국 하나씩 듣고 손으로 맞췄습니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-uvr5.png" alt="UVR5 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>AI 보이스 리무버</h4>
+      <div class="meta">UVR5 · Ultimate Vocal Remover</div>
+      <p>원본 클립에는 <b>목소리와 배경음이 한 트랙에 섞여</b> 있습니다. 그대로 갈아 끼우면 그 장면의 분위기가 통째로 사라집니다. UVR5 로 목소리만 걷어내고 <b>배경음은 남긴 뒤</b> 그 위에 한국어 음성을 올렸습니다.</p>
+    </div>
+    <div class="tool">
+      <figure><img src="img/tool-cdda.png" alt="CD 오디오 트랙 편집 화면"
+        onerror="this.closest('figure').hidden=true"></figure>
+      <h4>CD 오디오 트랙 재편집</h4>
+      <div class="meta">트랙 7 · 24 · 28 · 29 · 30</div>
+      <p>이 게임의 긴 연출 장면은 <b>음성이 CD 음악 트랙 안에 통째로 들어</b> 있습니다. 대사만 떼어낼 수가 없어서, 효과음·음악을 살린 채 한국어 음성을 다시 얹어 <b>트랙 하나를 통째로 재편집</b>했습니다. 원래 길이를 한 바이트도 넘기면 안 됩니다.</p>
     </div>
   </div>
 
@@ -1390,94 +1495,515 @@ ol.chain li{margin:.15rem 0}
   <h3>스크립트를 꺼내고 되넣기</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">decompress.py / compress.py</td><td class="n">318</td><td>게임의 압축 스크립트를 풀고 다시 압축. 되넣을 수 있어야 번역이 시작됩니다</td></tr>
-        <tr><td class="mono">lz_search.py</td><td class="n">94</td><td>압축 포맷을 모르던 시절, 이스케이프 바이트를 고정해 놓고 조합을 훑었습니다</td></tr>
-        <tr><td class="mono">comp_probe.py</td><td class="n">46</td><td>블록들의 공통 접두사와 갈라지는 지점을 찍어 포맷을 좁혔습니다</td></tr>
-        <tr><td class="mono">extract_script.py</td><td class="n">140</td><td>79개 스크립트 블록에서 번역 대상 문장만 골라냅니다</td></tr>
-        <tr><td class="mono">dump_script_blocks.py</td><td class="n">112</td><td>블록 전체를 원본·가독 텍스트 두 벌로 덤프</td></tr>
-        <tr><td class="mono">find_plaintext.py</td><td class="n">91</td><td>Mesen RAM 덤프를 뒤져 압축이 풀린 메뉴·상태창 문자열을 찾습니다</td></tr>
-        <tr><td class="mono">make_recompress_poc.py</td><td class="n">169</td><td>재압축한 블록이 실기에서 안 멈추는지 먼저 증명</td></tr>
+        <tr><td class="mono">decompress.py / compress.py</td><td>게임의 압축 스크립트를 풀고 다시 압축. 되넣을 수 있어야 번역이 시작됩니다</td></tr>
+        <tr><td class="mono">lz_search.py</td><td>압축 포맷을 모르던 시절, 이스케이프 바이트를 고정해 놓고 조합을 훑었습니다</td></tr>
+        <tr><td class="mono">comp_probe.py</td><td>블록들의 공통 접두사와 갈라지는 지점을 찍어 포맷을 좁혔습니다</td></tr>
+        <tr><td class="mono">extract_script.py</td><td>79개 스크립트 블록에서 번역 대상 문장만 골라냅니다</td></tr>
+        <tr><td class="mono">dump_script_blocks.py</td><td>블록 전체를 원본·가독 텍스트 두 벌로 덤프</td></tr>
+        <tr><td class="mono">find_plaintext.py</td><td>Mesen RAM 덤프를 뒤져 압축이 풀린 메뉴·상태창 문자열을 찾습니다</td></tr>
+        <tr><td class="mono">make_recompress_poc.py</td><td>재압축한 블록이 실기에서 안 멈추는지 먼저 증명</td></tr>
       </tbody>
     </table>
   </div>
   <h3>번역 데이터 관리</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">apply_ko_batch.py</td><td class="n">147</td><td>번역 묶음을 master.tsv 에 안전하게 반영 (충돌·되돌리기 고려)</td></tr>
-        <tr><td class="mono">apply_translation.py / apply_dialogue.py</td><td class="n">199</td><td>매핑 파일에서 번역을 채워 넣기</td></tr>
-        <tr><td class="mono">seed_translation.py</td><td class="n">111</td><td>초기 번역 씨앗 넣기</td></tr>
-        <tr><td class="mono">widen_boxes.py</td><td class="n">167</td><td>대사 상자 폭을 넓히고 한국어 기준으로 줄바꿈을 다시 계산</td></tr>
+        <tr><td class="mono">apply_ko_batch.py</td><td>번역 묶음을 master.tsv 에 안전하게 반영 (충돌·되돌리기 고려)</td></tr>
+        <tr><td class="mono">apply_translation.py / apply_dialogue.py</td><td>매핑 파일에서 번역을 채워 넣기</td></tr>
+        <tr><td class="mono">seed_translation.py</td><td>초기 번역 씨앗 넣기</td></tr>
+        <tr><td class="mono">widen_boxes.py</td><td>대사 상자 폭을 넓히고 한국어 기준으로 줄바꿈을 다시 계산</td></tr>
       </tbody>
     </table>
   </div>
   <h3>폰트와 렌더러</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">make_korean_render.py</td><td class="n">675</td><td>881자 전체 렌더 빌드 — 한글화의 본체</td></tr>
-        <tr><td class="mono">reload_cave.py</td><td class="n">441</td><td>글리프 재적재 + ADPCM 우회 그리기 루틴 (HuC6280 어셈블리)</td></tr>
-        <tr><td class="mono">plan_2byte_slots.py</td><td class="n">154</td><td>2바이트 렌더러의 글자 슬롯 압력 계산</td></tr>
-        <tr><td class="mono">syscard_kanji_map.py</td><td class="n">136</td><td>System Card 의 한자 폰트 주소 지도 — BIOS 를 뜯어 복원</td></tr>
-        <tr><td class="mono">font_codec.py / font_dump.py</td><td class="n">150</td><td>PCE 1bpp 타일 코덱, 원본 폰트 추출</td></tr>
-        <tr><td class="mono">PoC · 실험 11종</td><td class="n">1,900</td><td>make_2byte / make_hangul / make_render_test / make_reload_poc / make_star_splitbank / make_adwrite_probe / make_capacity_test / make_fontload_test 등 — 본 빌드에 손대기 전에 하나씩 증명한 것들</td></tr>
+        <tr><td class="mono">make_korean_render.py</td><td>881자 전체 렌더 빌드 — 한글화의 본체</td></tr>
+        <tr><td class="mono">reload_cave.py</td><td>글리프 재적재 + ADPCM 우회 그리기 루틴 (HuC6280 어셈블리)</td></tr>
+        <tr><td class="mono">plan_2byte_slots.py</td><td>2바이트 렌더러의 글자 슬롯 압력 계산</td></tr>
+        <tr><td class="mono">syscard_kanji_map.py</td><td>System Card 의 한자 폰트 주소 지도 — BIOS 를 뜯어 복원</td></tr>
+        <tr><td class="mono">font_codec.py / font_dump.py</td><td>PCE 1bpp 타일 코덱, 원본 폰트 추출</td></tr>
+        <tr><td class="mono">PoC · 실험 11종</td><td>make_2byte / make_hangul / make_render_test / make_reload_poc / make_star_splitbank / make_adwrite_probe / make_capacity_test / make_fontload_test 등 — 본 빌드에 손대기 전에 하나씩 증명한 것들</td></tr>
       </tbody>
     </table>
   </div>
   <h3>어셈블리와 리버싱</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">huc6280_dis.py</td><td class="n">153</td><td>PC Engine CPU 디스어셈블러. System Card 의 CD_READ 도 이걸로 뜯었습니다</td></tr>
-        <tr><td class="mono">huc_asm.py</td><td class="n">165</td><td>짝이 되는 어셈블러 — 라벨 지원, 케이브에 필요한 만큼만</td></tr>
-        <tr><td class="mono">boot_guard.py</td><td class="n">1,340</td><td>순정 카드로 부팅하면 막아서는 가드 + 인트로 스플래시. 2048바이트 안에 전부</td></tr>
-        <tr><td class="mono">staffroll_patch.py</td><td class="n">306</td><td>엔딩 스태프롤의 깨진 한자 138자 복구 (ASM 손대지 않고 데이터만)</td></tr>
-        <tr><td class="mono">staffroll_header_patch.py</td><td class="n">532</td><td>스태프롤 헤더·배역명·크레딧 페이지 한국어화</td></tr>
+        <tr><td class="mono">huc6280_dis.py</td><td>PC Engine CPU 디스어셈블러. System Card 의 CD_READ 도 이걸로 뜯었습니다</td></tr>
+        <tr><td class="mono">huc_asm.py</td><td>짝이 되는 어셈블러 — 라벨 지원, 케이브에 필요한 만큼만</td></tr>
+        <tr><td class="mono">boot_guard.py</td><td>순정 카드로 부팅하면 막아서는 가드 + 인트로 스플래시. 2048바이트 안에 전부</td></tr>
+        <tr><td class="mono">staffroll_patch.py</td><td>엔딩 스태프롤의 깨진 한자 138자 복구 (ASM 손대지 않고 데이터만)</td></tr>
+        <tr><td class="mono">staffroll_header_patch.py</td><td>스태프롤 헤더·배역명·크레딧 페이지 한국어화</td></tr>
       </tbody>
     </table>
   </div>
+  <h3>에뮬레이터 안을 직접 들여다본 것들 — Mesen 스크립트 창</h3>
+  <p class="sub">“실기에서 왜 멈추는가”는 코드를 읽어서는 안 나옵니다. Mesen 의 <b>스크립트 창</b>에
+    Lua 를 붙여 넣고 게임을 돌리면서, CPU 가 어디를 밟고 어떤 값이 언제 망가지는지
+    <b>프레임 단위로 찍어야</b> 나옵니다. 이 프로젝트의 어려운 문제는 대부분 여기서 풀렸습니다.</p>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>스크립트</th><th>무엇을 보려고</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">trace_shop_freeze.lua</td><td>상점 프리징 — 창 할당기가 32칸짜리 표를 넘어 <b>게임이 제 작업 메모리를 뭉개는 순간</b>을 잡았습니다. v0.9.2 의 그 수정</td></tr>
+        <tr><td class="mono">watch_font.lua</td><td>상주 한글 폰트를 <b>누가, 언제</b> 덮어쓰는지</td></tr>
+        <tr><td class="mono">watch_cave.lua / watch_cave_restore.lua</td><td>케이브(우리가 심은 코드)가 살아 있는지 감시하고, 복원 경로를 추적</td></tr>
+        <tr><td class="mono">trace_renderer.lua</td><td>글자를 그리는 루틴을 <b>실행 중인 뱅크째로</b> 붙잡기</td></tr>
+        <tr><td class="mono">trace_decomp.lua</td><td>게임이 스크립트를 푸는 과정을 따라가며 압축 포맷을 확정</td></tr>
+        <tr><td class="mono">trace_loader.lua / trace_sceneload.lua</td><td>장면이 바뀔 때 CD 에서 무엇을 어디로 읽는지</td></tr>
+        <tr><td class="mono">trace_voice.lua</td><td>음성 클립이 디스크 어느 자리에서 오는지</td></tr>
+        <tr><td class="mono">trace_winhook.lua / watch_cave_iceload.lua</td><td>“타이틀에서 세이브를 바로 불러오면 멈춘다”의 원인</td></tr>
+        <tr><td class="mono">freeze_autopsy.lua</td><td>멈춘 직후의 상태를 통째로 찍어 두는 부검 도구</td></tr>
+        <tr><td class="mono">cheat_search.lua</td><td>레트로아크 치트 검색 대용 — PCE 코어가 안 내주는 <b>CD-ROM RAM · 카드 RAM</b>까지 훑습니다</td></tr>
+        <tr><td class="mono">find_free_bank.lua</td><td>세 번째 폰트 뱅크로 쓸 빈 자리 찾기</td></tr>
+        <tr><td class="mono">probe_subtitle.lua / probe_part2.lua</td><td>자막 방식이 가능한지, 불안정한 폰트 뱅크를 쓸 수 있는지 타진</td></tr>
+        <tr><td class="mono">그 밖에 17종</td><td>dump_box · find_item_name · read_watch_music · trace_converter · verify_reload · trace_5189 등 — 대부분 질문 하나에 답하고 버려진 것들</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <h3>음성 — 원본 해부부터 주입까지</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">scan_adpcm.py</td><td class="n">156</td><td>디스크를 훑어 ADPCM 음성 구간을 찾아냅니다</td></tr>
-        <tr><td class="mono">find_index.py</td><td class="n">125</td><td>게임이 클립을 찾는 인덱스 표를 정적으로 추적</td></tr>
-        <tr><td class="mono">diff_clips.py</td><td class="n">101</td><td>일본판과 영문 더빙판을 비교해 클립 위치를 역산</td></tr>
-        <tr><td class="mono">segment_clips.py / recluster_coarse.py / autosplit_clip.py</td><td class="n">282</td><td>무음 간격으로 클립을 쪼개고, 게임의 실제 단위로 다시 묶기</td></tr>
-        <tr><td class="mono">cluster_voices.py</td><td class="n">151</td><td>목소리 지문으로 화자를 자동 분류</td></tr>
-        <tr><td class="mono">stt_originals.py</td><td class="n">120</td><td>원본 클립을 whisper 로 받아 적기 — 누가 무슨 말을 하는지부터</td></tr>
-        <tr><td class="mono">match_english_script.py / match_semantic.py</td><td class="n">234</td><td>영문 더빙 대본과 의미 기반으로 클립↔대사 짝짓기</td></tr>
-        <tr><td class="mono">build_mapping.py</td><td class="n">224</td><td>한국어 대사와 교체 대상 일본어 클립을 최종 연결</td></tr>
-        <tr><td class="mono">llm_translate.py / suggest_ko.py</td><td class="n">207</td><td>더빙 대본 번역, 이미 번역한 대사에서 미리 채우기</td></tr>
-        <tr><td class="mono">tts_elevenlabs.py / tts_gptsovits.py / typecast_api.py</td><td class="n">405</td><td>TTS 엔진 3종 어댑터 — 캐릭터별 목소리로 일괄 생성</td></tr>
-        <tr><td class="mono">analyze_lengths.py</td><td class="n">408</td><td>생성한 WAV 가 원래 슬롯에 들어가는 길이인지 전수 검사</td></tr>
-        <tr><td class="mono">pce_adpcm.py / pce_adpcm_enc.py</td><td class="n">369</td><td>PCE ADPCM 코덱 — 디코더를 먼저 만들고 인코더를 붙였습니다</td></tr>
-        <tr><td class="mono">inject_voice.py / inject_cdda.py</td><td class="n">396</td><td>완성된 음성을 데이터트랙과 CD 오디오 트랙에 제자리 주입</td></tr>
+        <tr><td class="mono">scan_adpcm.py</td><td>디스크를 훑어 ADPCM 음성 구간을 찾아냅니다</td></tr>
+        <tr><td class="mono">find_index.py</td><td>게임이 클립을 찾는 인덱스 표를 정적으로 추적</td></tr>
+        <tr><td class="mono">diff_clips.py</td><td>일본판과 영문 더빙판을 비교해 클립 위치를 역산</td></tr>
+        <tr><td class="mono">segment_clips.py / recluster_coarse.py / autosplit_clip.py</td><td>무음 간격으로 클립을 쪼개고, 게임의 실제 단위로 다시 묶기</td></tr>
+        <tr><td class="mono">cluster_voices.py</td><td>목소리 지문으로 화자를 자동 분류</td></tr>
+        <tr><td class="mono">stt_originals.py</td><td>원본 클립을 whisper 로 받아 적기 — 누가 무슨 말을 하는지부터</td></tr>
+        <tr><td class="mono">match_english_script.py / match_semantic.py</td><td>영문 더빙 대본과 의미 기반으로 클립↔대사 짝짓기</td></tr>
+        <tr><td class="mono">build_mapping.py</td><td>한국어 대사와 교체 대상 일본어 클립을 최종 연결</td></tr>
+        <tr><td class="mono">llm_translate.py / suggest_ko.py</td><td>더빙 대본 번역, 이미 번역한 대사에서 미리 채우기</td></tr>
+        <tr><td class="mono">tts_elevenlabs.py / tts_gptsovits.py / typecast_api.py</td><td>TTS 엔진 3종 어댑터 — 캐릭터별 목소리로 일괄 생성</td></tr>
+        <tr><td class="mono">analyze_lengths.py</td><td>생성한 WAV 가 원래 슬롯에 들어가는 길이인지 전수 검사</td></tr>
+        <tr><td class="mono">pce_adpcm.py / pce_adpcm_enc.py</td><td>PCE ADPCM 코덱 — 디코더를 먼저 만들고 인코더를 붙였습니다</td></tr>
+        <tr><td class="mono">inject_voice.py / inject_cdda.py</td><td>완성된 음성을 데이터트랙과 CD 오디오 트랙에 제자리 주입</td></tr>
       </tbody>
     </table>
   </div>
   <h3>디스크와 배포</h3>
   <div class="scroll">
     <table class="toolist">
-      <thead><tr><th>도구</th><th>줄</th><th>하는 일</th></tr></thead>
+      <thead><tr><th>도구</th><th>하는 일</th></tr></thead>
       <tbody>
-        <tr><td class="mono">cd_ecc.py</td><td class="n">138</td><td>MODE1 섹터의 EDC/ECC 재계산 — v0.9.1 의 그 수정</td></tr>
-        <tr><td class="mono">make_card_recipe.py</td><td class="n">214</td><td>BIOS 를 재배포하지 않으려고 만든 '레시피' 형식. 복사할 구간 + 우리 데이터만</td></tr>
-        <tr><td class="mono">ppf_parse.py</td><td class="n">68</td><td>영문 패치(.ppf) 파서 — 웹 패처가 직접 적용할 수 있게</td></tr>
-        <tr><td class="mono">build_text_patch.py / build_patch_assets.py</td><td class="n">366</td><td>배포용 패치 자산 생성</td></tr>
-        <tr><td class="mono">merge_text_voice.py</td><td class="n">100</td><td>텍스트 패치와 음성 패치를 충돌 없이 한 이미지로</td></tr>
-        <tr><td class="mono">ccd2cue.py / inject_iso_to_img.py / extract_iso.py</td><td class="n">113</td><td>CloneCD·ISO·CUE 사이를 오가는 잡일들</td></tr>
-        <tr><td class="mono">repackage.py</td><td class="n">107</td><td>한 번에 다시 포장하는 진입점</td></tr>
+        <tr><td class="mono">cd_ecc.py</td><td>MODE1 섹터의 EDC/ECC 재계산 — v0.9.1 의 그 수정</td></tr>
+        <tr><td class="mono">make_card_recipe.py</td><td>BIOS 를 재배포하지 않으려고 만든 '레시피' 형식. 복사할 구간 + 우리 데이터만</td></tr>
+        <tr><td class="mono">ppf_parse.py</td><td>영문 패치(.ppf) 파서 — 웹 패처가 직접 적용할 수 있게</td></tr>
+        <tr><td class="mono">build_text_patch.py / build_patch_assets.py</td><td>배포용 패치 자산 생성</td></tr>
+        <tr><td class="mono">merge_text_voice.py</td><td>텍스트 패치와 음성 패치를 충돌 없이 한 이미지로</td></tr>
+        <tr><td class="mono">ccd2cue.py / inject_iso_to_img.py / extract_iso.py</td><td>CloneCD·ISO·CUE 사이를 오가는 잡일들</td></tr>
+        <tr><td class="mono">repackage.py</td><td>한 번에 다시 포장하는 진입점</td></tr>
       </tbody>
     </table>
   </div>
 </section>
+
+<!-- ─────────── 09 제작과정 ─────────── -->
+<section class="panel" id="p-story" role="tabpanel" aria-labelledby="t-story" tabindex="0" hidden data-chapter="07">
+  <h2>여기까지 오는 동안</h2>
+  <p class="sub">자랑하려고 적는 게 아닙니다. <b>대부분은 틀렸다가 고친 이야기</b>이고,
+    그 기록이 남아 있어서 적을 수 있는 것입니다. 다음에 이런 걸 시도하실 분께
+    "여긴 파도 안 나온다"는 표지판이 되면 좋겠습니다.</p>
+
+  <!-- 1 ─────────────────────────────────────────────────────────── -->
+  <h3>1. 첫날 알게 된 것 — 글자가 디스크에 없다</h3>
+  <p>처음 세운 계획은 단순했습니다. 일본판이 이미 2바이트 글자를 쓰고 있으니,
+    <b>한자 글리프만 한글로 바꿔치기하면 되지 않을까.</b></p>
+  <div class="callout">
+    <span class="lab">그런데 글자가 디스크에 없었습니다</span>
+    <p>일본판은 글자를 <b>PC Engine 시스템 카드 3.0 안의 한자 ROM</b> 에서 가져옵니다.
+      디스크를 아무리 뜯어고쳐도 <b>글리프는 하나도 못 바꿉니다.</b>
+      계획의 전제가 첫날 무너졌습니다.</p>
+  </div>
+  <p>그래서 영문 패치본을 뜯어봤더니 — <b>그들은 자기 폰트를 디스크에 실어 놨습니다.</b>
+    8×12 Courier, 약 1.2 KB. 시스템 카드에 의존하지 않는 자체 글꼴 경로를
+    <b>이미 만들어 둔 것</b>입니다.</p>
+  <p><b>그래서 이 한국어화는 일본판이 아니라 영문 패치본 위에서 시작합니다.</b>
+    깨끗한 일본판만으로는 이 프로젝트가 성립하지 않습니다. 번역 원문이 영어인 것도
+    같은 이유입니다 — 일본어가 아니라 <b>영어에서 한국어로</b> 옮겼습니다.</p>
+
+  <h3 style="margin-top:2rem">2. 그들이 2004년에 해 놓은 일</h3>
+
+  <div class="callout">
+    <span class="lab">2004년, 그들이 한 일</span>
+    <p><b>Neill Corlett</b> 님이 이 게임의 <b>압축 해제 코드</b>를 만들고 분석 노트를 남긴 뒤
+      떠났습니다. <b>스크립트를 처음으로 뽑아낸 사람</b>입니다.
+      <b>Dave Shadoff</b> 님이 짝이 되는 <b>압축 코드</b>를 쓰고 폰트를 뚫었습니다.
+      <b>NightWolve</b>(Nick Livaditis) 님이 전체를 이끌고 스크립트를 편집했습니다.</p>
+    <p style="margin-top:.6rem">번역은 <b>Shimarisu</b>(Rachel) 님이 스크립트의 94%를 맡았는데,
+      <b>PC 가 고장 나 작업물을 통째로 잃었다가 되살려 냈습니다.</b>
+      <b>Deuce</b>(Jeff) 님이 그 위에서 감수하고 남은 문장을 마무리했습니다.
+      <b>D-boy</b>(Derrick) 님의 폰트 변환 도구가 없었으면 글꼴 작업이 불가능했다고
+      README 에 적혀 있습니다.</p>
+  </div>
+
+  <p>저희가 그 위에 설 수 있었던 것은 <b>"스크립트를 어떻게 꺼내고 어떻게 되넣는가"가
+    이미 증명돼 있었기 때문</b>입니다. 그게 없었다면 이 프로젝트는 시작 자체가 안 됩니다.</p>
+
+  <p>그리고 그분들의 궤적이 저희 것과 거의 똑같습니다.</p>
+  <div class="scroll">
+    <table class="toolist">
+      <tbody>
+        <tr><td class="mono">2004-08-01 · v0.57</td><td>첫 공개. <b>첫 두 마을만</b>, 대문자 폰트만, 그리고 <b>대사 상자 크기 문제</b></td></tr>
+        <tr><td class="mono">2004-12-25 · v0.95</td><td>소문자 폰트 지원, 줄바꿈 코드 완성, 스크립트 사실상 완료</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">…저희도 대사 상자 크기 문제로 끝까지 고생했습니다. 22년이 지나도
+    같은 자리에서 막힙니다.</p>
+
+  <p><b>다만 한 가지, 저희가 물려받지 못한 것이 있습니다.</b> Dave Shadoff 님이 2004년에
+    ADPCM 음성을 꺼내고 넣는 도구를 만드셨는데 <b>공개되지 않았습니다.</b> 어디에도 없습니다.
+    그래서 음성 쪽은 <b>코덱부터 다시 만들어야 했습니다</b> — 디코더를 먼저 만들고,
+    소리가 나는 걸 확인한 뒤 인코더를 붙였습니다.</p>
+
+  <!-- 2 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">3. 대사를 꺼내는 데만 — 압축을 세 번 틀리게 추측했다</h3>
+  <p>대사는 Hudson 자체 압축으로 들어 있습니다. 2004년에 Neill Corlett 님이 이 알고리즘을
+    풀어냈지만 <b>그 도구는 어디에도 남아 있지 않았습니다.</b> 다시 만들어야 했습니다.</p>
+  <p>흔한 LZSS 라고 가정하고 <b>"12비트 위치 + 4비트 길이"의 모든 조합</b>을 대입했습니다 —
+    바이트 순서, 니블 역할, 링버퍼 초기값, 복사 길이 ±1 … 전부 실패했습니다.
+    풀다 보면 <b>한 바이트씩 어긋나며 밀렸습니다.</b></p>
+  <p>결국 <b>추측을 그만두고 게임에 물어봤습니다.</b> Mesen 으로 트레이스를 떠서
+    게임 자신의 압축 해제 루틴(<code>$3C1A–$3C5C</code>)을 붙잡았습니다.
+    포맷은 표준이 아니었습니다 — 길이를 담는 바이트의 <b>상·하위 니블을 매치마다 번갈아</b>
+    쓰고 있었습니다. 그러니 조합을 아무리 돌려도 안 나올 수밖에요.</p>
+  <div class="callout">
+    <span class="lab">그런데 이번엔 압축기가 원본보다 컸다</span>
+    <p>풀 수 있게 되니 이번엔 <b>다시 압축하면 3~6% 커져서</b> 원래 자리에 안 들어갔습니다.
+      영문 원문을 그대로 다시 압축해도 넘쳤습니다 — 2004년 그들의 압축기가 우리 것보다
+      좋았던 것입니다.</p>
+    <p style="margin-top:.6rem">그래서 <b>가능한 모든 쪼개는 방법 중 가장 짧은 것</b>을
+      계산하도록 다시 썼습니다. 결과: <b>모든 블록이 원본보다 작아졌습니다.</b>
+      덕분에 한국어가 원래 자리에 들어갑니다.</p>
+  </div>
+
+  <h3 style="margin-top:2.4rem">4. 대사가 8 KB 에서 잘려 있었다 — 그리고 이번에도 같은 종류였다</h3>
+  <p>추출 도구에 <b>8,192바이트 상한</b>이 걸려 있었습니다. 긴 블록은 뒤가 통째로
+    날아갔습니다 — 실제 20,450바이트인 블록이 <b>8 KB 만</b> 나왔습니다.
+    마칼 촌장도, 카르나 동행 대사도, 전부 없는 줄 알고 있었습니다.</p>
+  <p>고치고 나서 <b>제대로 잘렸는지</b> 확인할 방법이 필요했는데, 뜻밖의 데서 나왔습니다 —
+    복원한 블록의 끝이 <b>개발자가 숨겨 둔 장난 문구에 정확히 떨어졌습니다.</b>
+    거기가 진짜 끝이었습니다.</p>
+  <p>그리고 이 발견이 <b>엉뚱하게 믿고 있던 것 하나를 깨뜨렸습니다.</b>
+    그때까지 "블록을 통째로 다시 압축하면 게임이 멈춘다"고 믿고 조심조심 글자만
+    끼워 넣고 있었는데 — <b>진짜 원인은 잘린 블록을 다시 압축한 꼬리가
+    게임이 계속 읽고 있는 자리를 덮은 것</b>이었습니다. 재압축은 죄가 없었습니다.</p>
+  <div class="callout">
+    <span class="lab">그리고 v0.9.2 의 상점 프리징도 같은 종류였습니다</span>
+    <p>이번에 고친 그 버그도 <b>"추출 길이가 실제보다 짧았다"</b> 입니다.
+      2년 전 같은 자리에서 한 번 물렸는데, <b>같은 함정이 다른 블록에 남아 있었습니다.</b>
+      한 번 물린 함정은 전수로 훑어야 합니다 — 그때 그러지 않았습니다.</p>
+  </div>
+
+  <h3 style="margin-top:2.4rem">5. 첫 번째 벽 — 한글 글꼴을 놓을 자리가 없다</h3>
+  <p>영문 패치가 넣은 글자는 <b>아스키 96자, 약 1.2 KB</b> 입니다. 한국어는
+    <b>881자 × 24바이트 = 약 21 KB.</b> 열일곱 배입니다.</p>
+  <p>PC Engine CD 의 작업 메모리에서 <b>안전한 곳은 뱅크 <code>$87</code> 한 칸(8 KB, 글자 340자쯤)뿐</b>
+    이었습니다. 나머지 <code>$85</code>·<code>$86</code> 은 넓은 지역에 들어가면
+    게임이 장면을 다시 그리면서 <b>그대로 덮어씁니다.</b> 폰트가 그 자리에 있으면
+    아리에다 같은 넓은 마을에 들어가는 순간 글자가 깨집니다.</p>
+
+  <!-- 3 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">6. 음성용 메모리를 빌려 쓰다 — 그리고 음성과 부딪히다</h3>
+  <p>그래서 다른 자리를 찾다가 알게 된 것이 있습니다.
+    <b>이 게임은 원래 글꼴을 ADPCM RAM 에 올려 둡니다.</b>
+    (<code>0x282–0x7FFF</code> 구간. 음성 데이터는 그 위 <code>0x8000</code> 부터.)
+    글꼴과 음성이 <b>같은 칩을 나눠 쓰고</b>, <code>$80–$85</code> 는 CD·음성
+    스트리밍 버퍼입니다.</p>
+  <p>여기에 한글을 올릴 수 있을까 재어 봤습니다. 결과는 —</p>
+  <div class="callout">
+    <span class="lab">측정 결과</span>
+    <p>미리 적재된 폰트 영역에서 <b>연속으로 비어 있는 가장 긴 구간 = 386바이트.</b>
+      필요한 것은 12.8 KB. <b>상주는 불가능.</b></p>
+  </div>
+  <p>남은 방법은 <b>글자를 쓸 때마다 그때그때 실어 나르는 것</b>(<code>AD_WRITE</code> 재적재)
+    이었는데, 이건 음성·CD 스트리밍이 쓰는 바로 그 통로입니다. 그리고
+    <b>장면이 바뀔 때마다 16 KB 폰트를 CD 에서 다시 읽으니 배경음악이 끊겼습니다.</b>
+    글자를 살리면 소리가 죽고, 소리를 살리면 글자가 깨졌습니다.</p>
+
+  <!-- 4 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">7. 방향 전환 — 일본판이 이미 답을 갖고 있었다</h3>
+  <p>막혀서 원본을 다시 들여다보다 알아챘습니다. <b>일본판은 한자를 어디서 가져오는가?</b></p>
+  <p><b>시스템 카드 3.0 안에 들어 있는 한자 ROM</b> 이었습니다. 카드 256 KB 중
+    <b>약 160 KB 가 JIS 한자 글꼴</b>입니다. 일본판은 애초에 이 벽에 부딪힐 일이 없었습니다 —
+    글꼴이 <b>RAM 이 아니라 ROM 에</b> 있으니까요.</p>
+  <div class="callout">
+    <span class="lab">그래서 이렇게 했습니다</span>
+    <p>한국어에는 시스템 카드 글꼴이 없습니다. <b>그러면 만들면 됩니다.</b>
+      쓰이지 않는 한자 영역에 한글을 심고, 렌더러가 <b>ROM 에서 글자를 읽도록</b> 고쳤습니다.</p>
+    <p style="margin-top:.6rem"><b>ROM 은 덮어써지지 않습니다.</b> 재적재가 필요 없고,
+      <code>$85</code>·<code>$86</code> 충돌이 없고, 스프라이트·음악을 건드리지 않고,
+      넓은 지역이든 어디든 모든 글자가 나옵니다. 위 문제들이 <b>한 번에 사라졌습니다.</b></p>
+  </div>
+  <p><b>2026-06-29, 실험이 통과했습니다.</b> 아리에다(글자가 깨지던 그 마을)에 걸어 들어가서
+    ROM 에서 읽는 글자만 멀쩡하고 RAM 에 남겨 둔 대조군만 깨지는 것을 확인했습니다.
+    같은 장면, 같은 조건이니 <b>ROM 말고는 설명이 안 됩니다.</b></p>
+
+  <p>이왕 만드는 김에 <b>이 게임 전용이 아니라 공용으로</b> 만들었습니다.
+    현대 한글 11,172자는 262 KB 라 안 들어가지만, <b>KS X 1001 완성형 2,350자는 약 55 KB</b>
+    로 넉넉히 들어갑니다. 그래서 나온 것이 <b>PCE 한글 시스템 카드</b> —
+    글자 위치를 문서로 고정해 둔, <b>다른 PC Engine CD 게임의 한국어화도 그대로 쓸 수 있는
+    카드</b>입니다. 이스 IV 는 그 카드의 첫 사례이고, 실기 검증까지 마친 첫 사례이기도 합니다.</p>
+  <p class="hint">카드 자체(<code>.pce</code>)는 배포하지 않습니다 — BIOS 저작권 때문입니다.
+    <b>여러분의 순정 카드로부터 만들어 드리는 방식</b>만 제공합니다.</p>
+
+  <!-- 5 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">8. 카드에는 건드리면 안 되는 곳이 있다</h3>
+  <p>카드에 코드를 조금 넣어야 할 일이 생겼습니다. 비어 보이는 높은 뱅크
+    <code>$1E</code>·<code>$1F</code> 에 넣었습니다. 결과는 —</p>
+  <div class="callout">
+    <span class="lab">모든 디스크가 “LOAD ERROR!”</span>
+    <p>카드는 부팅되고 <b>VER 3.0 / PUSH RUN</b> 까지 뜨는데, 그다음 CD 를 못 읽습니다.
+      이스 IV 만이 아니라 <b>아무 게임이나 다</b>.</p>
+  </div>
+  <p>처음엔 "그 뱅크가 확장 BIOS 코드라서"라고 결론 냈는데, <b>나중에 다시 파 보니
+    그것도 정확하지 않았습니다.</b> 그쪽에는 살아 있는 12×12 한자 글꼴이 있고,
+    진짜 원인은 카드 끝에 있는 <b>디스크 저작권 문자열</b>일 가능성이 큽니다 —
+    BIOS 가 부팅할 때 <b>그 문자열을 디스크의 첫 섹터와 대조</b>합니다.
+    한 글자만 어긋나도 "이건 정품 디스크가 아니다"가 됩니다.</p>
+  <p>원인 설명은 바뀌었지만 <b>규칙은 그대로</b>입니다 —
+    <b>덮어써도 되는 곳은 한자 글꼴 영역 <code>$0A–$14</code> 뿐.</b>
+    지금은 글꼴 뒤에 남는 7 KB 짜리 꼬리에 넣고, 만든 카드가
+    <b>나머지 영역만큼은 순정과 한 바이트도 다르지 않은지</b> 매번 대조합니다.</p>
+  <p class="hint">"이유를 알아냈다"와 "규칙을 알아냈다"는 다릅니다.
+    규칙이 맞으면 이유가 틀려도 당장은 굴러가지만, <b>기록에는 둘 다 남겨야</b>
+    나중에 이유를 고칠 수 있습니다.</p>
+
+  <!-- 6 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">9. 스프라이트가 대사창 위로 올라오다 — 고친 자리가 문제였다</h3>
+  <p>타이틀에서 세이브를 <b>바로</b> 불러오면 대화창에서 멈추는 버그가 있었습니다.
+    본체 BIOS 가 세이브를 읽으면서 우리 코드가 있는 <code>$87</code> 을 덮어쓰는 것이었습니다.
+    그래서 "망가졌으면 카드에서 다시 복사해 오는" 검사를 넣었는데 —</p>
+  <ul class="tick no">
+    <li>장면 적재 지점(<code>$5ABF</code>)에 걸었더니 <b>스프라이트가 집·나무·대사창 위로 올라왔습니다</b></li>
+    <li>글자 하나하나 그리는 자리로 옮겼더니 <b>이번에도 스프라이트가 깨졌습니다.</b>
+      검사 자체는 열 몇 개 명령어인데, 그게 <b>글자 렌더링의 타이밍을 밀어</b> 우선순위가 뒤집혔습니다</li>
+  </ul>
+  <p>정답은 <b>대화창을 새로 여는 순간</b>(페이지당 한 번)이었습니다. 글자 그리는 경로는
+    <b>원본과 한 바이트도 다르지 않게</b> 두고, 페이지 시작에서만 한 번 확인합니다.
+    <b>2026-07-01, 얼지도 않고 깨지지도 않고 스프라이트도 정상</b>임을 확인했습니다.</p>
+  <p class="hint">이 과정에서 또 하나 배웠습니다 — 세이브를 바로 불러올 때
+    <b>망가지는 자리가 세이브마다 다릅니다.</b> 어떤 세이브는 코드가, 어떤 세이브는
+    글자 번호표가 날아갑니다. 그래서 <b>둘 다</b> 확인합니다. 하나만 보다가 한 번 놓쳤습니다.</p>
+
+  <!-- 7 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">10. 음성 대신 자막으로 가려다 접은 이야기</h3>
+  <p>연출 장면에는 <b>일본어 음성만 있고 글자가 없습니다.</b> 더빙은 큰일이니
+    <b>자막을 얹는 쪽</b>을 먼저 재어 봤습니다.</p>
+  <p>음성이 시작되는 순간을 잡아 화면 상태를 통째로 찍는 도구
+    (<code>probe_subtitle.lua</code>)를 만들어 실제 컷신에서 돌렸습니다. 나온 것은 —</p>
+  <div class="scroll">
+    <table class="toolist">
+      <tbody>
+        <tr><td class="mono">spritesEnabled = false</td><td>연출 장면에서는 <b>스프라이트가 꺼져 있습니다</b> — 자막을 스프라이트로 얹는 길이 막힙니다</td></tr>
+        <tr><td class="mono">배경 레이어</td><td>컷신 그림이 화면을 채우고 있어 글자를 올릴 빈 칸이 없습니다</td></tr>
+        <tr><td class="mono">음성 = 카드 BIOS</td><td>클립마다 <code>CD_READ</code> → <code>AD_TRANS</code> → 재생. 줄 단위로 후킹은 되지만, 자막을 그리려면 그리기 경로를 새로 만들어야 합니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>못 할 일은 아니었지만 <b>대사 렌더러를 하나 더 만드는 일</b>이었고, 같은 노력이면
+    <b>음성을 바꾸는 쪽이 결과가 낫다</b>고 판단했습니다. 그래서 자막 대신 더빙으로 갔습니다.
+    자막 버전 브랜치는 지금도 별도 폴더에 남아 있습니다 — <b>버리지는 않았습니다.</b></p>
+
+  <div class="callout">
+    <span class="lab">그런데 — 왜 PC Engine 게임은 음성이 나올 때 자막이 없을까?</span>
+    <p>작업하면서 계속 걸렸던 질문입니다. 이 시절 CD 게임들은 <b>목소리는 나오는데
+      글자는 안 나옵니다.</b> 성우를 쓸 돈은 있었는데 자막 한 줄이 없습니다.
+      <b>저희 추측은 — 글자와 목소리가 같은 칩을 놓고 싸우기 때문</b>입니다.</p>
+    <p style="margin-top:.6rem">저희가 <b>실제로 겪은 것</b>은 이렇습니다.
+      이 게임의 글꼴은 ADPCM RAM 에 있고, 음성도 같은 ADPCM RAM 을 씁니다.
+      그래서 글자를 그때그때 실어 나르는 방식으로 만들었더니 —</p>
+    <div class="scroll" style="margin:.7rem 0">
+      <table class="toolist">
+        <tbody>
+          <tr><td class="mono">효과음이 울릴 때</td><td>메시지의 <b>첫 글자만</b> 쓰레기 덩어리로 나왔습니다</td></tr>
+          <tr><td class="mono">음성 대사가 나올 때</td><td>메시지가 <b>통째로</b> 같은 글자 하나 또는 흰 블록으로 뭉개졌습니다</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>ADPCM 이 음성을 흘리는 동안에는 <b>글자를 넣을 틈이 없었습니다.</b>
+      1990년대 초에 이 위에서 자막을 얹으려면, 글꼴을 다른 곳에 두고 그리기 경로를
+      따로 만들어야 합니다 — <b>당시로선 남는 자리도, 남는 시간도 없었을 것</b>입니다.
+      "음성이 있으면 자막은 포기한다"가 가장 싼 선택이었을 겁니다.</p>
+    <p style="margin-top:.6rem;color:var(--faint);font-size:.9rem">
+      ⚠️ <b>다만 이건 가설입니다.</b> 저희가 측정한 것은 <b>이스 IV 한 편</b>이고,
+      "글꼴이 ADPCM 에 있으면 음성과 부딪힌다"까지가 확인된 사실입니다.
+      다른 게임은 글꼴을 <b>시스템 카드 한자 ROM</b>에서 읽었을 수도 있고 —
+      그러면 ADPCM 과 안 부딪힙니다. 그 경우엔 화면·VRAM 여유나 제작 비용이
+      더 큰 이유였을 겁니다. <b>확인하려면</b> 다른 PC Engine CD 게임에서
+      음성 재생 중 글꼴이 어디서 오는지 같은 방식으로 추적해 보면 됩니다.
+      아시는 분 계시면 알려 주세요.</p>
+  </div>
+
+  <h3 style="margin-top:2.4rem">11. 더빙으로 갔더니 — 자동화가 네 번 부러졌다</h3>
+  <p>"음성을 한국어로 바꾸자"는 쉬워 보였습니다. 요즘은 도구가 다 있으니까요.
+    <b>네 번 시도했고 네 번 다 못 쓸 물건이 나왔습니다.</b></p>
+  <div class="scroll">
+    <table class="toolist">
+      <thead><tr><th>시도</th><th>왜 못 썼나</th></tr></thead>
+      <tbody>
+        <tr><td>목소리 페르소나 학습 + 자동 음성 번역</td>
+            <td><b>오역이 80% 를 넘었습니다.</b> 목소리는 그럴듯한데 <b>대사 내용이 전달되지 않습니다.</b> 게임 번역에서는 치명적입니다</td></tr>
+        <tr><td>STT → TTS 로 한 번에 흘리기</td>
+            <td><b>누가 말하는지 모릅니다.</b> 감정도 안 실리고, 원래 음성 길이와 <b>대사 사이 간격</b>도 못 맞춥니다 — 슬롯 길이가 정해진 게임에서는 그대로 깨집니다</td></tr>
+        <tr><td>배경음악·효과음이 깔린 음성</td>
+            <td><b>자동 번역으로는 해결이 안 됩니다.</b> 목소리만 갈아 끼우려면 <b>깨끗한 BGM 을 따로 확보</b>해야 하고, <b>효과음도 구해야 하고</b>, 그 효과음이 들어갈 <b>타이밍까지 다시 맞춰야</b> 합니다</td></tr>
+        <tr><td>여러 명이 섞여 말하는 장면</td>
+            <td>STT 가 <b>화자를 갈라내지 못합니다.</b> 대화가 통째로 한 덩어리로 나옵니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><b>그래서 자동화를 앞이 아니라 뒤에 두기로 했습니다.</b></p>
+  <ul class="tick">
+    <li>먼저 <b>캐릭터별 목소리를 사람이 미리 정해</b> 둡니다 — 여기까지는 자동이 아닙니다</li>
+    <li>그 매핑을 바탕으로 <b>음성을 STT 로 받아 적으면서 화자를 자동으로 붙이는 도구</b>를 만들었습니다</li>
+    <li>그다음부터가 자동입니다 — 캐릭터 목소리로 일괄 생성, 길이 검사, 슬롯 주입</li>
+  </ul>
+
+  <p><b>그리고 위 표의 3·4번은 자동화로 끝나지 않습니다.</b> 목소리를 새로 만들어 놓아도,
+    그 목소리가 놓일 <b>장면 자체를 다시 지어야</b> 합니다.</p>
+  <div class="callout">
+    <span class="lab">한 장면을 되살리려면 이만큼이 필요합니다</span>
+    <p>오프닝을 예로 들면 — <b>갈매기 소리, 파도 소리, 리리아가 문을 두드리는 소리,
+      엘딜이 구슬을 깨뜨리는 소리.</b> 원본에서는 이 모두가 목소리와 <b>한 트랙에</b>
+      섞여 있습니다. 목소리만 걷어내면 <b>이 소리들도 같이 사라집니다.</b></p>
+    <p style="margin-top:.6rem">그래서 <b>깨끗한 BGM 을 따로 확보</b>하고,
+      <b>효과음을 하나하나 구하거나 만들고</b>, 그것들이 들어갈 <b>타이밍을 다시 맞춰야</b>
+      원래 장면이 됩니다. 자동으로는 어느 단계도 안 됩니다.</p>
+  </div>
+  <p>결론은 둘 중 하나였습니다 — <b>이런 트랙은 무조건 직접 편집하거나</b>,
+    아니면 <b>그 편집을 도구 안에서 할 수 있게 만들거나.</b>
+    그래서 <b>음성 레이어 편집 도구</b>를 만들었습니다.</p>
+  <ul class="tick">
+    <li><b>직접 만든 음성을 레이어로 등록</b>합니다 — 음악 · 효과음 · 목소리를
+      각각 다른 층에 깔아 놓고 따로 조정합니다</li>
+    <li><b>간격과 화자, 대사를 넣으면 도구가 그 자리에서 합성</b>합니다.
+      들어보고 아니면 그 자리에서 고칩니다</li>
+    <li>한국어는 같은 뜻이라도 길이가 달라서, 원래 타이밍 그대로 두면
+      인물이 말을 겹쳐 하거나 어색하게 비어 버립니다 — <b>간격을 다시 잡는 이유</b>입니다</li>
+    <li>맞춰 놓은 결과가 <b>정해진 슬롯 길이 안에 들어가는지</b> 그 자리에서 확인합니다 —
+      한 프레임만 넘쳐도 뒤 클립을 밀어냅니다</li>
+  </ul>
+  <div class="callout">
+    <span class="lab">정직하게 — 그래서 남은 흠</span>
+    <p>화자를 <b>자동으로</b> 붙이다 보니, <b>중간중간 목소리가 인물과 안 맞는 곳이 있습니다.</b>
+      여러 명이 섞이는 장면에서 특히 그렇습니다. 알고 있고, 고쳐 나가고 있습니다.
+      들으시다 이상한 곳이 있으면 <b>버그 신고</b> 탭으로 알려 주세요.</p>
+  </div>
+  <p class="hint">음성은 AI 로 생성했습니다. 사람 성우가 아닙니다.</p>
+
+  <!-- 8 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">12. 글자 순서가 두 번 발목을 잡았다</h3>
+  <p>한글 글꼴은 <b>많이 쓰는 글자부터</b> 순서대로 굽습니다. 자주 나오는 글자를
+    짧은 코드로 넣어야 대사가 원래 자리에 들어가기 때문입니다. 그런데 <b>번역을 고치면
+    그 순서가 바뀝니다.</b> 이게 두 번 물었습니다.</p>
+  <ul class="tick no">
+    <li><b>2026년 6월 — 무기점에서 얼어붙다.</b> 번역을 다듬다 보니 어떤 글자가
+      <b>16번 자리</b>로 옮겨 갔는데, 그 자리의 코드값이 하필 게임 엔진이
+      <b>제어 명령으로 쓰는 값</b>과 같았습니다. 엔진은 그걸 "글꼴을 바꿔라"로 읽고,
+      없는 글꼴로 바꾸려다 멈췄습니다. 우리 블록에 그 값이 <b>39개</b>, 영문판엔 <b>0개</b>.
+      이후로 그 값은 <b>영구 금지</b>입니다</li>
+    <li><b>2026년 7월(이번 판올림) — 카드와 이미지의 짝이 어긋나다.</b> 대사 12개를 되살렸더니
+      빈도가 달라져 <b>글자 45개의 번호가 밀렸습니다.</b> 글자는 그대로인데 자리만 바뀐 것이라
+      <b>오류가 안 뜨고 조용히 틀린 글자가 나옵니다.</b>
+      그래서 이번엔 <b>카드도 함께 새로 배포</b>합니다</li>
+  </ul>
+  <p class="hint">같은 뿌리에서 두 번 나왔으니 세 번째도 나올 겁니다.
+    지금은 판올림마다 글자 순서가 바뀌었는지 <b>빌드 직후에 기계로 대조</b>합니다.</p>
+
+  <!-- 9 ─────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">13. 그리고 저희가 실제로 잘못 내보낸 것 두 가지</h3>
+  <p>이건 변명 없이 적어 둡니다.</p>
+  <ul class="tick no">
+    <li><b>v0.9 — 오류정정 데이터를 안 고쳤습니다.</b> 내용만 바꾸고 CD 섹터 뒤에 붙는
+      288바이트를 그대로 뒀습니다. Mesen 은 이 필드를 안 봐서 저희 검증은 전부 통과했고,
+      <b>실기와 다른 에뮬레이터에서만 터졌습니다.</b> "sector 3667 오류"가 이것입니다.
+      더 고약한 쪽은 <b>조용히 영어로 되돌아간</b> 경우였습니다</li>
+    <li><b>v0.9.1 까지 — 대사 12개가 통째로 빠져 있었습니다.</b> 스크립트를 뽑는 도구가
+      블록 끝을 잘라먹고 있었고, 그 자리에 남은 옛 데이터를 게임이
+      <b>“세로 130칸짜리 대화창”</b>으로 읽어 자기 메모리를 뭉갰습니다.
+      상점에서 물건을 사면 멈추던 그 문제입니다</li>
+  </ul>
+  <p>공통점이 있습니다. <b>둘 다 "검증은 통과하는데 결과가 틀린" 종류</b>였습니다.
+    그래서 지금은 <b>패치가 끝날 때마다 오류정정 데이터를 실제로 검사</b>하고,
+    <b>되살린 대사가 이미지 안에 정말 들어갔는지</b> 빌드마다 확인합니다.</p>
+
+  <!-- 10 ────────────────────────────────────────────────────────── -->
+  <h3 style="margin-top:2.4rem">14. 마지막으로 — 실기에서 돌았습니다</h3>
+  <p><b>2026-06-30</b>, 테스터분들이 <b>Turbo EverDrive + 실제 PC Engine</b> 에서
+    개조한 시스템 카드와 구운 CD-R 로 돌려 확인해 주셨습니다.
+    에뮬레이터가 아니라 <b>진짜 칩 위에서</b>입니다.</p>
+  <p>이걸로 남아 있던 큰 물음표가 전부 지워졌습니다 — 개조한 카드가 실기에서 부팅되는가,
+    렌더러가 카드 ROM 을 실시간으로 읽을 수 있는가, 한글이 실제로 화면에 나오는가.
+    <b>전부 예</b>였습니다.</p>
+
+  <div class="callout" style="margin-top:2rem">
+    <span class="lab">기록에 대하여</span>
+    <p>위 내용은 작업하면서 남긴 기록에서 뽑았습니다 —
+      누적 지식 문서 <b>1,255줄</b>, 세션 메모 11개, Mesen 진단 스크립트 <b>29개</b>,
+      그리고 그때그때의 덤프와 로그들입니다.
+      <b>틀린 가설을 지우지 않고 "이건 아니었다"로 남겨 둔 것</b>이 제일 도움이 됐습니다.</p>
+  </div>
+</section>
+
+<!-- ─────────── 판올림 알림 (버전당 한 번) ─────────── -->
+<div id="up-modal" class="modal" hidden>
+  <div class="modal-back" data-up-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="up-title" tabindex="-1">
+    <header>
+      <div>
+        <h3 id="up-title">v0.9.2 가 나왔습니다</h3>
+        <p>2026년 7월 29일 · 상점에서 물건을 사면 화면이 깨지며 멈추던 문제를 고쳤습니다</p>
+      </div>
+      <button type="button" class="x" data-up-close aria-label="닫기">✕</button>
+    </header>
+    <div class="up-body">
+      <div class="callout">
+        <span class="lab">이미 패치해서 하고 계신 분께</span>
+        <p><b>CD 이미지와 한글 시스템 카드를 둘 다</b> 새로 만들어 주세요.
+          이번 판올림에서 <b>글자 번호표가 밀렸습니다</b> — 한쪽만 갈아 끼우면
+          오류는 안 뜨는데 일부 글자가 엉뚱한 글자로 나옵니다.</p>
+      </div>
+      <table class="up-tab">
+        <tr><td>v0.9 · v0.9.1 로 패치하셨다면</td><td><b>이미지 + 시스템 카드 둘 다</b> 다시 만들어 주세요</td></tr>
+        <tr><td>처음 오셨다면</td><td>그냥 진행하시면 됩니다</td></tr>
+        <tr><td>한국어 음성</td><td>v0.9.1 과 같습니다 — 다시 받지 않으셔도 됩니다</td></tr>
+        <tr><td>세이브 파일</td><td>그대로 쓰실 수 있습니다</td></tr>
+      </table>
+      <p class="up-hint">웹 패처를 쓰시면 이미지와 카드를 <b>한 번에</b> 만들어 드리므로
+        신경 쓰지 않으셔도 됩니다. xdelta 로 직접 하시는 분만 두 파일을 다 받으시면 됩니다.</p>
+    </div>
+    <div class="up-foot">
+      <button type="button" class="cta" id="up-go">패치하러 가기</button>
+      <button type="button" class="cta ghost" id="up-more">무엇이 바뀌었나</button>
+    </div>
+  </div>
+</div>
+
+<div id="cs-modal" class="modal" hidden>
+  <div class="modal-back" data-cs-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="cs-title" tabindex="-1">
+    <header>
+      <div>
+        <h3 id="cs-title">체크섬</h3>
+        <p id="cs-ver"></p>
+      </div>
+      <button type="button" class="x" data-cs-close aria-label="닫기">✕</button>
+    </header>
+    <div id="cs-body"></div>
 
 <footer>줄을 클릭하면 복사됩니다 · <kbd>Esc</kbd> 로 닫기</footer>
   </div>
@@ -1489,7 +2015,7 @@ ol.chain li{margin:.15rem 0}
       <div class="brand">
         <img src="img/mars-drive-logo.png" alt="Mars-Drive 로고">
         <div class="mark">MARS<i>–</i>DRIVE</div>
-        <small>TopperJI · 이스 IV 한국어 패치 · v0.9.1 · 2026</small>
+        <small>TopperJI · 이스 IV 한국어 패치 · v0.9.2 · 2026</small>
         <small class="contact"><a href="mailto:jiseo@mars-drive.com">jiseo@mars-drive.com</a></small>
         <small class="contact"><a href="https://blog.naver.com/hyper1234/224358490638"
           rel="noopener noreferrer" target="_blank">블로그 — 한글화 이야기 ↗</a></small>
@@ -1499,6 +2025,7 @@ ol.chain li{margin:.15rem 0}
         <li><button data-go="t-patch">패치하기</button></li>
         <li><button data-go="t-notes">릴리스</button></li>
         <li><button data-go="t-credit">계보</button></li>
+        <li><button data-go="t-story">제작과정</button></li>
       </ul>
       <div class="fthanks">
         <span class="lab">Special Thanks</span>
@@ -1595,6 +2122,38 @@ ol.chain li{margin:.15rem 0}
         });
       });
     });
+  })();
+
+  /* ── 판올림 알림 — 버전당 한 번만 뜬다 ── */
+  (function(){
+    var VER = 'v0.9.2', KEY = 'ys4-notice-' + VER;
+    var modal = document.getElementById('up-modal');
+    if (!modal) return;
+    var seen = null;
+    try { seen = localStorage.getItem(KEY); } catch (_) {}   /* 사파리 프라이빗 등 */
+    function esc(e){ if (e.key === 'Escape') close(); }
+    function close(){
+      modal.hidden = true;
+      document.body.style.overflow = '';
+      removeEventListener('keydown', esc);
+      try { localStorage.setItem(KEY, '1'); } catch (_) {}
+    }
+    function go(tabId){
+      close();
+      var t = document.getElementById(tabId);
+      if (!t) return;
+      t.click();
+      t.scrollIntoView({block:'start', behavior: reduce ? 'auto' : 'smooth'});
+    }
+    modal.addEventListener('click', function(e){ if (e.target.closest('[data-up-close]')) close(); });
+    document.getElementById('up-go').addEventListener('click', function(){ go('t-patch'); });
+    document.getElementById('up-more').addEventListener('click', function(){ go('t-notes'); });
+    if (!seen) {
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      addEventListener('keydown', esc);
+      setTimeout(function(){ modal.querySelector('.modal-box').focus(); }, 30);
+    }
   })();
 
   /* ── 체크섬 팝업 ── */
@@ -1952,7 +2511,7 @@ ol.chain li{margin:.15rem 0}
         var e = document.createElement("p");
         e.className = "sub";
         e.textContent = "게시판에 연결하지 못했습니다. PHP 가 동작하는 서버에 올려야 합니다 " +
-                        "(board/selftest.php 로 환경을 확인하세요).";
+                        "잠시 뒤 다시 시도해 주세요.";
         listEl.appendChild(e);
         pagerEl.hidden = true;
       });
@@ -2050,7 +2609,7 @@ ol.chain li{margin:.15rem 0}
         var beacon = function(params){
           try {
             navigator.sendBeacon(API, new Blob(
-              [new URLSearchParams(Object.assign({ver:"v0.9.1"}, params)).toString()],
+              [new URLSearchParams(Object.assign({ver:"v0.9.2"}, params)).toString()],
               {type:"application/x-www-form-urlencoded"}));
           } catch (e) { /* 집계 실패가 페이지를 방해해서는 안 된다 */ }
         };
