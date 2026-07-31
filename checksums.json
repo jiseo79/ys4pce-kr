@@ -1,5 +1,5 @@
 {
- "version": "v0.9.3",
+ "version": "v0.9.4",
  "groups": [
   {
    "title": "원본 이미지 (데이터 트랙)",
@@ -28,17 +28,17 @@
    "rows": [
     [
      "텍스트만 · 일본어 음성",
-     "c90ac8a8bfadc0e8cdb6c75ea882bc9832a0813d029926289aa53ea14b40142c",
+     "9a36eb2a9281bb36c9a0561464da44e84b64995736287115cddd13c25410bb9d",
      "out_text_jpv"
     ],
     [
      "텍스트+음성 · 일본어 베이스",
-     "ae48619388f75f165e99748ef011c6b00d7f079ea32c33ec80630f5d9d4458f2",
+     "6a142341ca428f94266ec59fd70d8946bd8f2479901d12583aadc92727aed6ee",
      "out_both_jpv"
     ],
     [
      "텍스트만 · 더빙 베이스",
-     "5ee02c2802b1477d8b9fba2028aa52acde0c1294ce501cac534d65cec5baa3d1",
+     "657939531e49acd0b622c3bbccaa9e4ec3dd3a22ae5c6fd4255911f9aea62335",
      "out_text"
     ],
     [
@@ -48,7 +48,7 @@
     ],
     [
      "텍스트+음성 · 더빙 베이스",
-     "abeec0ff5111d03208f3986af020ffabb91d782a206139084088aec2b9328d13",
+     "f308db0f0980eb4592151cb5ad32524b0c4058ad009560b3584f928c7edb2dcb",
      "out_both"
     ]
    ]
@@ -58,24 +58,24 @@
    "note": "내려받은 파일이 온전한지 확인하실 때.",
    "rows": [
     [
-     "text · 246.4 KB",
-     "552ed3d24c0c7ee020a40e07df338b5110fe1293e60c0be8ba109c371e530486"
+     "text · 253 KB",
+     "f325cbc4e194a7d7b530b930e7b7dbbd7d6cf38abe6522b7608a5c96753e4edf"
     ],
     [
-     "voice · 122.2 MB",
+     "voice · 122.2 MB (v0.9.2 와 동일)",
      "5d358a29237e23ca8197a2197a70e51cfe47d918a2ed3a687811646514d26ca4"
     ],
     [
      "both · 136.2 MB",
-     "aa7175ba907a246bc4edf97042920b4b6aa3c13b6702c692c058fa001bdafc4c"
+     "506d484c1293246c06e8ea680a3bf0734c6e99a9b4fda29b95f198defdbc1cc5"
     ],
     [
      "text-jpvoice · 9.5 MB",
-     "c230c222f5c0f0d3625d35a31fe86673d1695b203a20c2d831178db519d8ef6d"
+     "5acd9f6633e56f509094f290b6798fb0094dea702ba2862fa2a1cc91685bfd91"
     ],
     [
      "both-jpvoice · 141.1 MB",
-     "e0a3ff4f6be38a60d000059c2de6eba05dbf790d8bb511e25d58edaa6a9c9931"
+     "5600528f934d9b8a52c70f12af29b39828243cb4b9862e15170855513de0b392"
     ],
     [
      "syscard · 18 KB (v0.9.2 와 동일)",

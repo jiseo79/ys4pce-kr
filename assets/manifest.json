@@ -1,149 +1,158 @@
 {
-  "format": "ys4ko-patch-2",
-  "version": "v0.9.3",
-  "created": "2026-07-30",
-  "generated_at": "2026-07-30T12:38:06.267844+00:00",
-  "image": {
-    "size": 772624944,
-    "sha256": "5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7",
-    "cooked_iso_size": 67420160,
-    "cooked_iso_sha256": "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c",
-    "jp_cooked_iso_sha256": "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d",
-    "en_textonly_cooked_iso_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
-    "_note_textonly": "영문 '텍스트 패치'만 적용하고 음성 더빙은 적용하지 않은 이미지. 음성이 일본어로 남는다. 우리 text.patch 는 음성 영역을 건드리지 않으므로 '한글 자막 + 일본어 음성' 조합이 된다."
+ "format": "ys4ko-patch-2",
+ "version": "v0.9.4",
+ "created": "2026-08-01",
+ "generated_at": "2026-07-30T12:38:06.267844+00:00",
+ "image": {
+  "size": 772624944,
+  "sha256": "5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7",
+  "cooked_iso_size": 67420160,
+  "cooked_iso_sha256": "6e66ccb1b903764e75d16f2154a2ce82c4155b4e72c074f44b6fb4d55f24294c",
+  "jp_cooked_iso_sha256": "a4ef37a7d7215e4c42e1a284890a86437e963c69ec6f1408cb96d2e5d698e85d",
+  "en_textonly_cooked_iso_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
+  "_note_textonly": "영문 '텍스트 패치'만 적용하고 음성 더빙은 적용하지 않은 이미지. 음성이 일본어로 남는다. 우리 text.patch 는 음성 영역을 건드리지 않으므로 '한글 자막 + 일본어 음성' 조합이 된다."
+ },
+ "text_patch": {
+  "asset": "text.patch.gz",
+  "entries": 87,
+  "total_bytes": 358256,
+  "compressed_bytes": 179830
+ },
+ "voice_patch": {
+  "asset": "voice.patch.gz",
+  "entries": 10,
+  "total_bytes": 31313209,
+  "compressed_bytes": 19649404
+ },
+ "tracks": [
+  {
+   "no": 7,
+   "asset": "track_07.pcm.gz",
+   "byte_offset": 189180768,
+   "slot_len": 18347952,
+   "sha256": "1ce2eb6f0f9bc4f0199afdf314510d9d257d185f9e22e1864777d2e90a786eef",
+   "trim_bytes": 11760,
+   "pad_bytes": 0,
+   "trim_peak_pct": 0.177,
+   "gz_bytes": 14896329
   },
-  "text_patch": {
-    "asset": "text.patch.gz",
-    "entries": 87,
-    "total_bytes": 358315,
-    "compressed_bytes": 177506
+  {
+   "no": 24,
+   "asset": "track_24.pcm.gz",
+   "byte_offset": 562934736,
+   "slot_len": 14267232,
+   "sha256": "c34af6ce59cbb8df2fca0d75c5fba22d745d6697987fec03ef67640438f96774",
+   "trim_bytes": 21168,
+   "pad_bytes": 0,
+   "trim_peak_pct": 0.14,
+   "gz_bytes": 12143124
   },
-  "voice_patch": {
-    "asset": "voice.patch.gz",
-    "entries": 10,
-    "total_bytes": 31313209,
-    "compressed_bytes": 19649404
+  {
+   "no": 28,
+   "asset": "track_28.pcm.gz",
+   "byte_offset": 620048352,
+   "slot_len": 19265232,
+   "sha256": "dbbec93a716900df615977c343cca9a6752da6a506f23b862c8d179efa9dd48f",
+   "trim_bytes": 32928,
+   "pad_bytes": 0,
+   "trim_peak_pct": 0.101,
+   "gz_bytes": 15114231
   },
-  "tracks": [
-    {
-      "no": 7,
-      "asset": "track_07.pcm.gz",
-      "byte_offset": 189180768,
-      "slot_len": 18347952,
-      "sha256": "1ce2eb6f0f9bc4f0199afdf314510d9d257d185f9e22e1864777d2e90a786eef",
-      "trim_bytes": 11760,
-      "pad_bytes": 0,
-      "trim_peak_pct": 0.177,
-      "gz_bytes": 14896329
-    },
-    {
-      "no": 24,
-      "asset": "track_24.pcm.gz",
-      "byte_offset": 562934736,
-      "slot_len": 14267232,
-      "sha256": "c34af6ce59cbb8df2fca0d75c5fba22d745d6697987fec03ef67640438f96774",
-      "trim_bytes": 21168,
-      "pad_bytes": 0,
-      "trim_peak_pct": 0.14,
-      "gz_bytes": 12143124
-    },
-    {
-      "no": 28,
-      "asset": "track_28.pcm.gz",
-      "byte_offset": 620048352,
-      "slot_len": 19265232,
-      "sha256": "dbbec93a716900df615977c343cca9a6752da6a506f23b862c8d179efa9dd48f",
-      "trim_bytes": 32928,
-      "pad_bytes": 0,
-      "trim_peak_pct": 0.101,
-      "gz_bytes": 15114231
-    },
-    {
-      "no": 29,
-      "asset": "track_29.pcm.gz",
-      "byte_offset": 639313584,
-      "slot_len": 28096992,
-      "sha256": "7151c8638ff6cc5f350822e5643f8035fca8d91c5b2cfaf0fd25e20b57bc2306",
-      "trim_bytes": 14112,
-      "pad_bytes": 0,
-      "trim_peak_pct": 0.043,
-      "gz_bytes": 22402712
-    },
-    {
-      "no": 30,
-      "asset": "track_30.pcm.gz",
-      "byte_offset": 667410576,
-      "slot_len": 55869408,
-      "sha256": "fec9ba0250d591d3ef9dccafa466f60585da6858226bb744fc792ed203ae9b52",
-      "trim_bytes": 14112,
-      "pad_bytes": 0,
-      "trim_peak_pct": 0.079,
-      "gz_bytes": 43886353
-    }
-  ],
-  "expected_output": {
-    "text_only_sha256": "4ccec17de11a2f900c3a98cfbb244f88112734a26c08aa4398897845915a3d79",
-    "voice_only_sha256": "39ae18137b186f7b013926bb00f81871f09e86bce6f3e25832e4f9a0d0f5f7ce",
-    "both_sha256": "419c885edcc2a0e0c80b6ba494071a837188834f9ab267527230082fbdc5f454",
-    "_note": "전체 .img 해시는 판정 기준이 아니다 (CD 오디오 립 차이로 달라진다). 판정은 *_cooked_sha256 으로 한다. 이 값들은 v0.9.1 — EDC/ECC 재계산 반영본이며, cooked 값은 v0.9 와 동일하다 (EDC/ECC 는 유저데이터 밖에 있다).",
-    "text_cooked_sha256": "5ee02c2802b1477d8b9fba2028aa52acde0c1294ce501cac534d65cec5baa3d1",
-    "voice_cooked_sha256": "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
-    "both_cooked_sha256": "abeec0ff5111d03208f3986af020ffabb91d782a206139084088aec2b9328d13",
-    "text_jpvoice_cooked_sha256": "c90ac8a8bfadc0e8cdb6c75ea882bc9832a0813d029926289aa53ea14b40142c",
-    "voice_jpvoice_cooked_sha256": "125745a8d4f0a5d72e2eeb000477f6f37fd6be10e9474c60f80cb21c22924053",
-    "both_jpvoice_cooked_sha256": "ae48619388f75f165e99748ef011c6b00d7f079ea32c33ec80630f5d9d4458f2",
-    "_note_v093_both": "v0.9.3 의 both / both-jpvoice 이미지는 음성을 다시 병합하지 않고, v0.9.2 의 검증된 이미지에 이번 텍스트 수정분(9,059B, 섹터 7818~7822)만 갈아 끼워 만들었다. 음성이 그 섹터를 건드리지 않는 것과 그 구간이 베이스와 무관한 것을 실측 확인했다. 결과는 v0.9.2 대비 데이터트랙 9,059B 차이 · CD-DA 0B 차이. 병합 경로를 거치면 (a) CD-DA 126.6MB 가 통째로 빠지고 (b) 현재 voice.iso 가 v0.9.2 배포본과 12,325B 달라 음성이 조용히 바뀐다 — 둘 다 2026-07-30 에 실제로 발생했다."
+  {
+   "no": 29,
+   "asset": "track_29.pcm.gz",
+   "byte_offset": 639313584,
+   "slot_len": 28096992,
+   "sha256": "7151c8638ff6cc5f350822e5643f8035fca8d91c5b2cfaf0fd25e20b57bc2306",
+   "trim_bytes": 14112,
+   "pad_bytes": 0,
+   "trim_peak_pct": 0.043,
+   "gz_bytes": 22402712
   },
-  "english_text_ppf": {
-    "_읽어주세요": [
-      "ysutopia 의 영문 텍스트 번역 패치를 식별하기 위한 지문. 패치 파일 자체는 배포하지 않는다.",
-      "사용자가 BIN 쪽을 골랐을 때 '그거 말고 ISO 쪽' 이라고 알려주기 위해 둘 다 기록한다."
-    ],
-    "iso": {
-      "sha256": "fe78de06f5646f01e0b19414af12d85314fdef0c42f136986c6a275c6b5d699f",
-      "size": 427465,
-      "records": 4498,
-      "patch_bytes": 386923,
-      "name": "YsIV-ISO.ppf",
-      "domain": "cooked"
-    },
-    "bin": {
-      "sha256": "950bee37650e5a43d5b3b960c9b5d2149e9174e9a8c0f8e0f64d6c5ced8e56db",
-      "size": 502398,
-      "records": 5412,
-      "patch_bytes": 453630,
-      "name": "YsIV-BIN.ppf",
-      "domain": "raw",
-      "note": "데이터트랙이 파일 섹터 3365 에서 시작하는 덤프를 전제한다 — 우리는 ISO 쪽만 쓴다."
-    },
-    "result_cooked_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
-    "source": "https://www.ysutopia.net/projects/ys4/  (YsIV(US)v95.zip)"
-  },
-  "prior_versions": {
-    "_읽어주세요": [
-      "지난 판올림으로 패치된 이미지를 알아보기 위한 값. 없으면 '알 수 없는 이미지' 로 뜬다.",
-      "덧패치는 안 된다 — 패치 구간이 판올림마다 달라져서 옛 바이트가 남는다. 원본부터 다시 해야 한다.",
-      "음성만 패치한 이미지는 텍스트를 안 건드려 해시가 안 바뀌므로 여기 넣지 않는다."
-    ],
-    "releases": [
-      {
-        "label": "v0.9 / v0.9.1",
-        "cooked": {
-          "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165": "텍스트만",
-          "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3": "텍스트+음성",
-          "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9": "텍스트만 (일본어 음성)",
-          "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56": "텍스트+음성 (일본어 베이스)"
-        }
-      },
-      {
-        "label": "v0.9.2",
-        "cooked": {
-          "ab45205416e6492c05e3969b7d56ee4d22b1b3a95fa76707c8e212a67d20f7a2": "텍스트만",
-          "12dd16955637c9c14b75f029eb71aad1169a33f51ed5cedfd1995b3bb32311bb": "텍스트+음성",
-          "c45965e77631c9bfef6def598030ea584af58d22eac9890fcfc3645e33b824c3": "텍스트만 (일본어 음성)",
-          "2a9627a653e268482ad5da9de9bc9241b9fc4cfeb6a8a23793088a134d64b0fe": "텍스트+음성 (일본어 베이스)"
-        }
-      }
-    ]
+  {
+   "no": 30,
+   "asset": "track_30.pcm.gz",
+   "byte_offset": 667410576,
+   "slot_len": 55869408,
+   "sha256": "fec9ba0250d591d3ef9dccafa466f60585da6858226bb744fc792ed203ae9b52",
+   "trim_bytes": 14112,
+   "pad_bytes": 0,
+   "trim_peak_pct": 0.079,
+   "gz_bytes": 43886353
   }
+ ],
+ "expected_output": {
+  "text_only_sha256": "4ccec17de11a2f900c3a98cfbb244f88112734a26c08aa4398897845915a3d79",
+  "voice_only_sha256": "39ae18137b186f7b013926bb00f81871f09e86bce6f3e25832e4f9a0d0f5f7ce",
+  "both_sha256": "04dd7446efb139e8b1dc481f6d2884f88f77696f7d99728419df7850e27f8fb5",
+  "_note": "전체 .img 해시는 판정 기준이 아니다 (CD 오디오 립 차이로 달라진다). 판정은 *_cooked_sha256 으로 한다. 이 값들은 v0.9.1 — EDC/ECC 재계산 반영본이며, cooked 값은 v0.9 와 동일하다 (EDC/ECC 는 유저데이터 밖에 있다).",
+  "text_cooked_sha256": "657939531e49acd0b622c3bbccaa9e4ec3dd3a22ae5c6fd4255911f9aea62335",
+  "voice_cooked_sha256": "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
+  "both_cooked_sha256": "f308db0f0980eb4592151cb5ad32524b0c4058ad009560b3584f928c7edb2dcb",
+  "text_jpvoice_cooked_sha256": "9a36eb2a9281bb36c9a0561464da44e84b64995736287115cddd13c25410bb9d",
+  "voice_jpvoice_cooked_sha256": "125745a8d4f0a5d72e2eeb000477f6f37fd6be10e9474c60f80cb21c22924053",
+  "both_jpvoice_cooked_sha256": "6a142341ca428f94266ec59fd70d8946bd8f2479901d12583aadc92727aed6ee",
+  "_note_v093_both": "v0.9.3 의 both / both-jpvoice 이미지는 음성을 다시 병합하지 않고, v0.9.2 의 검증된 이미지에 이번 텍스트 수정분(9,059B, 섹터 7818~7822)만 갈아 끼워 만들었다. 음성이 그 섹터를 건드리지 않는 것과 그 구간이 베이스와 무관한 것을 실측 확인했다. 결과는 v0.9.2 대비 데이터트랙 9,059B 차이 · CD-DA 0B 차이. 병합 경로를 거치면 (a) CD-DA 126.6MB 가 통째로 빠지고 (b) 현재 voice.iso 가 v0.9.2 배포본과 12,325B 달라 음성이 조용히 바뀐다 — 둘 다 2026-07-30 에 실제로 발생했다."
+ },
+ "english_text_ppf": {
+  "_읽어주세요": [
+   "ysutopia 의 영문 텍스트 번역 패치를 식별하기 위한 지문. 패치 파일 자체는 배포하지 않는다.",
+   "사용자가 BIN 쪽을 골랐을 때 '그거 말고 ISO 쪽' 이라고 알려주기 위해 둘 다 기록한다."
+  ],
+  "iso": {
+   "sha256": "fe78de06f5646f01e0b19414af12d85314fdef0c42f136986c6a275c6b5d699f",
+   "size": 427465,
+   "records": 4498,
+   "patch_bytes": 386923,
+   "name": "YsIV-ISO.ppf",
+   "domain": "cooked"
+  },
+  "bin": {
+   "sha256": "950bee37650e5a43d5b3b960c9b5d2149e9174e9a8c0f8e0f64d6c5ced8e56db",
+   "size": 502398,
+   "records": 5412,
+   "patch_bytes": 453630,
+   "name": "YsIV-BIN.ppf",
+   "domain": "raw",
+   "note": "데이터트랙이 파일 섹터 3365 에서 시작하는 덤프를 전제한다 — 우리는 ISO 쪽만 쓴다."
+  },
+  "result_cooked_sha256": "0470f26518965c31727d918c0751da840c333d44535884ff3c967cbd42fb9c8d",
+  "source": "https://www.ysutopia.net/projects/ys4/  (YsIV(US)v95.zip)"
+ },
+ "prior_versions": {
+  "_읽어주세요": [
+   "지난 판올림으로 패치된 이미지를 알아보기 위한 값. 없으면 '알 수 없는 이미지' 로 뜬다.",
+   "덧패치는 안 된다 — 패치 구간이 판올림마다 달라져서 옛 바이트가 남는다. 원본부터 다시 해야 한다.",
+   "음성만 패치한 이미지는 텍스트를 안 건드려 해시가 안 바뀌므로 여기 넣지 않는다."
+  ],
+  "releases": [
+   {
+    "label": "v0.9 / v0.9.1",
+    "cooked": {
+     "0da5296280ce5f14b243c35b70d867a0b68f10b5f14aa85d9a58f7cfbcae0165": "텍스트만",
+     "6ef9fd9176fc43ab5b6011720976a31e19c9cb9685c0a49df0bb4b3668fd3aa3": "텍스트+음성",
+     "b521d13386912a084ba68e05499ac2295c6b8afe9deadd638d268aff45cc3ac9": "텍스트만 (일본어 음성)",
+     "44119415bc62c4de9c8e0d02cf541afb203278b63e578da5681baaf8fe5cca56": "텍스트+음성 (일본어 베이스)"
+    }
+   },
+   {
+    "label": "v0.9.2",
+    "cooked": {
+     "ab45205416e6492c05e3969b7d56ee4d22b1b3a95fa76707c8e212a67d20f7a2": "텍스트만",
+     "12dd16955637c9c14b75f029eb71aad1169a33f51ed5cedfd1995b3bb32311bb": "텍스트+음성",
+     "c45965e77631c9bfef6def598030ea584af58d22eac9890fcfc3645e33b824c3": "텍스트만 (일본어 음성)",
+     "2a9627a653e268482ad5da9de9bc9241b9fc4cfeb6a8a23793088a134d64b0fe": "텍스트+음성 (일본어 베이스)"
+    }
+   },
+   {
+    "label": "v0.9.3",
+    "cooked": {
+     "5ee02c2802b1477d8b9fba2028aa52acde0c1294ce501cac534d65cec5baa3d1": "텍스트만 · 더빙 베이스",
+     "abeec0ff5111d03208f3986af020ffabb91d782a206139084088aec2b9328d13": "텍스트+음성 · 더빙 베이스",
+     "c90ac8a8bfadc0e8cdb6c75ea882bc9832a0813d029926289aa53ea14b40142c": "텍스트만 · 일본어 베이스",
+     "ae48619388f75f165e99748ef011c6b00d7f079ea32c33ec80630f5d9d4458f2": "텍스트+음성 · 일본어 베이스"
+    }
+   }
+  ]
+ }
 }
