@@ -1,8 +1,8 @@
 {
  "format": "ys4ko-patch-2",
- "version": "v0.9.4",
- "created": "2026-08-01",
- "generated_at": "2026-07-30T12:38:06.267844+00:00",
+ "version": "v0.9.5",
+ "created": "2026-08-03",
+ "generated_at": "2026-08-03T14:00:08+00:00",
  "image": {
   "size": 772624944,
   "sha256": "5cfc298288a137283643a83191b5daf34c2c28e02a5526c1775c1ad6f6dacbd7",
@@ -15,14 +15,16 @@
  "text_patch": {
   "asset": "text.patch.gz",
   "entries": 87,
-  "total_bytes": 358256,
-  "compressed_bytes": 179830
+  "total_bytes": 358029,
+  "compressed_bytes": 175883,
+  "sha256": "301cf04ca79ab1c3cf5fc21e035769806350bdc56b3ef068410274244e4664ef"
  },
  "voice_patch": {
   "asset": "voice.patch.gz",
-  "entries": 10,
-  "total_bytes": 31313209,
-  "compressed_bytes": 19649404
+  "entries": 8,
+  "total_bytes": 31325848,
+  "compressed_bytes": 19030307,
+  "sha256": "8e08d4294dcebea5278f9671481941049efb1b8a53a8a7ccb7d3a2eb185a69c2"
  },
  "tracks": [
   {
@@ -30,55 +32,55 @@
    "asset": "track_07.pcm.gz",
    "byte_offset": 189180768,
    "slot_len": 18347952,
-   "sha256": "1ce2eb6f0f9bc4f0199afdf314510d9d257d185f9e22e1864777d2e90a786eef",
+   "sha256": "49a2113a38e15322ad7d361bf649fc0bb75c9bf9842c4b4f8010c1eb8f622a6d",
    "trim_bytes": 11760,
    "pad_bytes": 0,
    "trim_peak_pct": 0.177,
-   "gz_bytes": 14896329
+   "gz_bytes": 14100381
   },
   {
    "no": 24,
    "asset": "track_24.pcm.gz",
    "byte_offset": 562934736,
    "slot_len": 14267232,
-   "sha256": "c34af6ce59cbb8df2fca0d75c5fba22d745d6697987fec03ef67640438f96774",
+   "sha256": "6d8ef3cce3303386aba6f598bc4b15d17c7b72e13ea8034f3c2c212861edda41",
    "trim_bytes": 21168,
    "pad_bytes": 0,
    "trim_peak_pct": 0.14,
-   "gz_bytes": 12143124
+   "gz_bytes": 11280978
   },
   {
    "no": 28,
    "asset": "track_28.pcm.gz",
    "byte_offset": 620048352,
    "slot_len": 19265232,
-   "sha256": "dbbec93a716900df615977c343cca9a6752da6a506f23b862c8d179efa9dd48f",
+   "sha256": "4aa416de15cede177f11ef93142bfbebf72762f31d0f7c0095a6a88d63143c6b",
    "trim_bytes": 32928,
    "pad_bytes": 0,
    "trim_peak_pct": 0.101,
-   "gz_bytes": 15114231
+   "gz_bytes": 13924295
   },
   {
    "no": 29,
    "asset": "track_29.pcm.gz",
    "byte_offset": 639313584,
    "slot_len": 28096992,
-   "sha256": "7151c8638ff6cc5f350822e5643f8035fca8d91c5b2cfaf0fd25e20b57bc2306",
+   "sha256": "802143a5ad4dfd77b4e2b16b047fb67ca6277b9744eca221fe15b2e177c5a99b",
    "trim_bytes": 14112,
    "pad_bytes": 0,
    "trim_peak_pct": 0.043,
-   "gz_bytes": 22402712
+   "gz_bytes": 20825934
   },
   {
    "no": 30,
    "asset": "track_30.pcm.gz",
    "byte_offset": 667410576,
    "slot_len": 55869408,
-   "sha256": "fec9ba0250d591d3ef9dccafa466f60585da6858226bb744fc792ed203ae9b52",
+   "sha256": "018eb1d2ea8138bae110e271fa293bcecc238291d35ab35e397080280e008fa2",
    "trim_bytes": 14112,
    "pad_bytes": 0,
    "trim_peak_pct": 0.079,
-   "gz_bytes": 43886353
+   "gz_bytes": 39929650
   }
  ],
  "expected_output": {
@@ -86,12 +88,12 @@
   "voice_only_sha256": "39ae18137b186f7b013926bb00f81871f09e86bce6f3e25832e4f9a0d0f5f7ce",
   "both_sha256": "04dd7446efb139e8b1dc481f6d2884f88f77696f7d99728419df7850e27f8fb5",
   "_note": "전체 .img 해시는 판정 기준이 아니다 (CD 오디오 립 차이로 달라진다). 판정은 *_cooked_sha256 으로 한다. 이 값들은 v0.9.1 — EDC/ECC 재계산 반영본이며, cooked 값은 v0.9 와 동일하다 (EDC/ECC 는 유저데이터 밖에 있다).",
-  "text_cooked_sha256": "657939531e49acd0b622c3bbccaa9e4ec3dd3a22ae5c6fd4255911f9aea62335",
-  "voice_cooked_sha256": "b04adedafe93fc013070fd622edb6d4d1ce1e4ea001b44e10ae3f8ce6875831a",
-  "both_cooked_sha256": "f308db0f0980eb4592151cb5ad32524b0c4058ad009560b3584f928c7edb2dcb",
-  "text_jpvoice_cooked_sha256": "9a36eb2a9281bb36c9a0561464da44e84b64995736287115cddd13c25410bb9d",
-  "voice_jpvoice_cooked_sha256": "125745a8d4f0a5d72e2eeb000477f6f37fd6be10e9474c60f80cb21c22924053",
-  "both_jpvoice_cooked_sha256": "6a142341ca428f94266ec59fd70d8946bd8f2479901d12583aadc92727aed6ee",
+  "text_cooked_sha256": "30afa8d05df8d45903ad9133dae52d12d772eaa876c768ed9b7daecbc58c614b",
+  "voice_cooked_sha256": "cfb78935462293a9d05bf91c4e705477a616e02b64f17e3140b25c6ca55d04d0",
+  "both_cooked_sha256": "70997549448ec9424c5caa9c4a31bd7bf87a3a71d4a1f663b6fb03349a53c2fa",
+  "text_jpvoice_cooked_sha256": "aee34af6c237e305afc9c0f31874662922ba31cee8b16c39947e6d9588ff5f5a",
+  "voice_jpvoice_cooked_sha256": "2fe569a769cdb874df722efa7ac98e538a71e1193246fdfc6e9608a61014a082",
+  "both_jpvoice_cooked_sha256": "cbe3a5e63e55050b114630065c20c4d1c765594e8eaf4eed93367487c51af5ce",
   "_note_v093_both": "v0.9.3 의 both / both-jpvoice 이미지는 음성을 다시 병합하지 않고, v0.9.2 의 검증된 이미지에 이번 텍스트 수정분(9,059B, 섹터 7818~7822)만 갈아 끼워 만들었다. 음성이 그 섹터를 건드리지 않는 것과 그 구간이 베이스와 무관한 것을 실측 확인했다. 결과는 v0.9.2 대비 데이터트랙 9,059B 차이 · CD-DA 0B 차이. 병합 경로를 거치면 (a) CD-DA 126.6MB 가 통째로 빠지고 (b) 현재 voice.iso 가 v0.9.2 배포본과 12,325B 달라 음성이 조용히 바뀐다 — 둘 다 2026-07-30 에 실제로 발생했다."
  },
  "english_text_ppf": {
@@ -151,6 +153,15 @@
      "abeec0ff5111d03208f3986af020ffabb91d782a206139084088aec2b9328d13": "텍스트+음성 · 더빙 베이스",
      "c90ac8a8bfadc0e8cdb6c75ea882bc9832a0813d029926289aa53ea14b40142c": "텍스트만 · 일본어 베이스",
      "ae48619388f75f165e99748ef011c6b00d7f079ea32c33ec80630f5d9d4458f2": "텍스트+음성 · 일본어 베이스"
+    }
+   },
+   {
+    "label": "v0.9.4",
+    "cooked": {
+     "657939531e49acd0b622c3bbccaa9e4ec3dd3a22ae5c6fd4255911f9aea62335": "텍스트만 · 더빙 베이스",
+     "f308db0f0980eb4592151cb5ad32524b0c4058ad009560b3584f928c7edb2dcb": "텍스트+음성 · 더빙 베이스",
+     "9a36eb2a9281bb36c9a0561464da44e84b64995736287115cddd13c25410bb9d": "텍스트만 · 일본어 베이스",
+     "6a142341ca428f94266ec59fd70d8946bd8f2479901d12583aadc92727aed6ee": "텍스트+음성 · 일본어 베이스"
     }
    }
   ]

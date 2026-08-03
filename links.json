@@ -11,41 +11,43 @@
     "stats_api 가 비어 있으면 집계 호출을 아예 하지 않습니다 (외부 요청 0).",
     "주소를 넣으면 방문·패치 횟수만 보냅니다 — 게임 파일은 어떤 경우에도 보내지 않습니다.",
     "",
-    "v0.9.4: voice 와 syscard 는 v0.9.2 와 내용이 같지만, 받는 분이 버전을 헷갈리지 않도록",
-    "여섯 개 모두 v0.9.4 이름으로 올립니다."
+    "v0.9.5: 이번엔 텍스트와 음성이 둘 다 바뀌었습니다. syscard 만 v0.9.2 부터 내용이 같습니다",
+    "(7d6c9869…). 받는 분이 버전을 헷갈리지 않도록 여섯 개 모두 v0.9.5 이름으로 올립니다.",
+    "",
+    "이 파일의 version 값이 패처 페이지의 표시 버전과 집계 버전을 정합니다 — 여기만 고치면 됩니다."
   ],
-  "version": "v0.9.4",
+  "version": "v0.9.5",
   "patches": {
     "text_jpvoice": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-text-jpvoice.xdelta",
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-text-jpvoice.xdelta",
       "size": "9.5 MB"
     },
     "both_jpvoice": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-both-jpvoice.xdelta",
-      "size": "141.1 MB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-both-jpvoice.xdelta",
+      "size": "133.3 MB"
     },
     "text": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-text.xdelta",
-      "size": "253 KB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-text.xdelta",
+      "size": "251 KB"
     },
     "voice": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-voice.xdelta",
-      "size": "122.2 MB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-voice.xdelta",
+      "size": "128.1 MB"
     },
     "both": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-both.xdelta",
-      "size": "136.2 MB"
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-both.xdelta",
+      "size": "128.4 MB"
     },
     "syscard": {
-      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/ys4ko-v0.9.4-syscard.xdelta",
+      "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/ys4ko-v0.9.5-syscard.xdelta",
       "size": "18 KB"
     }
   },
   "checksums": {
-    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/CHECKSUMS.txt"
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/CHECKSUMS.txt"
   },
   "readme": {
-    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.4/README.txt"
+    "url": "https://github.com/jiseo79/ys4pce-kr/releases/download/v0.9.5/README.txt"
   },
   "video": {
     "youtube_id": "2SIqYj3H2OU"

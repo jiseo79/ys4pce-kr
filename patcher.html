@@ -187,7 +187,7 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
 <body>
 <header class="topbar">
   <a href="index.html#patch">← 배포 페이지로 돌아가기</a>
-  <span class="catalog">HCD3051 / KO v0.9.4</span>
+  <span class="catalog">HCD3051 / KO <span data-ver>v0.9.5</span></span>
 </header>
 <main class="wrap">
   <section class="masthead">
@@ -337,7 +337,7 @@ code{font-family:var(--mono);font-size:.86em;background:#0a0f15;border:1px solid
     <span><b>MARS–DRIVE</b><small>TopperJI · Korean localization</small>
       <small class="contact"><a href="mailto:jiseo@mars-drive.com">jiseo@mars-drive.com</a></small></span>
   </div>
-  <small>YS IV: THE DAWN OF YS / FAN PATCH v0.9.4 / 2026</small>
+  <small>YS IV: THE DAWN OF YS / FAN PATCH <span data-ver>v0.9.5</span> / 2026</small>
 </footer>
 
 <!-- ══════════ core.mjs (verbatim, export-stripped) — canonical source: dist/web/tools/core.mjs ══════════ -->
@@ -1353,15 +1353,25 @@ class Sha256 {
      안 보내는 것: 파일 이름 · 파일 내용 · 파일 해시 · 쿠키 · 식별자
      게임 파일은 어떤 경우에도 이 경로를 타지 않는다. */
   let statsApi = null;
+  /* 버전은 links.json 하나만 보고 따라간다 — 판올림마다 HTML 을 손대다 매번 빠뜨렸다.
+     아래 하드코딩 값은 links.json 을 못 읽었을 때의 대비책일 뿐이다. */
+  let siteVer = "v0.9.5";
   fetch("links.json", { cache: "no-cache" })
     .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (c) { if (c && c.stats_api) statsApi = c.stats_api; })
+    .then(function (c) {
+      if (!c) return;
+      if (c.stats_api) statsApi = c.stats_api;
+      if (c.version) {
+        siteVer = c.version;
+        document.querySelectorAll("[data-ver]").forEach(function (el) { el.textContent = c.version; });
+      }
+    })
     .catch(function () { /* 없으면 집계 안 함 */ });
 
   function track(type, extra) {
     if (!statsApi) return;
     try {
-      var b = new URLSearchParams(Object.assign({ type: type, ver: "v0.9.4" }, extra || {}));
+      var b = new URLSearchParams(Object.assign({ type: type, ver: siteVer }, extra || {}));
       navigator.sendBeacon(
         statsApi,
         new Blob([b.toString()], { type: "application/x-www-form-urlencoded" }));
