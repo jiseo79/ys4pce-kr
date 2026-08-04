@@ -1661,6 +1661,9 @@ ol.chain li{margin:.15rem 0}
     <b>게임 파일은 어떤 경우에도 서버로 가지 않습니다</b> — 이름도, 내용도, 해시도, 쿠키도요.</p>
 
   <div id="stats-kpis" class="kpis"></div>
+  <p class="hint"><b>오늘 방문자</b>만 하루치이고 나머지는 누적입니다.
+    방문자를 가르는 값에 날짜를 섞어 <b>어제 것과 대조할 수 없게</b> 만들어 두었기 때문에,
+    "지금까지 몇 분이 오셨는가" 는 셀 방법이 없습니다. 덜 세려고 그렇게 만들었습니다.</p>
   <div id="stats-body"></div>
   <p class="msg" id="stats-msg">집계를 불러오는 중 …</p>
 
@@ -3015,7 +3018,9 @@ ol.chain li{margin:.15rem 0}
         if (!d.ok) throw new Error(d.error || '집계를 불러오지 못했습니다.');
         msg.hidden = true;
         var T = d.totals || {}, g = function(k){ return T[k] || 0; };
-        [['순 방문자', d.unique_visitors || 0, false],
+        /* 이 값만 '오늘' 이다 — api.php 가 방문마다 uniq 테이블에서 어제 것을 지운다.
+           나머지 넷은 누적이라, 라벨을 뭉뚱그리면 비율로 잘못 읽힌다. */
+        [['오늘 방문자', d.unique_visitors || 0, false],
          ['전체 방문', g('visit'), true],
          ['패처 열기', g('open_patcher'), true],
          ['다운로드', g('dl_total'), true],

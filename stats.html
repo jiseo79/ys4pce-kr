@@ -127,7 +127,8 @@ td.bar.alt i{background:var(--rust)}
 
     // ── KPI ──
     var cards = el("div", "cards");
-    [["순 방문자", d.unique_visitors || 0, false],
+    // 이 값만 '오늘' 이다 (api.php 가 방문마다 uniq 에서 어제 것을 지운다). 나머지는 누적.
+    [["오늘 방문자", d.unique_visitors || 0, false],
      ["전체 방문", g("visit"), true],
      ["패처 열기", g("open_patcher"), true],
      ["다운로드", g("dl_total"), true],
