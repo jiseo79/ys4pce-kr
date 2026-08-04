@@ -698,8 +698,9 @@ table.toolist td.n{text-align:right;color:var(--faint);font-variant-numeric:tabu
 .pcard .visual{position:relative;aspect-ratio:16/10;background:#0a0d12;
   border-bottom:1px solid var(--edge);display:grid;place-items:center;overflow:hidden}
 .pcard .visual img{width:100%;height:100%;object-fit:cover;display:block}
-/* 정사각 타이틀 화면은 가운데를 그냥 자르면 글자 윗줄이 잘린다 — 위쪽으로 당겨 잡는다 */
-.pcard .visual img.sq{object-position:center 22%}
+/* 정사각 타이틀을 16:10 으로 자르는 위치. 가운데(50%)면 제목 윗줄이 잘리고,
+   너무 위면 크레딧이 글자 중간에서 끊긴다. 12% 가 'Media Works' 줄 바로 아래에서 끊긴다. */
+.pcard .visual img.sq{object-position:center 12%}
 .pcard .chip{position:absolute;top:.7rem;right:.7rem;font:600 .62rem/1 var(--mono);
   letter-spacing:.09em;padding:.34rem .55rem;border-radius:999px;
   border:1px solid var(--edge);background:rgba(9,13,19,.86);color:var(--mute)}
