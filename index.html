@@ -698,10 +698,8 @@ table.toolist td.n{text-align:right;color:var(--faint);font-variant-numeric:tabu
 .pcard .visual{position:relative;aspect-ratio:16/10;background:#0a0d12;
   border-bottom:1px solid var(--edge);display:grid;place-items:center;overflow:hidden}
 .pcard .visual img{width:100%;height:100%;object-fit:cover;display:block}
-.pcard .wordmark{text-align:center;padding:1rem}
-.pcard .wordmark b{display:block;font:800 2rem/1 var(--display);letter-spacing:-.01em;color:var(--paper)}
-.pcard .wordmark small{display:block;margin-top:.5rem;font:600 .62rem/1.4 var(--mono);
-  letter-spacing:.18em;color:var(--faint)}
+/* 정사각 타이틀 화면은 가운데를 그냥 자르면 글자 윗줄이 잘린다 — 위쪽으로 당겨 잡는다 */
+.pcard .visual img.sq{object-position:center 22%}
 .pcard .chip{position:absolute;top:.7rem;right:.7rem;font:600 .62rem/1 var(--mono);
   letter-spacing:.09em;padding:.34rem .55rem;border-radius:999px;
   border:1px solid var(--edge);background:rgba(9,13,19,.86);color:var(--mute)}
@@ -854,7 +852,7 @@ ol.chain li{margin:.15rem 0}
     <button class="tab" role="tab" id="t-story"  aria-controls="p-story"  aria-selected="false"><span class="n">07</span>제작과정/비화</button>
     <button class="tab" role="tab" id="t-board"  aria-controls="p-board"  aria-selected="false"><span class="n">08</span>버그 신고<span class="tbadge" id="t-board-badge" hidden></span></button>
     <button class="tab" role="tab" id="t-stats"  aria-controls="p-stats"  aria-selected="false"><span class="n">09</span>집계</button>
-    <button class="tab" role="tab" id="t-patches"  aria-controls="p-patches"  aria-selected="false"><span class="n">10</span>한글패치 목록</button>
+    <button class="tab" role="tab" id="t-patches"  aria-controls="p-patches"  aria-selected="false"><span class="n">10</span>또다른 한글패치 시리즈</button>
   </div>
 </nav>
 
@@ -2595,7 +2593,7 @@ ol.chain li{margin:.15rem 0}
 
 <!-- ─────────── 10 한글패치 목록 ─────────── -->
 <section class="panel" id="p-patches" role="tabpanel" aria-labelledby="t-patches" tabindex="0" hidden data-chapter="10">
-  <h2>한글패치 목록</h2>
+  <h2>또다른 한글패치 시리즈</h2>
   <p class="sub">오래된 게임의 인상은 그대로, 이야기는 우리말로.
     TopperJI 의 PC Engine 한국어화 프로젝트를 모았습니다.</p>
 
@@ -2617,7 +2615,7 @@ ol.chain li{margin:.15rem 0}
 
     <article class="pcard">
       <div class="visual">
-        <div class="wordmark"><b>에메랄드 드래곤</b><small>EMERALD DRAGON</small></div>
+        <img class="sq" src="img/shot-emerald-title.png" alt="에메랄드 드래곤 한국어 타이틀 화면" loading="lazy" decoding="async">
         <span class="chip">V0.6</span>
       </div>
       <div class="body">
