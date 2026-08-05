@@ -1,7 +1,7 @@
 {
  "format": "ys4ko-patch-2",
- "version": "v0.9.5",
- "created": "2026-08-03",
+ "version": "v0.9.6",
+ "created": "2026-08-06",
  "generated_at": "2026-08-03T14:00:08+00:00",
  "image": {
   "size": 772624944,
@@ -15,9 +15,9 @@
  "text_patch": {
   "asset": "text.patch.gz",
   "entries": 87,
-  "total_bytes": 358029,
-  "compressed_bytes": 175883,
-  "sha256": "301cf04ca79ab1c3cf5fc21e035769806350bdc56b3ef068410274244e4664ef"
+  "total_bytes": 358284,
+  "compressed_bytes": 174803,
+  "sha256": "0ac4c8a455cd67416709de57504446c321a8d396193d6a080ed5765db8b40ed4"
  },
  "voice_patch": {
   "asset": "voice.patch.gz",
@@ -88,12 +88,12 @@
   "voice_only_sha256": "39ae18137b186f7b013926bb00f81871f09e86bce6f3e25832e4f9a0d0f5f7ce",
   "both_sha256": "04dd7446efb139e8b1dc481f6d2884f88f77696f7d99728419df7850e27f8fb5",
   "_note": "전체 .img 해시는 판정 기준이 아니다 (CD 오디오 립 차이로 달라진다). 판정은 *_cooked_sha256 으로 한다. 이 값들은 v0.9.1 — EDC/ECC 재계산 반영본이며, cooked 값은 v0.9 와 동일하다 (EDC/ECC 는 유저데이터 밖에 있다).",
-  "text_cooked_sha256": "30afa8d05df8d45903ad9133dae52d12d772eaa876c768ed9b7daecbc58c614b",
+  "text_cooked_sha256": "19d614355eb4fb18f166be054ec20339c35453fc62a84bec75cb9510ebc105d4",
   "voice_cooked_sha256": "cfb78935462293a9d05bf91c4e705477a616e02b64f17e3140b25c6ca55d04d0",
-  "both_cooked_sha256": "70997549448ec9424c5caa9c4a31bd7bf87a3a71d4a1f663b6fb03349a53c2fa",
-  "text_jpvoice_cooked_sha256": "aee34af6c237e305afc9c0f31874662922ba31cee8b16c39947e6d9588ff5f5a",
+  "both_cooked_sha256": "cf180b7e909fd84bfdb8f504c182edffd84542bbffab31857d6ef2684d83a8e4",
+  "text_jpvoice_cooked_sha256": "2b6778c11c3334198d37d246788e53e9e9638fe21837be3eda69bd1b8d7b24c7",
   "voice_jpvoice_cooked_sha256": "2fe569a769cdb874df722efa7ac98e538a71e1193246fdfc6e9608a61014a082",
-  "both_jpvoice_cooked_sha256": "cbe3a5e63e55050b114630065c20c4d1c765594e8eaf4eed93367487c51af5ce",
+  "both_jpvoice_cooked_sha256": "f36bf9675591f65db91b18c5aba6c076382bf2d98fe1b1e8c843935f5560ac13",
   "_note_v093_both": "v0.9.3 의 both / both-jpvoice 이미지는 음성을 다시 병합하지 않고, v0.9.2 의 검증된 이미지에 이번 텍스트 수정분(9,059B, 섹터 7818~7822)만 갈아 끼워 만들었다. 음성이 그 섹터를 건드리지 않는 것과 그 구간이 베이스와 무관한 것을 실측 확인했다. 결과는 v0.9.2 대비 데이터트랙 9,059B 차이 · CD-DA 0B 차이. 병합 경로를 거치면 (a) CD-DA 126.6MB 가 통째로 빠지고 (b) 현재 voice.iso 가 v0.9.2 배포본과 12,325B 달라 음성이 조용히 바뀐다 — 둘 다 2026-07-30 에 실제로 발생했다."
  },
  "english_text_ppf": {
@@ -162,6 +162,15 @@
      "f308db0f0980eb4592151cb5ad32524b0c4058ad009560b3584f928c7edb2dcb": "텍스트+음성 · 더빙 베이스",
      "9a36eb2a9281bb36c9a0561464da44e84b64995736287115cddd13c25410bb9d": "텍스트만 · 일본어 베이스",
      "6a142341ca428f94266ec59fd70d8946bd8f2479901d12583aadc92727aed6ee": "텍스트+음성 · 일본어 베이스"
+    }
+   },
+   {
+    "label": "v0.9.5",
+    "cooked": {
+     "30afa8d05df8d45903ad9133dae52d12d772eaa876c768ed9b7daecbc58c614b": "텍스트만 · 더빙 베이스",
+     "70997549448ec9424c5caa9c4a31bd7bf87a3a71d4a1f663b6fb03349a53c2fa": "텍스트+음성 · 더빙 베이스",
+     "aee34af6c237e305afc9c0f31874662922ba31cee8b16c39947e6d9588ff5f5a": "텍스트만 · 일본어 베이스",
+     "cbe3a5e63e55050b114630065c20c4d1c765594e8eaf4eed93367487c51af5ce": "텍스트+음성 · 일본어 베이스"
     }
    }
   ]

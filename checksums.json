@@ -1,5 +1,5 @@
 {
- "version": "v0.9.5",
+ "version": "v0.9.6",
  "groups": [
   {
    "title": "원본 이미지 (데이터 트랙)",
@@ -28,17 +28,17 @@
    "rows": [
     [
      "텍스트만 · 일본어 음성",
-     "aee34af6c237e305afc9c0f31874662922ba31cee8b16c39947e6d9588ff5f5a",
+     "2b6778c11c3334198d37d246788e53e9e9638fe21837be3eda69bd1b8d7b24c7",
      "out_text_jpv"
     ],
     [
      "텍스트+음성 · 일본어 베이스",
-     "cbe3a5e63e55050b114630065c20c4d1c765594e8eaf4eed93367487c51af5ce",
+     "f36bf9675591f65db91b18c5aba6c076382bf2d98fe1b1e8c843935f5560ac13",
      "out_both_jpv"
     ],
     [
      "텍스트만 · 더빙 베이스",
-     "30afa8d05df8d45903ad9133dae52d12d772eaa876c768ed9b7daecbc58c614b",
+     "19d614355eb4fb18f166be054ec20339c35453fc62a84bec75cb9510ebc105d4",
      "out_text"
     ],
     [
@@ -48,7 +48,7 @@
     ],
     [
      "텍스트+음성 · 더빙 베이스",
-     "70997549448ec9424c5caa9c4a31bd7bf87a3a71d4a1f663b6fb03349a53c2fa",
+     "cf180b7e909fd84bfdb8f504c182edffd84542bbffab31857d6ef2684d83a8e4",
      "out_both"
     ]
    ]
@@ -58,24 +58,24 @@
    "note": "내려받은 파일이 온전한지 확인하실 때.",
    "rows": [
     [
-     "text · 251 KB",
-     "4a98b51d64a2368d57791c1ee999c3d3e59426ee4000874b6af260b5399e79c7"
+     "text · 250 KB",
+     "14f563bbb02dfe46ffde4851fdb85f7d271865216d227a7adfacb9c8ca835a3f"
     ],
     [
-     "voice · 128.1 MB",
-     "e9ca74c5322eb4acad6ab7b9478f384bb6eb80f9126c22a414855dd0d959ebd7"
+     "voice · 128.1 MB (v0.9.5 와 동일)",
+     "a576340f0bdd018252fa2149918df976ef8a77c31c014ec3cb61aaa9b1a82206"
     ],
     [
      "both · 128.4 MB",
-     "1df7cd7dc9eed039dc1f7ce35af76d0684d1f05935453e8277eb2406f65124f6"
+     "54d592aff34686e2773aa5b17a16a96806e75710f407567a95e17d5c5dff58e1"
     ],
     [
      "text-jpvoice · 9.5 MB",
-     "c366a3ba14b018032781fff4155119d3827f62047c12693663cc9612497a31d4"
+     "cbf98ef3b066b55e9299c99ca5780fdbec5e0c321035ae01d9e17aecc4ac15d9"
     ],
     [
      "both-jpvoice · 133.3 MB",
-     "87a1c62ab0f969228bed94e956a1d6ee370c86c3458683f14cc80432f5848d93"
+     "f7c2c7cf229d5cae6bf7629c9c5ee6021511afe57e2a8c39f19eeaa5b0c7e4df"
     ],
     [
      "syscard · 18 KB (v0.9.2 와 동일)",
